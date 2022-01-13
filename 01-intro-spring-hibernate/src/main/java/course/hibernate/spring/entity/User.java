@@ -12,8 +12,9 @@ import java.util.Set;
 import static course.hibernate.spring.entity.Role.READER;
 
 @Entity
-@Table(name = "users", uniqueConstraints=
-    @UniqueConstraint(name = "uk_username", columnNames = {"username"}))
+@Table(name = "users",
+//        indexes = @Index(name = "uniqueUsernameIndex", columnList = "username", unique = true),
+        uniqueConstraints=@UniqueConstraint(name = "uc_username", columnNames = {"username"}))
 public class User extends BaseMappedSuperclass {
     @NotNull
     @Size(min=2, max=20)
@@ -26,7 +27,7 @@ public class User extends BaseMappedSuperclass {
     @NotNull
     @Size(min=5, max=20)
     @NonNull
-    @Column(unique = true, updatable = false, nullable = false)
+    @Column(updatable = false, nullable = false)
     private String username;
     @NotNull
     @Size(min=6, max=128)
