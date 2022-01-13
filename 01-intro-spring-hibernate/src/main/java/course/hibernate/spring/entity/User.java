@@ -7,12 +7,13 @@ import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.time.LocalDateTime;
-import java.util.HashSet;
 import java.util.Set;
 
 import static course.hibernate.spring.entity.Role.READER;
 
 @Entity
+@Table(name = "users", uniqueConstraints=
+    @UniqueConstraint(name = "uk_username", columnNames = {"username"}))
 public class User extends BaseMappedSuperclass {
     @NotNull
     @Size(min=2, max=20)
@@ -23,9 +24,10 @@ public class User extends BaseMappedSuperclass {
     @NonNull
     private String lastName;
     @NotNull
-    @Size(min=2, max=20)
+    @Size(min=5, max=20)
     @NonNull
-    private String userame;
+    @Column(unique = true, updatable = false, nullable = false)
+    private String username;
     @NotNull
     @Size(min=6, max=128)
     @NonNull
@@ -35,51 +37,54 @@ public class User extends BaseMappedSuperclass {
     @Enumerated(EnumType.STRING)
     private Set<Role> role = Set.of(READER);
 
-    public User(@NonNull String firstName, @NonNull String lastName, @NonNull String userame, @NonNull String password) {
+    public User() {
+    }
+
+    public User(@NonNull String firstName, @NonNull String lastName, @NonNull String username, @NonNull String password) {
         this.firstName = firstName;
         this.lastName = lastName;
-        this.userame = userame;
+        this.username = username;
         this.password = password;
     }
 
-    public User(Long id, @NonNull String firstName, @NonNull String lastName, @NonNull String userame, @NonNull String password) {
+    public User(Long id, @NonNull String firstName, @NonNull String lastName, @NonNull String username, @NonNull String password) {
         super(id);
         this.firstName = firstName;
         this.lastName = lastName;
-        this.userame = userame;
+        this.username = username;
         this.password = password;
     }
 
-    public User(Long id, LocalDateTime created, LocalDateTime modified, @NonNull String firstName, @NonNull String lastName, @NonNull String userame, @NonNull String password) {
+    public User(Long id, LocalDateTime created, LocalDateTime modified, @NonNull String firstName, @NonNull String lastName, @NonNull String username, @NonNull String password) {
         super(id, created, modified);
         this.firstName = firstName;
         this.lastName = lastName;
-        this.userame = userame;
+        this.username = username;
         this.password = password;
     }
 
-    public User(@NonNull String firstName, @NonNull String lastName, @NonNull String userame, @NonNull String password, Set<Role> role) {
+    public User(@NonNull String firstName, @NonNull String lastName, @NonNull String username, @NonNull String password, Set<Role> role) {
         this.firstName = firstName;
         this.lastName = lastName;
-        this.userame = userame;
+        this.username = username;
         this.password = password;
         this.role = role;
     }
 
-    public User(Long id, @NonNull String firstName, @NonNull String lastName, @NonNull String userame, @NonNull String password, Set<Role> role) {
+    public User(Long id, @NonNull String firstName, @NonNull String lastName, @NonNull String username, @NonNull String password, Set<Role> role) {
         super(id);
         this.firstName = firstName;
         this.lastName = lastName;
-        this.userame = userame;
+        this.username = username;
         this.password = password;
         this.role = role;
     }
 
-    public User(Long id, LocalDateTime created, LocalDateTime modified, @NonNull String firstName, @NonNull String lastName, @NonNull String userame, @NonNull String password, Set<Role> role) {
+    public User(Long id, LocalDateTime created, LocalDateTime modified, @NonNull String firstName, @NonNull String lastName, @NonNull String username, @NonNull String password, Set<Role> role) {
         super(id, created, modified);
         this.firstName = firstName;
         this.lastName = lastName;
-        this.userame = userame;
+        this.username = username;
         this.password = password;
         this.role = role;
     }
@@ -100,12 +105,12 @@ public class User extends BaseMappedSuperclass {
         this.lastName = lastName;
     }
 
-    public String getUserame() {
-        return userame;
+    public String getUsername() {
+        return username;
     }
 
-    public void setUserame(String userame) {
-        this.userame = userame;
+    public void setUsername(String userame) {
+        this.username = userame;
     }
 
     public String getPassword() {
@@ -132,7 +137,7 @@ public class User extends BaseMappedSuperclass {
         sb.append(", modified=").append(getModified());
         sb.append(", firstName='").append(firstName).append('\'');
         sb.append(", lastName='").append(lastName).append('\'');
-        sb.append(", userame='").append(userame).append('\'');
+        sb.append(", userame='").append(username).append('\'');
         sb.append(", password='").append(password).append('\'');
         sb.append(", role=").append(role);
         sb.append('}');
