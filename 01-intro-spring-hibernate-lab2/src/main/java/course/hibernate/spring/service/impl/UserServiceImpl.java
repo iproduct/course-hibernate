@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
@@ -40,26 +41,40 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User create(User user) {
+        user.setCreated(LocalDateTime.now());
+        user.setModified(LocalDateTime.now());
         try {
             return userRepository.save(user);
         } catch(DataIntegrityViolationException ex) {
-            throw new InvalindClientDataException("Invalid database constraint", ex,
+            throw new InvalindClientDataException("Database constraint invalidated", ex,
                     ExceptionHandlingUtils.extractViolations(ex));
         }
     }
 
     @Override
     public User update(User user) {
-        return null;
+        User old = findById(user.getId());
+        if(!old.getUsername().equals(user.getUsername())) {
+            throw new InvalindClientDataException("Username can not be changed");
+        }
+        user.setModified(LocalDateTime.now());
+        try {
+            return userRepository.save(user);
+        } catch(DataIntegrityViolationException ex) {
+            throw new InvalindClientDataException("Database constraint invalidated", ex,
+                    ExceptionHandlingUtils.extractViolations(ex));
+        }
     }
 
     @Override
     public User deleteById(Long id) {
-        return null;
+        User old = findById(id);
+        userRepository.deleteById(id);
+        return old;
     }
 
     @Override
     public long count() {
-        return 0;
+        return userRepository.count();
     }
 }
