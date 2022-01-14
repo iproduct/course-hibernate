@@ -4,10 +4,11 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import org.hibernate.loader.entity.plan.AbstractLoadPlanBasedEntityLoader;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.time.LocalDateTime;
-import java.util.Set;
+import java.util.List;
 
 @Entity
 @Table( name = "users",
@@ -24,13 +25,12 @@ public class User extends EntityBase {
     @Size(min=5, max =20)
     @Column(updatable = false, nullable = false)
     private String username;
-    @NotNull
-    @Size(min=5, max =120)
+    @NotBlank
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private String password;
-    @ElementCollection
+    @ElementCollection(fetch = FetchType.EAGER)
     @Enumerated(EnumType.STRING)
-    private Set<Role> roles = Set.of(Role.READER);
+    private List<Role> roles = List.of(Role.READER);
 
     public User() {
     }
@@ -62,7 +62,7 @@ public class User extends EntityBase {
         this.password = password;
     }
 
-    public User(String firstName, String lastName, String username, String password, Set<Role> roles) {
+    public User(String firstName, String lastName, String username, String password, List<Role> roles) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.username = username;
@@ -70,7 +70,7 @@ public class User extends EntityBase {
         this.roles = roles;
     }
 
-    public User(Long id, LocalDateTime created, LocalDateTime modified, String firstName, String lastName, String username, String password, Set<Role> roles) {
+    public User(Long id, LocalDateTime created, LocalDateTime modified, String firstName, String lastName, String username, String password, List<Role> roles) {
         super(id, created, modified);
         this.firstName = firstName;
         this.lastName = lastName;
@@ -111,11 +111,11 @@ public class User extends EntityBase {
         this.password = password;
     }
 
-    public Set<Role> getRoles() {
+    public List<Role> getRoles() {
         return roles;
     }
 
-    public void setRoles(Set<Role> roles) {
+    public void setRoles(List<Role> roles) {
         this.roles = roles;
     }
 
