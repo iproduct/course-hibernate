@@ -24,7 +24,7 @@ public class UserDetailDto {
     @NotNull
     @Size(min=5, max =20)
     private String username;
-    private List<Role> roles = List.of(Role.READER);
+    private Set<Role> roles = Set.of(Role.READER);
 
     public UserDetailDto() {
     }
@@ -36,7 +36,7 @@ public class UserDetailDto {
         this.username = username;
     }
 
-    public UserDetailDto(Long id, String firstName, String lastName, String username, List<Role> roles) {
+    public UserDetailDto(Long id, String firstName, String lastName, String username, Set<Role> roles) {
         this.id = id;
         this.firstName = firstName;
         this.lastName = lastName;
@@ -76,11 +76,11 @@ public class UserDetailDto {
         this.username = username;
     }
 
-    public List<Role> getRoles() {
+    public Set<Role> getRoles() {
         return roles;
     }
 
-    public void setRoles(List<Role> roles) {
+    public void setRoles(Set<Role> roles) {
         this.roles = roles;
     }
 

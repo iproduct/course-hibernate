@@ -19,9 +19,9 @@ import static course.hibernate.spring.entity.Role.*;
 public class DataInitializer implements ApplicationRunner {
     private static final List<User> SAMPLE_USERS = List.of(
             new User("Default", "Admin", "admin", "Admin123&",
-                    List.of(READER, AUTHOR, ADMIN)),
+                    Set.of(READER, AUTHOR, ADMIN)),
             new User("Default", "Author", "author", "Author123&",
-                    List.of(READER, AUTHOR))
+                    Set.of(READER, AUTHOR))
             );
     private final UserService userService;
 

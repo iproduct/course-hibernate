@@ -9,6 +9,7 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Set;
 
 @Entity
 @Table( name = "users",
@@ -30,7 +31,7 @@ public class User extends EntityBase {
     private String password;
     @ElementCollection(fetch = FetchType.EAGER)
     @Enumerated(EnumType.STRING)
-    private List<Role> roles = List.of(Role.READER);
+    private Set<Role> roles = Set.of(Role.READER);
 
     public User() {
     }
@@ -62,7 +63,7 @@ public class User extends EntityBase {
         this.password = password;
     }
 
-    public User(String firstName, String lastName, String username, String password, List<Role> roles) {
+    public User(String firstName, String lastName, String username, String password, Set<Role> roles) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.username = username;
@@ -70,7 +71,7 @@ public class User extends EntityBase {
         this.roles = roles;
     }
 
-    public User(Long id, LocalDateTime created, LocalDateTime modified, String firstName, String lastName, String username, String password, List<Role> roles) {
+    public User(Long id, LocalDateTime created, LocalDateTime modified, String firstName, String lastName, String username, String password, Set<Role> roles) {
         super(id, created, modified);
         this.firstName = firstName;
         this.lastName = lastName;
@@ -111,11 +112,11 @@ public class User extends EntityBase {
         this.password = password;
     }
 
-    public List<Role> getRoles() {
+    public Set<Role> getRoles() {
         return roles;
     }
 
-    public void setRoles(List<Role> roles) {
+    public void setRoles(Set<Role> roles) {
         this.roles = roles;
     }
 
@@ -130,6 +131,6 @@ public class User extends EntityBase {
                 ", username='" + username + '\'' +
                 ", password='" + password + '\'' +
                 ", roles=" + roles +
-                "} " + super.toString();
+                "} ";
     }
 }
