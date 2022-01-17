@@ -15,6 +15,8 @@ import static course.hibernate.spring.entity.Role.READER;
 @Table(name = "users",
 //        indexes = @Index(name = "uniqueUsernameIndex", columnList = "username", unique = true),
         uniqueConstraints=@UniqueConstraint(name = "uc_username", columnNames = {"username"}))
+@NamedEntityGraph(name = "User.detail",
+        attributeNodes = @NamedAttributeNode("roles"))
 public class User extends BaseMappedSuperclass {
     @NotNull
     @Size(min=2, max=20)
