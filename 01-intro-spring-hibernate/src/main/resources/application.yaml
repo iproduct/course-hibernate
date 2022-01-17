@@ -14,10 +14,10 @@ spring:
     properties:
       hibernate:
         dialect: org.hibernate.dialect.MySQL8Dialect
-        #spring.jpa.show-sql=true
-        format_sql: TRUE
+    show-sql: true
+    format_sql: TRUE
     hibernate:
-      ddl-auto: create
+      ddl-auto: update
     open-in-view: false
 #    mongodb:
 #      host: localhost

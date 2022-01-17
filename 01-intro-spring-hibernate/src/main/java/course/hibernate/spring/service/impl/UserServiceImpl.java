@@ -30,12 +30,14 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User findById(Long id) {
-        return userRepository.findById(id).orElseThrow(() -> new EntityNotFoundException());
+        return userRepository.findById(id).orElseThrow(() ->
+                new EntityNotFoundException(String.format("User with ID=%s does not exist.", id)));
     }
 
     @Override
     public User findByUsername(String username) {
-        return userRepository.findByUsername(username).orElseThrow(() -> new EntityNotFoundException());
+        return userRepository.findByUsername(username).orElseThrow(() ->
+                new EntityNotFoundException(String.format("User with username='%s' does not exist.", username)));
     }
 
     @Override
@@ -50,16 +52,30 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User update(User user) {
-        return null;
+        try {
+            User old = findById(user.getId());
+            if(!old.getUsername().equals(user.getUsername())) {
+                throw new ClientEntityDataException("Usename can not be changed.");
+            }
+            return userRepository.save(user);
+        } catch(IllegalArgumentException | DataIntegrityViolationException ex) {
+            throw new ClientEntityDataException(ex.getMessage(), ex, ExceptionHandlingUtils.extractViolations(ex));
+        }
     }
 
     @Override
     public User deleteById(Long id) {
-        return null;
+        User old = findById(id);
+        try {
+           userRepository.deleteById(id);
+           return old;
+        } catch(IllegalArgumentException | DataIntegrityViolationException ex) {
+            throw new ClientEntityDataException(ex.getMessage(), ex, ExceptionHandlingUtils.extractViolations(ex));
+        }
     }
 
     @Override
     public long count() {
-        return 0;
+        return userRepository.count();
     }
 }

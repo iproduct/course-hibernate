@@ -34,9 +34,9 @@ public class User extends BaseMappedSuperclass {
     @NonNull
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private String password;
-    @ElementCollection
+    @ElementCollection(fetch = FetchType.EAGER)
     @Enumerated(EnumType.STRING)
-    private Set<Role> role = Set.of(READER);
+    private Set<Role> roles = Set.of(READER);
 
     public User() {
     }
@@ -69,7 +69,7 @@ public class User extends BaseMappedSuperclass {
         this.lastName = lastName;
         this.username = username;
         this.password = password;
-        this.role = role;
+        this.roles = role;
     }
 
     public User(Long id, @NonNull String firstName, @NonNull String lastName, @NonNull String username, @NonNull String password, Set<Role> role) {
@@ -78,7 +78,7 @@ public class User extends BaseMappedSuperclass {
         this.lastName = lastName;
         this.username = username;
         this.password = password;
-        this.role = role;
+        this.roles = role;
     }
 
     public User(Long id, LocalDateTime created, LocalDateTime modified, @NonNull String firstName, @NonNull String lastName, @NonNull String username, @NonNull String password, Set<Role> role) {
@@ -87,7 +87,7 @@ public class User extends BaseMappedSuperclass {
         this.lastName = lastName;
         this.username = username;
         this.password = password;
-        this.role = role;
+        this.roles = role;
     }
 
     public String getFirstName() {
@@ -122,12 +122,12 @@ public class User extends BaseMappedSuperclass {
         this.password = password;
     }
 
-    public Set<Role> getRole() {
-        return role;
+    public Set<Role> getRoles() {
+        return roles;
     }
 
-    public void setRole(Set<Role> role) {
-        this.role = role;
+    public void setRoles(Set<Role> role) {
+        this.roles = role;
     }
 
     @Override
@@ -140,7 +140,7 @@ public class User extends BaseMappedSuperclass {
         sb.append(", lastName='").append(lastName).append('\'');
         sb.append(", userame='").append(username).append('\'');
         sb.append(", password='").append(password).append('\'');
-        sb.append(", role=").append(role);
+        sb.append(", role=").append(roles);
         sb.append('}');
         return sb.toString();
     }
