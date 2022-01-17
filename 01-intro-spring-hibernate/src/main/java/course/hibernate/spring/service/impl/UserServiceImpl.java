@@ -8,9 +8,12 @@ import course.hibernate.spring.service.UserService;
 import course.hibernate.spring.util.ExceptionHandlingUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.security.crypto.factory.PasswordEncoderFactories;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
@@ -42,7 +45,10 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User create(User user) {
-
+        user.setCreated(LocalDateTime.now());
+        user.setModified(LocalDateTime.now());
+        PasswordEncoder encoder = PasswordEncoderFactories.createDelegatingPasswordEncoder();
+        user.setPassword(encoder.encode(user.getPassword()));
         try {
             return userRepository.save(user);
         } catch(DataIntegrityViolationException ex) {
@@ -58,6 +64,7 @@ public class UserServiceImpl implements UserService {
             if(!old.getUsername().equals(user.getUsername())) {
                 throw new ClientEntityDataException("Usename can not be changed.");
             }
+            user.setModified(LocalDateTime.now());
             return userRepository.save(user);
         } catch(IllegalArgumentException | DataIntegrityViolationException ex) {
             throw new ClientEntityDataException(ex.getMessage(), ex, ExceptionHandlingUtils.extractViolations(ex));
