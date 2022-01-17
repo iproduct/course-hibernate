@@ -1,7 +1,7 @@
 package course.hibernate.spring.web;
 
 import course.hibernate.spring.exception.EntityNotFoundException;
-import course.spring.restmvc.service.UserService;
+import course.hibernate.spring.service.UserService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -22,9 +22,10 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @Slf4j
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Autowired
-    JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
+    private JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
     @Autowired
-    JwtRequestFilter jwtRequestFilter;
+    private JwtRequestFilter jwtRequestFilter;
+
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http.csrf().disable()
@@ -42,7 +43,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     }
 
     @Bean
-    public UserDetailsService userDetailsService(UserService users) {
+    public UserDetailsService userDetailsService(UserService userService) {
         return username -> {
             try {
                 UserDetails found = userService.findByUsername(username);

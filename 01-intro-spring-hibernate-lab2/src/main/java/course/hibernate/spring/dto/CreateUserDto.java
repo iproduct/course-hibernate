@@ -22,7 +22,7 @@ public class CreateUserDto{
     @Size(min=5, max =20)
     private String username;
     @NotNull
-    @Size(min=5, max =120)
+    @Size(min=5, max =20)
     @Pattern(regexp = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)[a-zA-Z\\d]{8,}$")
     private String password;
     private Set<Role> roles = Set.of(Role.READER);
