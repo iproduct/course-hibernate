@@ -17,13 +17,13 @@ import java.util.function.Function;
 public class JwtUtils {
     public static final long JWT_TOKEN_VALIDITY = 1 * 60 * 60; //1 hour
 
-    // Demo only - don't use this in production => get secret from environment variable instead
-    @Value("jwt.secret")
+    // get secret from environment variable instead
+    @Value("${jwt.secret}")
     private String secret;
 
 //    @PostConstruct
 //    public void init() {
-//        String log_dir = System.getProperty("log_dir","/tmp/log");
+//        String secret = System.getProperty("JWT_SECRET","not_a_secret");
 //    }
 
     //retrieve username from jwt token
