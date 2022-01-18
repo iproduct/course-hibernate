@@ -67,5 +67,6 @@ blog:
   api:
     prefix: /api/v2
 
-
+jwt:
+  secret: ${JWT_SECRET:not_a_secret}
 
