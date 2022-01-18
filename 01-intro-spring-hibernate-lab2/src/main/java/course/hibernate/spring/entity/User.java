@@ -2,20 +2,27 @@ package course.hibernate.spring.entity;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import org.hibernate.loader.entity.plan.AbstractLoadPlanBasedEntityLoader;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.time.LocalDateTime;
+import java.util.Collection;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @Entity
 @Table( name = "users",
         uniqueConstraints = @UniqueConstraint(name = "uc_username", columnNames = {"username"}),
         indexes = @Index(name="uniqueUsernameIndex", columnList = "username", unique = true))
-public class User extends EntityBase {
+@NamedEntityGraph(name = "User.detail", attributeNodes = @NamedAttributeNode("roles"))
+@Access(AccessType.FIELD)
+public class User extends EntityBase implements UserDetails {
     @NotNull
     @Size(min=2, max =20)
     private String firstName;
@@ -32,6 +39,7 @@ public class User extends EntityBase {
     @ElementCollection(fetch = FetchType.EAGER)
     @Enumerated(EnumType.STRING)
     private Set<Role> roles = Set.of(Role.READER);
+    private boolean active = true;
 
     public User() {
     }
@@ -100,8 +108,34 @@ public class User extends EntityBase {
         return username;
     }
 
+    @Override
+    public boolean isAccountNonExpired() {
+        return active;
+    }
+
+    @Override
+    public boolean isAccountNonLocked() {
+        return active;
+    }
+
+    @Override
+    public boolean isCredentialsNonExpired() {
+        return active;
+    }
+
+    @Override
+    public boolean isEnabled() {
+        return active;
+    }
+
     public void setUsername(String username) {
         this.username = username;
+    }
+
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        return roles.stream().map(role -> new SimpleGrantedAuthority("ROLE_" + role.toString()))
+                .collect(Collectors.toList());
     }
 
     public String getPassword() {

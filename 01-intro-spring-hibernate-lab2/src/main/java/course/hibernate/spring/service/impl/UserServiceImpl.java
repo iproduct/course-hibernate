@@ -8,6 +8,8 @@ import course.hibernate.spring.service.UserService;
 import course.hibernate.spring.util.ExceptionHandlingUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.security.crypto.factory.PasswordEncoderFactories;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -43,6 +45,8 @@ public class UserServiceImpl implements UserService {
     public User create(User user) {
         user.setCreated(LocalDateTime.now());
         user.setModified(LocalDateTime.now());
+        PasswordEncoder encoder = PasswordEncoderFactories.createDelegatingPasswordEncoder();
+        user.setPassword(encoder.encode(user.getPassword()));
         try {
             return userRepository.save(user);
         } catch(DataIntegrityViolationException ex) {
