@@ -72,7 +72,7 @@ public class AuthController {
         ));
         final User user = userService.findByUsername(credentials.getUsername());
         final String token = jwtUtils.generateToken(user);
-        return new LoginResponse(new UserSummaryDto(user.getId(), user.getFirstName(), user.getLastName(), user.getUsername()), token);
+        return new LoginResponse(mapper.map(user, UserSummaryDto.class), token);
     }
 }
 
