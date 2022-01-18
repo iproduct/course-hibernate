@@ -1,17 +1,15 @@
 package course.hibernate.spring.dto;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-import course.hibernate.spring.entity.EntityBase;
 import course.hibernate.spring.entity.Role;
 
-import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
-import java.time.LocalDateTime;
 import java.util.Set;
 
-public class CreateUserDto{
+public class UserUpdateDto {
+    @NotNull
+    private Long id;
     @NotNull
     @Size(min=2, max =20)
     private String firstName;
@@ -22,22 +20,22 @@ public class CreateUserDto{
     @Size(min=5, max =20)
     private String username;
     @NotNull
-    @Size(min=5, max =20)
+    @Size(min=8, max =30)
     @Pattern(regexp = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)[a-zA-Z\\d]{8,}$")
     private String password;
     private Set<Role> roles = Set.of(Role.READER);
 
-    public CreateUserDto() {
+    public UserUpdateDto() {
     }
 
-    public CreateUserDto(String firstName, String lastName, String username, String password) {
+    public UserUpdateDto(String firstName, String lastName, String username, String password) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.username = username;
         this.password = password;
     }
 
-    public CreateUserDto(String firstName, String lastName, String username, String password, Set<Role> roles) {
+    public UserUpdateDto(String firstName, String lastName, String username, String password, Set<Role> roles) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.username = username;

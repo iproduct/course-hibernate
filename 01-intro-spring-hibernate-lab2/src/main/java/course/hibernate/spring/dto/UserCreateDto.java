@@ -7,9 +7,7 @@ import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 import java.util.Set;
 
-public class UpdateUserDto {
-    @NotNull
-    private Long id;
+public class UserCreateDto {
     @NotNull
     @Size(min=2, max =20)
     private String firstName;
@@ -20,22 +18,22 @@ public class UpdateUserDto {
     @Size(min=5, max =20)
     private String username;
     @NotNull
-    @Size(min=8, max =30)
+    @Size(min=5, max =20)
     @Pattern(regexp = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)[a-zA-Z\\d]{8,}$")
     private String password;
     private Set<Role> roles = Set.of(Role.READER);
 
-    public UpdateUserDto() {
+    public UserCreateDto() {
     }
 
-    public UpdateUserDto(String firstName, String lastName, String username, String password) {
+    public UserCreateDto(String firstName, String lastName, String username, String password) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.username = username;
         this.password = password;
     }
 
-    public UpdateUserDto(String firstName, String lastName, String username, String password, Set<Role> roles) {
+    public UserCreateDto(String firstName, String lastName, String username, String password, Set<Role> roles) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.username = username;

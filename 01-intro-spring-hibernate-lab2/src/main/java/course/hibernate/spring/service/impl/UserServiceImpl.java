@@ -3,7 +3,7 @@ package course.hibernate.spring.service.impl;
 import course.hibernate.spring.dao.UserRepository;
 import course.hibernate.spring.entity.User;
 import course.hibernate.spring.exception.EntityNotFoundException;
-import course.hibernate.spring.exception.InvalindClientDataException;
+import course.hibernate.spring.exception.InvalidClientDataException;
 import course.hibernate.spring.service.UserService;
 import course.hibernate.spring.util.ExceptionHandlingUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -50,7 +50,7 @@ public class UserServiceImpl implements UserService {
         try {
             return userRepository.save(user);
         } catch(DataIntegrityViolationException ex) {
-            throw new InvalindClientDataException("Database constraint invalidated", ex,
+            throw new InvalidClientDataException("Database constraint invalidated", ex,
                     ExceptionHandlingUtils.extractViolations(ex));
         }
     }
@@ -59,13 +59,13 @@ public class UserServiceImpl implements UserService {
     public User update(User user) {
         User old = findById(user.getId());
         if(!old.getUsername().equals(user.getUsername())) {
-            throw new InvalindClientDataException("Username can not be changed");
+            throw new InvalidClientDataException("Username can not be changed");
         }
         user.setModified(LocalDateTime.now());
         try {
             return userRepository.save(user);
         } catch(DataIntegrityViolationException ex) {
-            throw new InvalindClientDataException("Database constraint invalidated", ex,
+            throw new InvalidClientDataException("Database constraint invalidated", ex,
                     ExceptionHandlingUtils.extractViolations(ex));
         }
     }

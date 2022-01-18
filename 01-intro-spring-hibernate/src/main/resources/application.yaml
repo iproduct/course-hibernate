@@ -62,9 +62,9 @@ logging:
         test:
           context:
             support: INFO
-    hibernate:
-      type: trace
-      stat: debug
+      hibernate:
+        type: trace
+        stat: debug
 blog:
   api:
     prefix: /api/v2

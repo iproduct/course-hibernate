@@ -23,11 +23,10 @@ public class JwtUtils {
     @Value("${jwt.secret}")
     private String secret;
 
-    @PostConstruct
-    public void init() {
-        log.info("Secret: {}", secret);
+//    @PostConstruct
+//    public void init() {
 //        String secret = System.getProperty("JWT_SECRET","not_a_secret");
-    }
+//    }
 
     //retrieve username from jwt token
     public String getUsernameFromToken(String token) {

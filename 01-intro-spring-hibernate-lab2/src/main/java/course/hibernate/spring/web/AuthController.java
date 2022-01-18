@@ -2,12 +2,14 @@ package course.hibernate.spring.web;
 
 import course.hibernate.spring.dto.Credentials;
 import course.hibernate.spring.dto.LoginResponse;
+import course.hibernate.spring.dto.UserCreateDto;
 import course.hibernate.spring.dto.UserSummaryDto;
 import course.hibernate.spring.entity.Role;
 import course.hibernate.spring.entity.User;
-import course.hibernate.spring.exception.ClientEntityDataException;
+import course.hibernate.spring.exception.InvalidClientDataException;
 import course.hibernate.spring.service.UserService;
 import course.hibernate.spring.util.JwtUtils;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -26,24 +28,34 @@ import java.util.stream.Collectors;
 @RestController
 @RequestMapping("/api/auth")
 public class AuthController {
-    @Autowired
     private UserService userService;
-    @Autowired
+    private ModelMapper mapper;
     private AuthenticationManager authenticationManager;
-    @Autowired
     private JwtUtils jwtUtils;
 
+    @Autowired
+    public AuthController(UserService userService,
+                          ModelMapper mapper,
+                          AuthenticationManager authenticationManager,
+                          JwtUtils jwtUtils) {
+        this.userService = userService;
+        this.mapper = mapper;
+        this.authenticationManager = authenticationManager;
+        this.jwtUtils = jwtUtils;
+    }
+
     @PostMapping("register")
-    public ResponseEntity<User> findByTitle(@Valid @RequestBody User user, Errors errors){
+    public ResponseEntity<User> findByTitle(@Valid @RequestBody UserCreateDto userDto, Errors errors) {
         if (errors.hasErrors()) {
-            throw new ClientEntityDataException("Invalid user data",
+            throw new InvalidClientDataException("Invalid user data",
                     errors.getAllErrors().stream().map(e -> e.toString()).collect(Collectors.toList()));
         }
-        if(!user.getRoles().equals(Set.of(Role.READER))){
-            throw new ClientEntityDataException(
-                String.format("Role: '%s' is invalid.You can self-register only in 'READER' role", user.getRoles()));
+        if (!userDto.getRoles().equals(Set.of(Role.READER))) {
+            throw new InvalidClientDataException(
+                    String.format("Role: '%s' is invalid. You can self-register only in 'READER' role.",
+                            userDto.getRoles()));
         }
-        User created = userService.create(user);
+        User created = userService.create(mapper.map(userDto, User.class));
         return ResponseEntity.created(
                 ServletUriComponentsBuilder.fromCurrentRequest().pathSegment("{id}").build(created.getId())
         ).body(created);
@@ -52,7 +64,7 @@ public class AuthController {
     @PostMapping("login")
     public LoginResponse login(@Valid @RequestBody Credentials credentials, Errors errors) {
         if (errors.hasErrors()) {
-            throw new ClientEntityDataException("Invalid user data",
+            throw new InvalidClientDataException("Invalid user data",
                     errors.getAllErrors().stream().map(e -> e.toString()).collect(Collectors.toList()));
         }
         authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(
