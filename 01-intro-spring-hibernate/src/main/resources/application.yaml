@@ -14,11 +14,14 @@ spring:
     properties:
       hibernate:
         dialect: org.hibernate.dialect.MySQL8Dialect
+        format_sql: true
+        generate_statistics: true
     show-sql: true
-    format_sql: TRUE
+
     hibernate:
       ddl-auto: update
     open-in-view: false
+
 #    mongodb:
 #      host: localhost
 #      port: 27017
@@ -59,6 +62,9 @@ logging:
         test:
           context:
             support: INFO
+    hibernate:
+      type: trace
+      stat: debug
 blog:
   api:
     prefix: /api/v2
