@@ -8,6 +8,7 @@ import course.hibernate.spring.entity.User;
 import course.hibernate.spring.exception.ClientEntityDataException;
 import course.hibernate.spring.service.UserService;
 import course.hibernate.spring.util.JwtUtils;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -26,12 +27,19 @@ import java.util.stream.Collectors;
 @RestController
 @RequestMapping("/api/auth")
 public class AuthController {
+    private final UserService userService;
+    private final AuthenticationManager authenticationManager;
+    private final JwtUtils jwtUtils;
+    private final ModelMapper mapper;
+
     @Autowired
-    private UserService userService;
-    @Autowired
-    private AuthenticationManager authenticationManager;
-    @Autowired
-    private JwtUtils jwtUtils;
+    public AuthController(UserService userService, AuthenticationManager authenticationManager, JwtUtils jwtUtils,
+                          ModelMapper mapper) {
+        this.userService = userService;
+        this.authenticationManager = authenticationManager;
+        this.jwtUtils = jwtUtils;
+        this.mapper = mapper;
+    }
 
     @PostMapping("register")
     public ResponseEntity<User> findByTitle(@Valid @RequestBody User user, Errors errors){
@@ -60,7 +68,7 @@ public class AuthController {
         ));
         final User user = userService.findByUsername(credentials.getUsername());
         final String token = jwtUtils.generateToken(user);
-        return new LoginResponse(new UserSummaryDto(user.getId(), user.getFirstName(), user.getLastName(), user.getUsername()), token);
+        return new LoginResponse(mapper.map(user, UserSummaryDto.class), token);
     }
 }
 
