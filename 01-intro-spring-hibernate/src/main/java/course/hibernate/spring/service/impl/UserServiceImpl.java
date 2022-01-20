@@ -65,6 +65,7 @@ public class UserServiceImpl implements UserService {
                 throw new ClientEntityDataException("Usename can not be changed.");
             }
             user.setModified(LocalDateTime.now());
+            user.setPassword(old.getPassword());
             return userRepository.save(user);
         } catch(IllegalArgumentException | DataIntegrityViolationException ex) {
             throw new ClientEntityDataException(ex.getMessage(), ex, ExceptionHandlingUtils.extractViolations(ex));

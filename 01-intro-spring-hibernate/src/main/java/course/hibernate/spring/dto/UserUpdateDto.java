@@ -1,12 +1,11 @@
 package course.hibernate.spring.dto;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
 import course.hibernate.spring.entity.Role;
 import lombok.*;
 
-import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
+import javax.validation.constraints.Positive;
 import javax.validation.constraints.Size;
 import java.util.Set;
 
@@ -16,7 +15,11 @@ import static course.hibernate.spring.entity.Role.READER;
 @NoArgsConstructor
 @RequiredArgsConstructor
 @AllArgsConstructor
-public class UserCreateDto {
+public class UserUpdateDto {
+    @NotNull
+    @Positive
+    @NonNull
+    private Long id;
     @NotNull
     @Size(min=2, max=20)
     @NonNull
@@ -29,9 +32,5 @@ public class UserCreateDto {
     @Size(min=5, max=20)
     @NonNull
     private String username;
-    @NotNull
-    @Pattern(regexp = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[@$!%*?&])[A-Za-z\\d@$!%*?&]{8,}$")
-    @NonNull
-    private String password;
     private Set<Role> roles = Set.of(READER);
 }

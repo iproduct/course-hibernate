@@ -1,14 +1,17 @@
 package course.hibernate.spring.web;
 
+import course.hibernate.spring.dto.UserCreateDto;
 import course.hibernate.spring.dto.UserDetailsDto;
+import course.hibernate.spring.dto.UserUpdateDto;
 import course.hibernate.spring.entity.User;
+import course.hibernate.spring.exception.ClientEntityDataException;
 import course.hibernate.spring.service.UserService;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -34,5 +37,28 @@ public class UserController {
     @GetMapping("/{id}")
     public UserDetailsDto getUserById(@PathVariable("id") Long id) {
         return mapper.map(userService.findById(id), UserDetailsDto.class);
+    }
+
+    @PostMapping
+    public ResponseEntity<UserDetailsDto> create(@RequestBody UserCreateDto userDto) {
+        User user = mapper.map(userDto, User.class);
+        User created = userService.create(user);
+        return ResponseEntity
+                .created(ServletUriComponentsBuilder.fromCurrentRequest().pathSegment("{id}").build(user.getId()))
+                .body(mapper.map(created, UserDetailsDto.class));
+    }
+
+    @PutMapping("/{id}")
+    public UserDetailsDto update(@PathVariable("id") Long id, @RequestBody UserUpdateDto userDto) {
+        if(!id.equals(userDto.getId())) {
+            throw new ClientEntityDataException(String.format("ID in URL:'%s' different from ID in body:'%s'.", id, userDto.getId()));
+        }
+        User user = mapper.map(userDto, User.class);
+        return mapper.map(userService.update(user), UserDetailsDto.class);
+    }
+
+    @DeleteMapping("/{id}")
+    public UserDetailsDto deleteById(@PathVariable("id") Long id) {
+        return mapper.map(userService.deleteById(id), UserDetailsDto.class);
     }
 }

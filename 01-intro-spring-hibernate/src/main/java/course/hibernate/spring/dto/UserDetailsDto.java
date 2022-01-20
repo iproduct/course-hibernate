@@ -33,10 +33,5 @@ public class UserDetailsDto {
     @Size(min=5, max=20)
     @NonNull
     private String username;
-    @NotNull
-    @Pattern(regexp = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)[a-zA-Z\\d]{8,}$")
-    @NonNull
-    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
-    private String password;
     private Set<Role> roles = Set.of(READER);
 }
