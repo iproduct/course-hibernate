@@ -1,6 +1,7 @@
 package course.hibernate.spring.service.impl;
 
-import course.hibernate.spring.dao.UserRepository;
+import course.hibernate.spring.dao.UserDetailsDtoRepository;
+import course.hibernate.spring.dto.UserDetailsDto;
 import course.hibernate.spring.entity.User;
 import course.hibernate.spring.exception.ClientEntityDataException;
 import course.hibernate.spring.exception.EntityNotFoundException;
@@ -19,16 +20,16 @@ import java.util.List;
 @Service
 @Transactional
 public class UserServiceImpl implements UserService {
-    private final UserRepository userRepository;
+    private final UserDetailsDtoRepository userRepository;
 
     @Autowired
-    public UserServiceImpl(UserRepository userRepository) {
+    public UserServiceImpl(UserDetailsDtoRepository userRepository) {
         this.userRepository = userRepository;
     }
 
     @Override
-    public List<User> findAll() {
-        return userRepository.findAll();
+    public List<UserDetailsDto> findAll() {
+        return userRepository.findAllBy();
     }
 
     @Override

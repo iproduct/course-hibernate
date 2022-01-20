@@ -2,6 +2,7 @@ package course.hibernate.spring.web;
 
 import course.hibernate.spring.dto.UserCreateDto;
 import course.hibernate.spring.dto.UserDetailsDto;
+import course.hibernate.spring.dto.UserDetailsInterface;
 import course.hibernate.spring.dto.UserUpdateDto;
 import course.hibernate.spring.entity.User;
 import course.hibernate.spring.exception.ClientEntityDataException;
@@ -30,8 +31,9 @@ public class UserController {
 
     @GetMapping
     public List<UserDetailsDto> getAllUsers() {
-        return userService.findAll().stream().map(user -> mapper.map(user, UserDetailsDto.class))
-                .collect(Collectors.toList());
+        return userService.findAll();
+//                .stream().map(user -> mapper.map(user, UserDetailsDto.class))
+//                .collect(Collectors.toList());
     }
 
     @GetMapping("/{id}")

@@ -33,5 +33,5 @@ public class UserDetailsDto {
     @Size(min=5, max=20)
     @NonNull
     private String username;
-    private Set<Role> roles = Set.of(READER);
+    private String roles = "READER";
 }

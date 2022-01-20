@@ -11,7 +11,7 @@ import java.util.List;
 import java.util.Optional;
 
 public interface UserRepository extends JpaRepository<User, Long> {
-//    @Query("SELECT DISTINCT u FROM User u LEFT JOIN FETCH u.roles r")
+//    @Query("SELECT DISTINCT u FROM User u LEFT JOIN FETCH u.roles")
     @EntityGraph(value = "User.detail", type = EntityGraph.EntityGraphType.LOAD)
     List<User> findAll();
     Optional<User> findByUsername(String username);

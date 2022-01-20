@@ -15,15 +15,15 @@ Content-Type: application/json
   "password": "Trayan123&"
 }
 
-###
+### GET All users
 GET http://localhost:8080/api/users
 Accept: application/json
-Authorization: Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJhZG1pbiIsImV4cCI6MTY0MjY4NDkwOSwiaWF0IjoxNjQyNjgxMzA5fQ.Kl0Cm1pGk_9_lbJmHITc3SHvO3R67Q4NiAektvKTjDMwrDuZaIcRZu_aGnsG69GIZjUnWxKYBZQN3ucKE1WGFw
+#Authorization: Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJhZG1pbiIsImV4cCI6MTY0MjY4OTkxOCwiaWF0IjoxNjQyNjg2MzE4fQ.qz1dEuUNUVOE6WmeM0he71O_WL2YGb2mkp3gEWXfRRxhfGtLF4Ssdp7-NGhY9IY9mjUPc4NCPx97Oo7ToouHuw
 
 ###
 GET http://localhost:8080/api/users/3
 Accept: application/json
-Authorization: Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJhZG1pbiIsImV4cCI6MTY0MjY4NDkwOSwiaWF0IjoxNjQyNjgxMzA5fQ.Kl0Cm1pGk_9_lbJmHITc3SHvO3R67Q4NiAektvKTjDMwrDuZaIcRZu_aGnsG69GIZjUnWxKYBZQN3ucKE1WGFw
+Authorization: Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJhZG1pbiIsImV4cCI6MTY0MjY4OTkxOCwiaWF0IjoxNjQyNjg2MzE4fQ.qz1dEuUNUVOE6WmeM0he71O_WL2YGb2mkp3gEWXfRRxhfGtLF4Ssdp7-NGhY9IY9mjUPc4NCPx97Oo7ToouHuw
 
 ###
 
