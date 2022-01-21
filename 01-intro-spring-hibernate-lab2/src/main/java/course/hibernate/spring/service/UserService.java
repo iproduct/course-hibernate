@@ -11,5 +11,6 @@ public interface UserService {
     User create(User user);
     User update(User user);
     User deleteById(Long id);
+    List<User> createBatch(List<User> users);
     long count();
 }
