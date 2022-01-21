@@ -11,19 +11,15 @@ spring:
     password: root
   #JPA Properties
   jpa:
-    show-sql: true
+#    show-sql: true
     properties:
       hibernate:
         dialect: org.hibernate.dialect.MySQL8Dialect
         format_sql: true
-        generate_statistics: true
-        metadata_builder_contributor: course.hibernate.spring.util.SqlFunctionsMetadataBuilderContributor
-
+#        generate_statistics: true
     hibernate:
       ddl-auto: create
-
     open-in-view: false
-
 #    mongodb:
 #      host: localhost
 #      port: 27017

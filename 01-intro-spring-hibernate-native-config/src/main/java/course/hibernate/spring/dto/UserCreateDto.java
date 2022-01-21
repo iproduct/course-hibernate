@@ -1,22 +1,13 @@
 package course.hibernate.spring.dto;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-import course.hibernate.spring.entity.EntityBase;
 import course.hibernate.spring.entity.Role;
-import lombok.Data;
 
-import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
-import java.time.LocalDateTime;
-import java.util.List;
 import java.util.Set;
 
-
-public class UserDetailDto {
-    @NotNull
-    private Long id;
+public class UserCreateDto {
     @NotNull
     @Size(min=2, max =20)
     private String firstName;
@@ -26,32 +17,28 @@ public class UserDetailDto {
     @NotNull
     @Size(min=5, max =20)
     private String username;
-    private String roles;
+    @NotNull
+    @Size(min=5, max =20)
+    @Pattern(regexp = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)[a-zA-Z\\d]{8,}$")
+    private String password;
+    private Set<Role> roles = Set.of(Role.READER);
 
-    public UserDetailDto() {
+    public UserCreateDto() {
     }
 
-    public UserDetailDto(Long id, String firstName, String lastName, String username) {
-        this.id = id;
+    public UserCreateDto(String firstName, String lastName, String username, String password) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.username = username;
+        this.password = password;
     }
 
-    public UserDetailDto(Long id, String firstName, String lastName, String username, String roles) {
-        this.id = id;
+    public UserCreateDto(String firstName, String lastName, String username, String password, Set<Role> roles) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.username = username;
+        this.password = password;
         this.roles = roles;
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
     }
 
     public String getFirstName() {
@@ -78,21 +65,29 @@ public class UserDetailDto {
         this.username = username;
     }
 
-    public String getRoles() {
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
+    public Set<Role> getRoles() {
         return roles;
     }
 
-    public void setRoles(String roles) {
+    public void setRoles(Set<Role> roles) {
         this.roles = roles;
     }
 
     @Override
     public String toString() {
         return "User{" +
-                "id='" + id + '\'' +
                 ", firstName='" + firstName + '\'' +
                 ", lastName='" + lastName + '\'' +
                 ", username='" + username + '\'' +
+                ", password='" + password + '\'' +
                 ", roles=" + roles +
                 "}";
     }

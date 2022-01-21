@@ -1,6 +1,7 @@
 package course.hibernate.spring.service.impl;
 
-import course.hibernate.spring.dao.UserRepository;
+import course.hibernate.spring.dao.UserRepositoryDTO_JPQL;
+import course.hibernate.spring.dto.UserDetailDto;
 import course.hibernate.spring.entity.User;
 import course.hibernate.spring.events.UserCreationEvent;
 import course.hibernate.spring.exception.EntityNotFoundException;
@@ -15,17 +16,12 @@ import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.PlatformTransactionManager;
-import org.springframework.transaction.TransactionDefinition;
-import org.springframework.transaction.TransactionStatus;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.event.TransactionPhase;
 import org.springframework.transaction.event.TransactionalEventListener;
-import org.springframework.transaction.support.DefaultTransactionDefinition;
-import org.springframework.transaction.support.TransactionCallback;
 import org.springframework.transaction.support.TransactionTemplate;
 
-import javax.validation.ConstraintViolationException;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -34,7 +30,7 @@ import java.util.stream.Collectors;
 @Transactional(propagation = Propagation.REQUIRED)
 @Slf4j
 public class UserServiceImpl implements UserService {
-    private final UserRepository userRepository;
+    private final UserRepositoryDTO_JPQL userRepository;
     private final ApplicationEventPublisher applicationEventPublisher;
     // single TransactionTemplate shared amongst all methods in this instance
     private final PlatformTransactionManager transactionManager;
@@ -43,7 +39,7 @@ public class UserServiceImpl implements UserService {
 
     @Autowired
     public UserServiceImpl(
-            UserRepository userRepository,
+            UserRepositoryDTO_JPQL userRepository,
             ApplicationEventPublisher applicationEventPublisher,
             PlatformTransactionManager transactionManager,
             TransactionTemplate transactionTemplate) {
@@ -55,8 +51,8 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional(readOnly = true)
-    public List<User> findAll() {
-        return userRepository.findAll();
+    public List<UserDetailDto> findAll() {
+        return userRepository.findAllUserDtos();
     }
 
     @Override
