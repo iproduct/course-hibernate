@@ -41,7 +41,7 @@ public class User extends BaseMappedSuperclass implements UserDetails {
     @NonNull
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private String password;
-    @ElementCollection(fetch = FetchType.EAGER)
+    @ElementCollection //(fetch = FetchType.EAGER)
     @Enumerated(EnumType.STRING)
     private Set<Role> roles = Set.of(READER);
     private boolean active = true;

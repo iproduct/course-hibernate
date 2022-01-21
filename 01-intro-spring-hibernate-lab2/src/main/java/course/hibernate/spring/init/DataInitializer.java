@@ -8,6 +8,7 @@ import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.stereotype.Component;
 
+import javax.validation.ConstraintViolationException;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -21,7 +22,8 @@ public class DataInitializer implements ApplicationRunner {
             new User("Default", "Admin", "admin", "Admin123&",
                     Set.of(READER, AUTHOR, ADMIN)),
             new User("Default", "Author", "author", "Author123&",
-                    Set.of(READER, AUTHOR))
+                    Set.of(READER, AUTHOR)),
+            new User("Default", "Reader", "reader", "Reader123&")
             );
     private final UserService userService;
 
@@ -33,8 +35,14 @@ public class DataInitializer implements ApplicationRunner {
     @Override
     public void run(ApplicationArguments args) throws Exception {
         if(userService.count() == 0) {
-            log.info("Creating default users {}",
-                SAMPLE_USERS.stream().map(userService::create).collect(Collectors.toList()));
+            try {
+                List<User> created = userService.createBatch(SAMPLE_USERS);
+                log.info("Created default users: {}", created);
+            } catch (ConstraintViolationException ex) {
+                log.error(">>> Constraint violation inserting users: {} - {}", SAMPLE_USERS, ex.getMessage());
+            }
+            long countAfter = userService.count();
+            log.info("Users count: {}", countAfter);
         }
     }
 }

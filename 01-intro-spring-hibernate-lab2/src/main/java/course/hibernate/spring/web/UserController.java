@@ -27,9 +27,9 @@ public class UserController {
 
     @GetMapping
     List<UserDetailDto> getAllUsers() {
-        return userService.findAll().stream()
-                .map(user -> modelMapper.map(user, UserDetailDto.class))
-                .collect(Collectors.toList());
+        return userService.findAll(); //.stream()
+//                .map(user -> modelMapper.map(user, UserDetailDto.class))
+//                .collect(Collectors.toList());
     }
 
     @GetMapping("/{id}")
