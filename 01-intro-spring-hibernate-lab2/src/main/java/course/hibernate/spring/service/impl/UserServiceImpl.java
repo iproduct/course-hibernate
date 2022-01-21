@@ -15,10 +15,14 @@ import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.PlatformTransactionManager;
+import org.springframework.transaction.TransactionDefinition;
+import org.springframework.transaction.TransactionStatus;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.event.TransactionPhase;
 import org.springframework.transaction.event.TransactionalEventListener;
+import org.springframework.transaction.support.DefaultTransactionDefinition;
+import org.springframework.transaction.support.TransactionCallback;
 import org.springframework.transaction.support.TransactionTemplate;
 
 import javax.validation.ConstraintViolationException;
@@ -124,6 +128,52 @@ public class UserServiceImpl implements UserService {
         return created;
     }
 
+//    Programmatic transaction
+//    public List<User> createBatch(List<User> users) {
+//        // the code in this method executes in a transactional context
+//        return transactionTemplate.execute(status -> {
+//            List<User> created = users.stream()
+//                    .map(user -> {
+//                        try {
+//                            User newUser = create(user);
+//                            applicationEventPublisher.publishEvent(new UserCreationEvent(newUser));
+//                            return newUser;
+//                        } catch (ConstraintViolationException ex) {
+//                            log.error(">>> Constraint violation inserting users: {} - {}", user, ex.getMessage());
+//                            status.setRollbackOnly();
+//                            return null;
+//                        }
+//                    }).collect(Collectors.toList());
+//            return created;
+//        });
+//    }
+
+//    Managing transaction directly using PlatformTransactionManager
+//    public List<User> createBatch(List<User> users) {
+//        DefaultTransactionDefinition def = new DefaultTransactionDefinition();
+//        // explicitly setting the transaction name is something that can only be done programmatically
+//        def.setName("createUsersBatchTransaction");
+//        def.setPropagationBehavior(TransactionDefinition.PROPAGATION_REQUIRED);
+//        def.setTimeout(5); // 5 seconds
+//
+//        // Do in transaction
+//        TransactionStatus status = transactionManager.getTransaction(def);
+//        List<User> created = users.stream()
+//            .map(user -> {
+//                try {
+//                    User resultUser = create(user);
+//                    applicationEventPublisher.publishEvent(new UserCreationEvent(resultUser));
+//                    return resultUser;
+//                } catch (ConstraintViolationException ex) {
+//                    log.error(">>> Constraint violation inserting user: {} - {}", user, ex.getMessage());
+//                    transactionManager.rollback(status); // ROLLBACK
+//                    throw ex;
+//                }
+//            }).collect(Collectors.toList());
+//
+//        transactionManager.commit(status); // COMMIT
+//        return created;
+//    }
 
     @TransactionalEventListener
     public void handleUserCreatedTransactionCommit(UserCreationEvent creationEvent) {
