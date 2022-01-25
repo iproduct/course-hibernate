@@ -11,7 +11,7 @@ import org.springframework.stereotype.Component;
 
 import java.net.URL;
 
-//@Component
+@Component
 public class DataInit implements ApplicationRunner {
     @Override
     public void run(ApplicationArguments args) throws Exception {

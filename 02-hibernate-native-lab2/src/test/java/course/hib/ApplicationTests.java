@@ -1,4 +1,4 @@
-package course.hibernate;
+package course.hib;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;

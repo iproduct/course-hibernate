@@ -1,4 +1,4 @@
-package course.hibernate;
+package course.hib;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
