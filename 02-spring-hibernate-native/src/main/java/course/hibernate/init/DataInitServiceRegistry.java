@@ -5,8 +5,10 @@ import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
 import course.hibernate.entity.Contact;
 import course.hibernate.entity.Name;
+import lombok.extern.slf4j.Slf4j;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
+import org.hibernate.boot.Metadata;
 import org.hibernate.boot.MetadataBuilder;
 import org.hibernate.boot.MetadataSources;
 import org.hibernate.boot.model.naming.ImplicitNamingStrategyJpaCompliantImpl;
@@ -19,6 +21,7 @@ import org.hibernate.dialect.MySQL8Dialect;
 import org.hibernate.integrator.spi.Integrator;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
+import org.springframework.boot.autoconfigure.domain.EntityScanner;
 import org.springframework.stereotype.Component;
 
 import javax.persistence.Entity;
@@ -33,6 +36,7 @@ import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
 @Component
+@Slf4j
 public class DataInitServiceRegistry implements ApplicationRunner {
     @Override
     public void run(ApplicationArguments args) throws Exception {
@@ -40,7 +44,7 @@ public class DataInitServiceRegistry implements ApplicationRunner {
         final BootstrapServiceRegistryBuilder bsrb = new BootstrapServiceRegistryBuilder()
                 .enableAutoClose();
 
-        // Apply integrations
+        // Apply integrations if any
         Integrator integrator = ingegrator();
         if (integrator != null) {
             bsrb.applyIntegrator(integrator);
@@ -58,7 +62,18 @@ public class DataInitServiceRegistry implements ApplicationRunner {
         //Add Metadata Sources
         MetadataSources mds = new MetadataSources(ssr);
         mds.addPackage("course.hibernate.entity");
-        for(Class entityCls : getEntityClasses("course.hibernate.entity")) {
+
+        // OR using  fluent-hibernate EntityScanner: https://github.com/v-ladynev/fluent-hibernate/blob/master/fluent-hibernate-core/src/main/java/com/github/fluent/hibernate/cfg/scanner/EntityScanner.java
+//        List<Class<?>> classes = EntityScanner
+//                .scanPackages("my.com.entities", "my.com.other.entities").result();
+////        MetadataSources metadataSources = new MetadataSources();
+//        for (Class<?> annotatedClass : classes) {
+//            metadataSources.addAnnotatedClass(annotatedClass);
+//        }
+////        SessionFactory sessionFactory = metadataSources.buildMetadata()
+//                .buildSessionFactory();
+        for(Class<?> entityCls : getEntityClasses("course.hibernate.entity")) {
+            log.info("Adding annotated class: {}", entityCls.getSimpleName());
             mds.addAnnotatedClass(entityCls);
         }
 
@@ -66,13 +81,15 @@ public class DataInitServiceRegistry implements ApplicationRunner {
         MetadataBuilder mdb = mds.getMetadataBuilder()
                 .enableNewIdentifierGeneratorSupport(true)
                 .applyImplicitNamingStrategy(ImplicitNamingStrategyJpaCompliantImpl.INSTANCE);
+        Metadata metadata = mdb.build();
 
-        MetadataImplementor metadata = (MetadataImplementor) mdb.build();
+        // Get SessionFactory
+        SessionFactory sessionFactory = metadata.getSessionFactoryBuilder().build();
+//        SessionFactory sessionFactory = mds.buildMetadata().buildSessionFactory();
 
         // Get Session
-        SessionFactory sf = metadata.getSessionFactoryBuilder().build();
+        Session session = sessionFactory.openSession();
 
-        Session session = sf.openSession();
 
         // Persist entity
         Contact contact = new Contact(1,
@@ -82,7 +99,7 @@ public class DataInitServiceRegistry implements ApplicationRunner {
         session.persist(contact);
         session.getTransaction().commit();
         session.close();
-        sf.close();
+        sessionFactory.close();
     }
 
     private Map properties() {
