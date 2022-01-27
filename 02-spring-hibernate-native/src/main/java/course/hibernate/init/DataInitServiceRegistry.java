@@ -1,6 +1,5 @@
 package course.hibernate.init;
 
-import com.mysql.cj.jdbc.MysqlDataSource;
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
 import course.hibernate.entity.Contact;
@@ -33,7 +32,7 @@ import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
-//@Component
+@Component
 @Slf4j
 public class DataInitServiceRegistry implements ApplicationRunner {
     @Override
@@ -79,11 +78,11 @@ public class DataInitServiceRegistry implements ApplicationRunner {
         MetadataBuilder mdb = mds.getMetadataBuilder()
                 .enableNewIdentifierGeneratorSupport(true)
                 .applyImplicitNamingStrategy(ImplicitNamingStrategyJpaCompliantImpl.INSTANCE);
+//                .applyPhysicalNamingStrategy();
         Metadata metadata = mdb.build();
 
         // Get SessionFactory
         SessionFactory sessionFactory = metadata.getSessionFactoryBuilder().build();
-//        SessionFactory sessionFactory = mds.buildMetadata().buildSessionFactory();
 
         // Get Session
         Session session = sessionFactory.openSession();
@@ -128,41 +127,46 @@ public class DataInitServiceRegistry implements ApplicationRunner {
         HikariConfig hikariConfig = new HikariConfig();
         int cpuCores = Runtime.getRuntime().availableProcessors();
         hikariConfig.setMaximumPoolSize(cpuCores * 4);
-        hikariConfig.setDataSource(mysqlDataSource());
-        HikariDataSource poolingDataSource = new HikariDataSource(hikariConfig);
+//        hikariConfig.setDataSource(mysqlDataSource());
+//        HikariDataSource poolingDataSource = new HikariDataSource(hikariConfig);
+        HikariDataSource poolingDataSource = new HikariDataSource();
+        poolingDataSource.setDriverClassName("com.mysql.cj.jdbc.Driver");
+        poolingDataSource.setJdbcUrl("jdbc:mysql://localhost/hibernate_native?createDatabaseIfNotExist=true&useSSL=false");
+        poolingDataSource.setUsername("root");
+        poolingDataSource.setPassword("root");
         return poolingDataSource;
     }
 
-    public DataSource mysqlDataSource() {
-//        try {
-        MysqlDataSource dataSource = new MysqlDataSource();
-
-        String url = "jdbc:mysql://localhost/hibernate_native?createDatabaseIfNotExist=true&useSSL=false";
-
-        if (!MySQL8Dialect.class.isAssignableFrom(MySQL8Dialect.class)) {
-            url +=
-//                        "&useTimezone=" + useTimezone +
-//                        "&useJDBCCompliantTimezoneShift=" + useJDBCCompliantTimezoneShift +
-                    "&useLegacyDatetimeCode=true";
-        }
-
-        dataSource.setURL(url);
-        dataSource.setUser("root");
-        dataSource.setPassword("root");
-
-//            dataSource.setRewriteBatchedStatements(true);
-//            dataSource.setUseCursorFetch(useCursorFetch);
-//            dataSource.setCachePrepStmts(cachePrepStmts);
-//            dataSource.setUseServerPrepStmts(useServerPrepStmts);
-//            if (prepStmtCacheSqlLimit != null) {
-//                dataSource.setPrepStmtCacheSqlLimit(prepStmtCacheSqlLimit);
-//            }
-
-        return dataSource;
-//        } catch (SQLException e) {
-//            throw new IllegalArgumentException(e);
+//    public DataSource mysqlDataSource() {
+////        try {
+//        MysqlDataSource dataSource = new MysqlDataSource();
+//
+//        String url = "jdbc:mysql://localhost/hibernate_native?createDatabaseIfNotExist=true&useSSL=false";
+//
+//        if (!MySQL8Dialect.class.isAssignableFrom(MySQL8Dialect.class)) {
+//            url +=
+////                        "&useTimezone=" + useTimezone +
+////                        "&useJDBCCompliantTimezoneShift=" + useJDBCCompliantTimezoneShift +
+//                    "&useLegacyDatetimeCode=true";
 //        }
-    }
+//
+//        dataSource.setURL(url);
+//        dataSource.setUser("root");
+//        dataSource.setPassword("root");
+//
+////            dataSource.setRewriteBatchedStatements(true);
+////            dataSource.setUseCursorFetch(useCursorFetch);
+////            dataSource.setCachePrepStmts(cachePrepStmts);
+////            dataSource.setUseServerPrepStmts(useServerPrepStmts);
+////            if (prepStmtCacheSqlLimit != null) {
+////                dataSource.setPrepStmtCacheSqlLimit(prepStmtCacheSqlLimit);
+////            }
+//
+//        return dataSource;
+////        } catch (SQLException e) {
+////            throw new IllegalArgumentException(e);
+////        }
+//    }
 
     private Collection<Class> getEntityClasses(final String pack) {
         final StandardJavaFileManager fileManager = ToolProvider.getSystemJavaCompiler().getStandardFileManager(null, null, null);

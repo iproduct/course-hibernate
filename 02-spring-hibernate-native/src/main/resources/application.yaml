@@ -11,5 +11,5 @@ logging:
         #        SQL: debug
         # Logs the JDBC parameters passed to a query
         type: trace
-        stat: debug
+#        stat: debug
 

@@ -33,7 +33,7 @@ dependencies {
     implementation 'org.hibernate:hibernate-core:5.6.3.Final'
     implementation 'com.zaxxer:HikariCP:5.0.1'
     compileOnly 'org.projectlombok:lombok'
-    implementation 'mysql:mysql-connector-java'
+    runtimeOnly 'mysql:mysql-connector-java'
     annotationProcessor 'org.projectlombok:lombok'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testImplementation 'org.hibernate:hibernate-testing:5.6.3.Final'

@@ -11,7 +11,7 @@ import org.springframework.stereotype.Component;
 
 import java.net.URL;
 
-@Component
+//@Component
 public class DataInit implements ApplicationRunner {
     @Override
     public void run(ApplicationArguments args) throws Exception {
@@ -20,19 +20,19 @@ public class DataInit implements ApplicationRunner {
         cfg.configure();
 
         // Create SessionFactory
-        SessionFactory sf = cfg.buildSessionFactory();
+        // Create Session
+        try(SessionFactory sf = cfg.buildSessionFactory();
+            Session session = sf.openSession()) {
 
-        // Crreate Session
-        Session session = sf.openSession();
-
-        // Persist entity
-        Contact contact = new Contact(1,
-                new Name("Ivan", "Dimitrov", "Petrov"),
-                "From work", new URL("http://ivan.petrov.me/"), true);
-        session.beginTransaction();
-        session.persist(contact);
-        session.getTransaction().commit();
-        session.close();
-        sf.close();
+            // Persist entity
+            Contact contact = new Contact(1,
+                    new Name("Ivan", "Dimitrov", "Petrov"),
+                    "From work", new URL("http://ivan.petrov.me/"), true);
+            session.beginTransaction();
+            session.persist(contact);
+            session.getTransaction().commit();
+        }
+//        session.close();
+//        sf.close();
     }
 }
