@@ -2,6 +2,7 @@ package course.hibernate.init;
 
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
+import course.hibernate.config.MyOrgPhysicalNamingStrategy;
 import course.hibernate.entity.Contact;
 import course.hibernate.entity.Name;
 import lombok.extern.slf4j.Slf4j;
@@ -11,6 +12,7 @@ import org.hibernate.boot.Metadata;
 import org.hibernate.boot.MetadataBuilder;
 import org.hibernate.boot.MetadataSources;
 import org.hibernate.boot.model.naming.ImplicitNamingStrategyJpaCompliantImpl;
+import org.hibernate.boot.model.naming.PhysicalNamingStrategy;
 import org.hibernate.boot.registry.BootstrapServiceRegistry;
 import org.hibernate.boot.registry.BootstrapServiceRegistryBuilder;
 import org.hibernate.boot.registry.StandardServiceRegistry;
@@ -32,7 +34,7 @@ import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
-@Component
+//@Component
 @Slf4j
 public class DataInitServiceRegistry implements ApplicationRunner {
     @Override
@@ -77,8 +79,8 @@ public class DataInitServiceRegistry implements ApplicationRunner {
         // Create MetadataBuilder
         MetadataBuilder mdb = mds.getMetadataBuilder()
                 .enableNewIdentifierGeneratorSupport(true)
-                .applyImplicitNamingStrategy(ImplicitNamingStrategyJpaCompliantImpl.INSTANCE);
-//                .applyPhysicalNamingStrategy();
+                .applyImplicitNamingStrategy(ImplicitNamingStrategyJpaCompliantImpl.INSTANCE)
+                .applyPhysicalNamingStrategy(getPhisicalNamingStrategy());
         Metadata metadata = mdb.build();
 
         // Get SessionFactory
@@ -97,6 +99,10 @@ public class DataInitServiceRegistry implements ApplicationRunner {
         session.getTransaction().commit();
         session.close();
         sessionFactory.close();
+    }
+
+    private PhysicalNamingStrategy getPhisicalNamingStrategy() {
+        return new MyOrgPhysicalNamingStrategy();
     }
 
     private Map properties() {
