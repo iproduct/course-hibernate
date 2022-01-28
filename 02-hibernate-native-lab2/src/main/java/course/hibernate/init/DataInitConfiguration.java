@@ -1,19 +1,17 @@
-package course.hib.init;
+package course.hibernate.init;
 
-import course.hib.entity.Contact;
-import course.hib.entity.Name;
+import course.hibernate.entity.Contact;
+import course.hibernate.entity.Name;
 import lombok.extern.slf4j.Slf4j;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.cfg.Configuration;
-import org.springframework.boot.ApplicationArguments;
-import org.springframework.boot.ApplicationRunner;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
 
 import java.net.URL;
 
-@Component
+//@Component
 @Slf4j
 public class DataInitConfiguration implements CommandLineRunner {
     @Override

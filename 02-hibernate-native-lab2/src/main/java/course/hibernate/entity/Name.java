@@ -1,4 +1,4 @@
-package course.hib.entity;
+package course.hibernate.entity;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

@@ -1,4 +1,4 @@
-package course.hib.dto;
+package course.hibernate.dto;
 
 import lombok.Data;
 

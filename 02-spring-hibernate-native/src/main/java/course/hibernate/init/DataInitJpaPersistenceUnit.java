@@ -16,18 +16,22 @@ import org.springframework.transaction.support.DefaultTransactionDefinition;
 import org.springframework.transaction.support.TransactionTemplate;
 
 import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
 import javax.persistence.PersistenceContext;
+import javax.persistence.PersistenceUnit;
 import javax.validation.ConstraintViolationException;
 import java.net.URL;
 
 @Component
 @Slf4j
 public class DataInitJpaPersistenceUnit implements ApplicationRunner {
+//    @PersistenceUnit
+//    private EntityManagerFactory emf;
     @PersistenceContext
     private EntityManager em;
 
     private final ApplicationEventPublisher applicationEventPublisher;
-    // single TransactionTemplate shared amongst all methods in this instance
+    // single PlatformTransactionManager shared amongst all methods in this instance
     private final PlatformTransactionManager transactionManager;
     // single TransactionTemplate shared amongst all methods in this instance
     private final TransactionTemplate transactionTemplate;
@@ -47,6 +51,7 @@ public class DataInitJpaPersistenceUnit implements ApplicationRunner {
     public void run(ApplicationArguments args) throws Exception {
         // Create an EMF for our Contacts persistence-unit.
 //        EntityManager em = emf.createEntityManager();
+
 
         // Persist entity
         Contact contact = new Contact(1,
