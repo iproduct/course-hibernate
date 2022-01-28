@@ -3,10 +3,12 @@ package course.hibernate.init;
 import com.mysql.cj.jdbc.MysqlDataSource;
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
+import course.hibernate.config.MyOrgPhysicalNamingStrategy;
 import course.hibernate.entity.Contact;
 import course.hibernate.entity.Gender;
 import course.hibernate.entity.Name;
 import course.hibernate.utils.GenderConverter;
+import course.hibernate.utils.JpaAnnotatedClassUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -55,14 +57,18 @@ public class DataInitServiceRegistry implements CommandLineRunner {
         // Add Metadata sources
         MetadataSources mds = new MetadataSources(ssr);
         mds.addPackage("course.hibernate.entity");
-        mds.addAnnotatedClass(Contact.class);
+        JpaAnnotatedClassUtil.getEntityClasses("course.hibernate.entity").stream().forEach(entity -> {
+            log.info("!!!!  Adding entity class: {}", entity.getSimpleName());
+            mds.addAnnotatedClass(entity);
+        });
+//        mds.addAnnotatedClass(Contact.class);
         // mds.addResource("");
 
         // Build Metadata
         Metadata metadata = mds.getMetadataBuilder()
                 .enableNewIdentifierGeneratorSupport(true)
                 .applyImplicitNamingStrategy(ImplicitNamingStrategyJpaCompliantImpl.INSTANCE)
-//                .applyPhysicalNamingStrategy(getPhysicalNamingStrategy())
+                .applyPhysicalNamingStrategy(getPhysicalNamingStrategy())
                 .applyAttributeConverter( new GenderConverter())
                 .build();
 
@@ -155,7 +161,7 @@ public class DataInitServiceRegistry implements CommandLineRunner {
     }
 
     private PhysicalNamingStrategy getPhysicalNamingStrategy() {
-        return null;
+        return new MyOrgPhysicalNamingStrategy();
     }
 
     public Integrator integrator() {
