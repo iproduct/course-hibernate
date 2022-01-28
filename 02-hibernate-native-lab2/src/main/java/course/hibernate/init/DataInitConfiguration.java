@@ -1,6 +1,7 @@
 package course.hibernate.init;
 
 import course.hibernate.entity.Contact;
+import course.hibernate.entity.Gender;
 import course.hibernate.entity.Name;
 import lombok.extern.slf4j.Slf4j;
 import org.hibernate.Session;
@@ -29,7 +30,7 @@ public class DataInitConfiguration implements CommandLineRunner {
 
             // Persist Entity
             Contact contact = new Contact(1,
-                    new Name("Ivan", "Dimitrov", "Petrov"),
+                    new Name("Ivan", "Dimitrov", "Petrov"), Gender.MALE,
                     "From work", new URL("http://ivan.petrov.me/"), true);
             log.info("Creating Contact:{} - {}", contact.getId(), contact);
             session.beginTransaction();

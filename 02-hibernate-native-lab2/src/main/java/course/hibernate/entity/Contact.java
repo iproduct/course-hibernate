@@ -20,6 +20,7 @@ public class Contact implements Serializable {
     private Integer id;
     @Embedded
     private Name name;
+    private Gender gender;
     private String notes;
     private URL website;
     private boolean starred;

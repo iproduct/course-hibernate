@@ -4,7 +4,9 @@ import com.mysql.cj.jdbc.MysqlDataSource;
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
 import course.hibernate.entity.Contact;
+import course.hibernate.entity.Gender;
 import course.hibernate.entity.Name;
+import course.hibernate.utils.GenderConverter;
 import lombok.extern.slf4j.Slf4j;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -23,6 +25,7 @@ import org.springframework.stereotype.Component;
 
 import javax.sql.DataSource;
 import java.net.URL;
+import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 
@@ -60,7 +63,7 @@ public class DataInitServiceRegistry implements CommandLineRunner {
                 .enableNewIdentifierGeneratorSupport(true)
                 .applyImplicitNamingStrategy(ImplicitNamingStrategyJpaCompliantImpl.INSTANCE)
 //                .applyPhysicalNamingStrategy(getPhysicalNamingStrategy())
-//                .applyAttributeConverter( myAttributeConverter );
+                .applyAttributeConverter( new GenderConverter())
                 .build();
 
         // Create SessionFactory
@@ -70,12 +73,19 @@ public class DataInitServiceRegistry implements CommandLineRunner {
                 Session session = sf.openSession()) {
 
             // Persist Entity
-            Contact contact = new Contact(1,
-                    new Name("Ivan", "Dimitrov", "Petrov"),
-                    "From work", new URL("http://ivan.petrov.me/"), true);
-            log.info("Creating Contact:{} - {}", contact.getId(), contact);
+            List<Contact> contacts= List.of(
+                new Contact(1,
+                    new Name("Ivan", "Dimitrov", "Petrov"), Gender.MALE,
+                    "From work", new URL("http://ivan.petrov.me/"), true),
+                new Contact(2,
+                    new Name("Maria", "Dimitrova", "Hristova"), Gender.FEMALE,
+                    "Friend contact", new URL("http://maria.dimitrova.me/"), true));
+
             session.beginTransaction();
-            session.persist(contact);
+            contacts.forEach(contact -> {
+                log.info("Creating Contacts:{} - {}", contact.getId(), contact);
+                session.persist(contact);
+            });
             session.getTransaction().commit();
         }
     }
