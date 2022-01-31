@@ -5,7 +5,7 @@ CREATE TABLE `users` (
                          `password` varchar(80) DEFAULT NULL,
                          `fname` varchar(40) DEFAULT NULL,
                          `lname` varchar(40) DEFAULT NULL,
-                         `roles` varchar(80) DEFAULT NULL,
+                         `role` varchar(40) DEFAULT NULL,
                          `active` tinyint(1) DEFAULT NULL,
                          `created` timestamp NULL DEFAULT NULL,
                          `updated` timestamp NULL DEFAULT NULL,

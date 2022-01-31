@@ -13,6 +13,9 @@
 
         <class>course.hibernate.entity.Contact</class>
         <class>course.hibernate.entity.Account</class>
+        <class>course.hibernate.entity.User</class>
+        <class>course.hibernate.entity.User</class>
+        <class>course.hibernate.entity.Article</class>
         <exclude-unlisted-classes>false</exclude-unlisted-classes>
 
         <properties>
