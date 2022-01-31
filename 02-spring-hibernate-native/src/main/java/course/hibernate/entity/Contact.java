@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import javax.validation.Valid;
 import java.net.URL;
 
 @Entity(name = "Contact")
@@ -17,6 +18,7 @@ public class Contact {
     @Id
     private Integer id;
     @Embedded
+    @Valid
     private Name name;
     private String notes;
     private URL website;

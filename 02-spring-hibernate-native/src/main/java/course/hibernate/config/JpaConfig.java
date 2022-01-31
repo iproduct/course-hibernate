@@ -2,10 +2,7 @@ package course.hibernate.config;
 
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.ComponentScan;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.ImportResource;
+import org.springframework.context.annotation.*;
 import org.springframework.orm.hibernate5.HibernateTransactionManager;
 import org.springframework.orm.hibernate5.LocalSessionFactoryBean;
 import org.springframework.transaction.PlatformTransactionManager;
@@ -21,9 +18,7 @@ import java.util.Properties;
 public class JpaConfig {
     @Bean
     public DataSource dataSource() {
-        HikariConfig hikariConfig = new HikariConfig();
-        int cpuCores = Runtime.getRuntime().availableProcessors();
-        hikariConfig.setMaximumPoolSize(cpuCores * 4);
+//        HikariConfig hikariConfig = new HikariConfig();
 //        hikariConfig.setDataSource(mysqlDataSource());
 //        HikariDataSource poolingDataSource = new HikariDataSource(hikariConfig);
         HikariDataSource poolingDataSource = new HikariDataSource();
@@ -31,6 +26,11 @@ public class JpaConfig {
         poolingDataSource.setJdbcUrl("jdbc:mysql://localhost/hibernate_native?createDatabaseIfNotExist=true&useSSL=false");
         poolingDataSource.setUsername("root");
         poolingDataSource.setPassword("root");
+        int cpuCores = Runtime.getRuntime().availableProcessors();
+        poolingDataSource.setMaximumPoolSize(cpuCores * 4);
+        poolingDataSource.addDataSourceProperty( "cachePrepStmts" , "true" );
+        poolingDataSource.addDataSourceProperty( "prepStmtCacheSize" , "250" );
+        poolingDataSource.addDataSourceProperty( "prepStmtCacheSqlLimit" , "2048" );
         return poolingDataSource;
     }
 
