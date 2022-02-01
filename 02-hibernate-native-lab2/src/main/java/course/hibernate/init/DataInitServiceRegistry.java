@@ -32,7 +32,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 
-@Component
+//@Component
 @Slf4j
 public class DataInitServiceRegistry implements CommandLineRunner {
     @Override
