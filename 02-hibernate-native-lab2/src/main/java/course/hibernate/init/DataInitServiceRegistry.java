@@ -7,6 +7,7 @@ import course.hibernate.config.MyOrgPhysicalNamingStrategy;
 import course.hibernate.entity.Contact;
 import course.hibernate.entity.Gender;
 import course.hibernate.entity.Name;
+import course.hibernate.events.MyIntegrator;
 import course.hibernate.utils.GenderConverter;
 import course.hibernate.utils.JpaAnnotatedClassUtil;
 import lombok.extern.slf4j.Slf4j;
@@ -62,7 +63,7 @@ public class DataInitServiceRegistry implements CommandLineRunner {
             mds.addAnnotatedClass(entity);
         });
 //        mds.addAnnotatedClass(Contact.class);
-        // mds.addResource("");
+//         mds.addResource("");
 
         // Build Metadata
         Metadata metadata = mds.getMetadataBuilder()
@@ -165,6 +166,6 @@ public class DataInitServiceRegistry implements CommandLineRunner {
     }
 
     public Integrator integrator() {
-        return null;
+        return new MyIntegrator();
     }
 }
