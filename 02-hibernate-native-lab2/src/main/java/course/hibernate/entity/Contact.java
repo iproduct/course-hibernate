@@ -3,6 +3,7 @@ package course.hibernate.entity;
 import lombok.*;
 
 import javax.persistence.*;
+import javax.validation.Valid;
 import java.io.Serializable;
 import java.net.URL;
 
@@ -19,6 +20,7 @@ public class Contact implements Serializable {
     @Id
     private Integer id;
     @Embedded
+    @Valid
     private Name name;
     private Gender gender;
     private String notes;
