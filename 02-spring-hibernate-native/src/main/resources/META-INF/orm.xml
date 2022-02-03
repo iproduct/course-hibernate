@@ -3,149 +3,27 @@
                  version="3.0">
 
     <entity class="generated.hibernate.entity.Account">
-        <table name="account" schema="hibernate_native" catalog=""/>
+        <table name="acct" schema="hibernate_native" />
         <attributes>
             <id name="accountNumber">
-                <column name="accountNumber" precision="20"/>
+                <column name="acct_num" precision="20"/>
             </id>
             <basic name="ballance">
                 <column name="ballance" precision="-1"/>
             </basic>
             <basic name="firstName">
-                <column name="firstName" nullable="false" length="20"/>
+                <column name="first_name" nullable="false" length="20"/>
             </basic>
             <basic name="lastName">
-                <column name="lastName" nullable="false" length="20"/>
+                <column name="last_name" nullable="false" length="20"/>
             </basic>
             <basic name="middleName">
-                <column name="middleName" nullable="false"/>
-            </basic>
-        </attributes>
-    </entity>
-    <entity class="generated.hibernate.entity.Articles">
-        <table name="articles" schema="hibernate_native" catalog=""/>
-        <attributes>
-            <id name="id">
-                <column name="id" precision="20"/>
-            </id>
-            <basic name="content">
-                <column name="content" nullable="false" length="2048"/>
-            </basic>
-            <basic name="created">
-                <column name="created" nullable="false" precision="6"/>
-            </basic>
-            <basic name="pictureUrl">
-                <column name="picture_url" nullable="false" length="256"/>
-            </basic>
-            <basic name="title">
-                <column name="title" nullable="false" length="80"/>
-            </basic>
-            <basic name="updated">
-                <column name="updated" nullable="false" precision="6"/>
-            </basic>
-            <basic name="authorId">
-                <column name="author_id" nullable="false" precision="20"/>
-            </basic>
-            <many-to-one name="usersByAuthorId" optional="true" target-entity="generated.hibernate.entity.Users">
-                <join-column name="author_id" nullable="false" referenced-column-name="id"/>
-            </many-to-one>
-        </attributes>
-    </entity>
-    <entity class="generated.hibernate.entity.Contact">
-        <table name="contact" schema="hibernate_native" catalog=""/>
-        <attributes>
-            <id name="id">
-                <column name="id" precision="11"/>
-            </id>
-            <basic name="firstName">
-                <column name="firstName" nullable="false" length="20"/>
-            </basic>
-            <basic name="lastName">
-                <column name="lastName" nullable="false" length="20"/>
-            </basic>
-            <basic name="middleName">
-                <column name="middleName" nullable="false"/>
-            </basic>
-            <basic name="notes">
-                <column name="notes" nullable="false"/>
-            </basic>
-            <basic name="starred">
-                <column name="starred" precision="1"/>
-            </basic>
-            <basic name="website">
-                <column name="website" nullable="false"/>
-            </basic>
-        </attributes>
-    </entity>
-    <entity class="generated.hibernate.entity.UserRoles">
-        <table name="user_roles" schema="hibernate_native" catalog=""/>
-        <attributes>
-            <basic name="userId">
-                <column name="User_id" precision="20"/>
-            </basic>
-            <basic name="role">
-                <column name="role" nullable="false"/>
-            </basic>
-            <many-to-one name="usersByUserId" optional="true" target-entity="generated.hibernate.entity.Users">
-                <join-column name="User_id" referenced-column-name="id"/>
-            </many-to-one>
-        </attributes>
-    </entity>
-    <entity class="generated.hibernate.entity.Users">
-        <table name="users" schema="hibernate_native" catalog=""/>
-        <attributes>
-            <id name="id">
-                <column name="id" precision="20"/>
-            </id>
-            <basic name="active">
-                <column name="active" nullable="false" precision="1"/>
-            </basic>
-            <basic name="created">
-                <column name="created" nullable="false" precision="6"/>
-            </basic>
-            <basic name="fname">
-                <column name="fname" nullable="false" length="40"/>
-            </basic>
-            <basic name="lname">
-                <column name="lname" nullable="false" length="40"/>
-            </basic>
-            <basic name="password">
-                <column name="password" nullable="false" length="80"/>
-            </basic>
-            <basic name="updated">
-                <column name="updated" nullable="false" precision="6"/>
-            </basic>
-            <basic name="username">
-                <column name="username" nullable="false" length="40"/>
-            </basic>
-            <one-to-many name="articlesById" mapped-by="usersByAuthorId"
-                         target-entity="generated.hibernate.entity.Articles"/>
-            <one-to-many name="userRolesById" mapped-by="usersByUserId"
-                         target-entity="generated.hibernate.entity.UserRoles"/>
-        </attributes>
-    </entity>
-    <entity class="generated.hibernate.entity.Account">
-        <table name="account" schema="hibernate_native" catalog=""/>
-        <attributes>
-            <id name="accountNumber">
-                <column name="accountNumber" precision="20"/>
-            </id>
-            <basic name="ballance">
-                <column name="ballance" precision="-1"/>
-            </basic>
-            <basic name="firstName">
-                <column name="firstName" nullable="false" length="20"/>
-            </basic>
-            <basic name="lastName">
-                <column name="lastName" nullable="false" length="20"/>
-            </basic>
-            <basic name="middleName">
-                <column name="middleName" nullable="false"/>
+                <column name="middle_name" nullable="false"/>
             </basic>
         </attributes>
     </entity>
     <entity class="generated.hibernate.entity.Article">
-        <table name="articles" schema="hibernate_native" catalog=""/>
+        <table name="articles" schema="hibernate_native"/>
         <attributes>
             <id name="id">
                 <column name="id" precision="20"/>
@@ -165,28 +43,25 @@
             <basic name="updated">
                 <column name="updated" nullable="false" precision="6"/>
             </basic>
-            <basic name="authorId">
-                <column name="author_id" nullable="false" precision="20"/>
-            </basic>
-            <many-to-one name="usersByAuthorId" optional="true" target-entity="generated.hibernate.entity.User">
+            <many-to-one name="author" optional="true" target-entity="generated.hibernate.entity.User">
                 <join-column name="author_id" nullable="false" referenced-column-name="id"/>
             </many-to-one>
         </attributes>
     </entity>
     <entity class="generated.hibernate.entity.Contact">
-        <table name="contact" schema="hibernate_native" catalog=""/>
+        <table name="contact" schema="hibernate_native" />
         <attributes>
             <id name="id">
                 <column name="id" precision="11"/>
             </id>
             <basic name="firstName">
-                <column name="firstName" nullable="false" length="20"/>
+                <column name="first_name" nullable="false" length="20"/>
             </basic>
             <basic name="lastName">
-                <column name="lastName" nullable="false" length="20"/>
+                <column name="last_name" nullable="false" length="20"/>
             </basic>
             <basic name="middleName">
-                <column name="middleName" nullable="false"/>
+                <column name="middle_name" nullable="false"/>
             </basic>
             <basic name="notes">
                 <column name="notes" nullable="false"/>
@@ -199,22 +74,8 @@
             </basic>
         </attributes>
     </entity>
-    <entity class="generated.hibernate.entity.Role">
-        <table name="user_roles" schema="hibernate_native" catalog=""/>
-        <attributes>
-            <basic name="userId">
-                <column name="User_id" precision="20"/>
-            </basic>
-            <basic name="role">
-                <column name="role" nullable="false"/>
-            </basic>
-            <many-to-one name="usersByUserId" optional="true" target-entity="generated.hibernate.entity.User">
-                <join-column name="User_id" referenced-column-name="id"/>
-            </many-to-one>
-        </attributes>
-    </entity>
     <entity class="generated.hibernate.entity.User">
-        <table name="users" schema="hibernate_native" catalog=""/>
+        <table name="users" schema="hibernate_native" />
         <attributes>
             <id name="id">
                 <column name="id" precision="20"/>
@@ -240,10 +101,8 @@
             <basic name="username">
                 <column name="username" nullable="false" length="40"/>
             </basic>
-            <one-to-many name="articlesById" mapped-by="usersByAuthorId"
+            <one-to-many name="articles" mapped-by="author"
                          target-entity="generated.hibernate.entity.Article"/>
-            <one-to-many name="userRolesById" mapped-by="usersByUserId"
-                         target-entity="generated.hibernate.entity.Role"/>
         </attributes>
     </entity>
 </entity-mappings>

@@ -1,8 +1,10 @@
 package course.hibernate.config;
 
-import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
-import org.springframework.context.annotation.*;
+import course.hibernate.entity.GenderConverter;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.ComponentScan;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.orm.hibernate5.HibernateTransactionManager;
 import org.springframework.orm.hibernate5.LocalSessionFactoryBean;
 import org.springframework.transaction.PlatformTransactionManager;
@@ -40,6 +42,9 @@ public class JpaConfig {
         sessionFactory.setDataSource(dataSource());
         sessionFactory.setHibernateProperties(hibernateProperties());
         sessionFactory.setPackagesToScan("course.hibernate.entity");
+        sessionFactory.setPhysicalNamingStrategy(new MyOrgPhysicalNamingStrategy());
+//        sessionFactory.getMetadataSources().addResource("META-INF/orm.xml");
+        sessionFactory.getMetadataSources().getMetadataBuilder().applyAttributeConverter(new GenderConverter());
 
         return sessionFactory;
     }
@@ -61,6 +66,7 @@ public class JpaConfig {
         hibernateProperties.setProperty("hibernate.use_sql_comments", Boolean.TRUE.toString());
         hibernateProperties.setProperty("hibernate.show_sql", Boolean.TRUE.toString());
         hibernateProperties.setProperty("hibernate.generate_statistics", Boolean.TRUE.toString());
+        hibernateProperties.setProperty("hibernate.metadata_builder_contributor", "course.hibernate.config.CustomMetadataBuilderContributor");
 
         return hibernateProperties;
     }

@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import javax.persistence.Convert;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.Id;
@@ -20,6 +21,8 @@ public class Contact {
     @Embedded
     @Valid
     private Name name;
+//    @Convert(converter = GenderConverter.class)
+    private Gender gender;
     private String notes;
     private URL website;
     private boolean starred;

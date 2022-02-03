@@ -13,3 +13,8 @@ logging:
         type: trace
 #        stat: debug
 
+spring:
+  jpa:
+    properties:
+      hibernate:
+#        metadata_builder_contributor: course.hibernate.config.CustomMetadataBuilderContributor

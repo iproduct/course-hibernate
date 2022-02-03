@@ -21,16 +21,15 @@ public class Article {
     private String content;
 
     @ManyToOne
-    @JoinColumn(name = "author_id")
+    @JoinColumn(name = "author_id", referencedColumnName = "id",
+                    foreignKey = @ForeignKey(name = "article_user_fk"))
     private User author;
 
-    @Column(name = "picture_url", length = 256)
+    @Column(length = 256)
     private String pictureUrl;
 
-    @Column(name = "created")
     private LocalDateTime created;
 
-    @Column(name = "updated")
     private Instant updated;
 
     public Instant getUpdated() {

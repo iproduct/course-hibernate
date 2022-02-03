@@ -31,9 +31,13 @@ public class User {
     @Column(name = "lname", length = 40)
     private String lname;
 
+    private Gender gender = Gender.UNSPECIFIED;
+
     @Enumerated(EnumType.STRING)
     @ElementCollection(fetch = FetchType.EAGER)
-    @CollectionTable(name="user_roles")
+    @CollectionTable(name="user_roles",
+            joinColumns = @JoinColumn(name = "user_id", referencedColumnName = "id",
+                    foreignKey = @ForeignKey(name = "user_roles_fk")))
     private Set<Role> role;
 
     @Column(name = "active")

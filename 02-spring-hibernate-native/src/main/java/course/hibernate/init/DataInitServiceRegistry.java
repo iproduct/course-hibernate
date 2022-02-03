@@ -4,6 +4,7 @@ import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
 import course.hibernate.config.MyOrgPhysicalNamingStrategy;
 import course.hibernate.entity.Contact;
+import course.hibernate.entity.Gender;
 import course.hibernate.entity.Name;
 import lombok.extern.slf4j.Slf4j;
 import org.hibernate.Session;
@@ -92,7 +93,7 @@ public class DataInitServiceRegistry implements ApplicationRunner {
 
         // Persist entity
         Contact contact = new Contact(1,
-                new Name("Ivan", "Dimitrov", "Petrov"),
+                new Name("Ivan", "Dimitrov", "Petrov"), Gender.MALE,
                 "From work", new URL("http://ivan.petrov.me/"), true);
         session.beginTransaction();
         session.persist(contact);

@@ -1,6 +1,7 @@
 package course.hibernate.init;
 
 import course.hibernate.entity.Contact;
+import course.hibernate.entity.Gender;
 import course.hibernate.entity.Name;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
@@ -21,7 +22,7 @@ public class DataInitJpa implements ApplicationRunner {
 
         // Persist entity
         Contact contact = new Contact(1,
-                new Name("Ivan", "Dimitrov", "Petrov"),
+                new Name("Ivan", "Dimitrov", "Petrov"), Gender.MALE,
                 "From work", new URL("http://ivan.petrov.me/"), true);
         em.getTransaction().begin();
         em.persist(contact);

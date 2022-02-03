@@ -1,6 +1,7 @@
 package course.hibernate.init;
 
 import course.hibernate.entity.Contact;
+import course.hibernate.entity.Gender;
 import course.hibernate.entity.Name;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -26,7 +27,7 @@ public class DataInit implements ApplicationRunner {
 
             // Persist entity
             Contact contact = new Contact(1,
-                    new Name("Ivan", "Dimitrov", "Petrov"),
+                    new Name("Ivan", "Dimitrov", "Petrov"), Gender.MALE,
                     "From work", new URL("http://ivan.petrov.me/"), true);
             session.beginTransaction();
             session.persist(contact);

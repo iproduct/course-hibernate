@@ -18,7 +18,7 @@ import javax.persistence.Persistence;
 import java.net.URL;
 import java.util.List;
 
-@Component
+//@Component
 @Slf4j
 public class DataInitJpa implements ApplicationRunner {
     @Autowired

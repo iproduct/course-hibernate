@@ -62,6 +62,7 @@ public class MyOrgPhysicalNamingStrategy extends PhysicalNamingStrategyStandardI
     private List<String> splitAndReplace(String name) {
         return Arrays.stream(StringUtils.splitByCharacterTypeCamelCase(name))
                 .filter(StringUtils::isNotBlank)
+                .filter(str -> !str.equals("_"))
                 .map(p -> ABBREVIATIONS.getOrDefault(p, p).toLowerCase(Locale.ROOT))
                 .collect(Collectors.toList());
     }

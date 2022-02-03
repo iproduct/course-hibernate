@@ -24,7 +24,7 @@ public class JpaConfig {
 //        HikariDataSource poolingDataSource = new HikariDataSource(hikariConfig);
         HikariDataSource poolingDataSource = new HikariDataSource();
         poolingDataSource.setDriverClassName("com.mysql.cj.jdbc.Driver");
-        poolingDataSource.setJdbcUrl("jdbc:mysql://localhost/hibernate_native?createDatabaseIfNotExist=true&useSSL=false");
+        poolingDataSource.setJdbcUrl("jdbc:mysql://localhost/hibernate_native2?createDatabaseIfNotExist=true&useSSL=false");
         poolingDataSource.setUsername("root");
         poolingDataSource.setPassword("root");
         int cpuCores = Runtime.getRuntime().availableProcessors();
@@ -39,6 +39,7 @@ public class JpaConfig {
     public LocalSessionFactoryBean sessionFactory() {
         LocalSessionFactoryBean sessionFactory = new LocalSessionFactoryBean();
         sessionFactory.setDataSource(dataSource());
+//        sessionFactory.setPhysicalNamingStrategy(new MyOrgPhysicalNamingStrategy());
         sessionFactory.setHibernateProperties(hibernateProperties());
         sessionFactory.setPackagesToScan("course.hibernate.entity");
 
