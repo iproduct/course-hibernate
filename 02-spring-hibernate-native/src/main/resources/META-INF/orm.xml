@@ -103,6 +103,12 @@
             </basic>
             <one-to-many name="articles" mapped-by="author"
                          target-entity="generated.hibernate.entity.Article"/>
+            <element-collection name="roles" target-class="java.lang.String" fetch="EAGER">
+                <collection-table name="user_roles">
+                    <join-column name="user_id" />
+                    <foreign-key name="user_roles_fk" />
+                </collection-table>
+            </element-collection>
         </attributes>
     </entity>
 </entity-mappings>
