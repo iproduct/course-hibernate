@@ -2,7 +2,7 @@ package course.hibernate.spring.examples;
 
 import javax.persistence.*;
 
-@Entity(name = "Book")
+@Entity(name = "Book2")
 @AttributeOverrides({
         @AttributeOverride(
                 name = "ebookPublisher.name",

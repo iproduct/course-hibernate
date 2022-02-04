@@ -1,42 +1,16 @@
 package course.hibernate.spring.examples;
 
+import course.hibernate.spring.examples.GPS;
 import lombok.Data;
 import org.hibernate.annotations.Target;
 
-import javax.persistence.*;
-
-interface Coordinates {
-    double x();
-    double y();
-}
-
-@Embeddable
-class GPS implements Coordinates {
-
-    private double latitude;
-
-    private double longitude;
-
-    public GPS() {
-    }
-
-    public GPS(double latitude, double longitude) {
-        this.latitude = latitude;
-        this.longitude = longitude;
-    }
-
-    @Override
-    public double x() {
-        return latitude;
-    }
-
-    @Override
-    public double y() {
-        return longitude;
-    }
-}
+import javax.persistence.Embedded;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
 
 @Entity(name = "City")
+@Data
 public class City {
 
     @Id
@@ -47,5 +21,5 @@ public class City {
 
     @Embedded
     @Target( GPS.class )
-    private Coordinates coordinates;
+    private GPS coordinates;
 }
