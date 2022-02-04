@@ -6,6 +6,7 @@ import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Set;
 
 @Entity
@@ -39,6 +40,10 @@ public class User {
             joinColumns = @JoinColumn(name = "user_id", referencedColumnName = "id",
                     foreignKey = @ForeignKey(name = "user_roles_fk")))
     private Set<Role> role;
+
+
+    @OneToMany(mappedBy = "author")
+    private List<Article> articles;
 
     @Column(name = "active")
     private Boolean active;

@@ -1,0 +1,18 @@
+<?xml version='1.0' encoding='utf-8'?>
+<!DOCTYPE hibernate-mapping PUBLIC
+    "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+    "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<hibernate-mapping>
+
+    <class name="generated.entity.UserRole" table="user_roles" schema="hibernate_native2">
+        <property name="userId">
+            <column name="user_id" sql-type="bigint(20)"/>
+        </property>
+        <property name="role">
+            <column name="role" sql-type="varchar(255)" not-null="true"/>
+        </property>
+        <many-to-one name="usersByUserId" class="generated.entity.User">
+            <column name="user_id"/>
+        </many-to-one>
+    </class>
+</hibernate-mapping>

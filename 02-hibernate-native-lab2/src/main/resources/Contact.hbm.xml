@@ -1,0 +1,33 @@
+<?xml version='1.0' encoding='utf-8'?>
+<!DOCTYPE hibernate-mapping PUBLIC
+    "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+    "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<hibernate-mapping>
+
+    <class name="generated.entity.Contact" table="contact" schema="hibernate_native2">
+        <id name="id">
+            <column name="id" sql-type="int(11)"/>
+        </id>
+        <property name="gender">
+            <column name="gender" sql-type="char(1)" length="1" not-null="true"/>
+        </property>
+        <property name="firstName">
+            <column name="first_name" sql-type="varchar(20)" length="20" not-null="true"/>
+        </property>
+        <property name="lastName">
+            <column name="last_name" sql-type="varchar(20)" length="20" not-null="true"/>
+        </property>
+        <property name="middleName">
+            <column name="middle_name" sql-type="varchar(255)" not-null="true"/>
+        </property>
+        <property name="notes">
+            <column name="notes" sql-type="varchar(255)" not-null="true"/>
+        </property>
+        <property name="starred">
+            <column name="starred" sql-type="bit(1)"/>
+        </property>
+        <property name="website">
+            <column name="website" sql-type="varchar(255)" not-null="true"/>
+        </property>
+    </class>
+</hibernate-mapping>

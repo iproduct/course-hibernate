@@ -1,0 +1,48 @@
+<?xml version='1.0' encoding='utf-8'?>
+<!DOCTYPE hibernate-mapping PUBLIC
+    "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+    "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<hibernate-mapping>
+
+    <class name="generated.entity.User" table="users" schema="hibernate_native2">
+        <id name="id">
+            <column name="id" sql-type="bigint(20)"/>
+        </id>
+        <property name="active">
+            <column name="active" sql-type="bit(1)" not-null="true"/>
+        </property>
+        <property name="created">
+            <column name="created" sql-type="datetime(6)" not-null="true"/>
+        </property>
+        <property name="fname">
+            <column name="fname" sql-type="varchar(40)" length="40" not-null="true"/>
+        </property>
+        <property name="gender">
+            <column name="gender" sql-type="char(1)" length="1" not-null="true"/>
+        </property>
+        <property name="lname">
+            <column name="lname" sql-type="varchar(40)" length="40" not-null="true"/>
+        </property>
+        <property name="password">
+            <column name="password" sql-type="varchar(80)" length="80" not-null="true"/>
+        </property>
+        <property name="updated">
+            <column name="updated" sql-type="datetime(6)" not-null="true"/>
+        </property>
+        <property name="username">
+            <column name="username" sql-type="varchar(40)" length="40" not-null="true"/>
+        </property>
+        <set name="articles" inverse="true">
+            <key>
+                <column name="author_id" not-null="true"/>
+            </key>
+            <one-to-many not-found="ignore" class="generated.entity.Article"/>
+        </set>
+        <set name="userRolesById" inverse="true">
+            <key>
+                <column name="user_id"/>
+            </key>
+            <one-to-many not-found="ignore" class="generated.entity.UserRole"/>
+        </set>
+    </class>
+</hibernate-mapping>

@@ -1,0 +1,30 @@
+<?xml version='1.0' encoding='utf-8'?>
+<!DOCTYPE hibernate-mapping PUBLIC
+    "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+    "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<hibernate-mapping>
+
+    <class name="generated.entity.Article" table="articles" schema="hibernate_native2">
+        <id name="id">
+            <column name="id" sql-type="bigint(20)"/>
+        </id>
+        <property name="content">
+            <column name="content" sql-type="varchar(2048)" length="2048" not-null="true"/>
+        </property>
+        <property name="created">
+            <column name="created" sql-type="datetime(6)" not-null="true"/>
+        </property>
+        <property name="pictureUrl">
+            <column name="picture_url" sql-type="varchar(256)" length="256" not-null="true"/>
+        </property>
+        <property name="title">
+            <column name="title" sql-type="varchar(80)" length="80" not-null="true"/>
+        </property>
+        <property name="updated">
+            <column name="updated" sql-type="datetime(6)" not-null="true"/>
+        </property>
+        <many-to-one name="authorId" class="generated.entity.User">
+            <column name="author_id" not-null="true"/>
+        </many-to-one>
+    </class>
+</hibernate-mapping>
