@@ -8,7 +8,7 @@ import course.hibernate.entity.Contact;
 import course.hibernate.entity.Gender;
 import course.hibernate.entity.Name;
 import course.hibernate.events.MyIntegrator;
-import course.hibernate.utils.GenderConverter;
+import course.hibernate.entity.GenderConverter;
 import course.hibernate.utils.JpaAnnotatedClassUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.hibernate.Session;
@@ -24,7 +24,6 @@ import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
 import org.hibernate.dialect.MySQL8Dialect;
 import org.hibernate.integrator.spi.Integrator;
 import org.springframework.boot.CommandLineRunner;
-import org.springframework.stereotype.Component;
 
 import javax.sql.DataSource;
 import java.net.URL;

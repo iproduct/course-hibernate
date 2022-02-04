@@ -3,6 +3,7 @@ package course.hibernate.init;
 import course.hibernate.entity.Contact;
 import course.hibernate.entity.Gender;
 import course.hibernate.entity.Name;
+import course.hibernate.events.ContactCreationEvent;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.ApplicationArguments;
@@ -10,7 +11,10 @@ import org.springframework.boot.ApplicationRunner;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.PlatformTransactionManager;
+import org.springframework.transaction.TransactionDefinition;
+import org.springframework.transaction.TransactionStatus;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.support.DefaultTransactionDefinition;
 import org.springframework.transaction.support.TransactionTemplate;
 
 import javax.persistence.EntityManager;
@@ -18,6 +22,7 @@ import javax.persistence.PersistenceContext;
 import javax.validation.ConstraintViolationException;
 import java.net.URL;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Component
 @Slf4j
@@ -28,10 +33,10 @@ public class DataInitJpaSpringBeans implements ApplicationRunner {
     private EntityManager em;
 
     private final ApplicationEventPublisher applicationEventPublisher;
-    // single TransactionTemplate shared amongst all methods in this instance
-//    private final TransactionTemplate transactionTemplate;
-//    // single PlatformTransactionManager shared amongst all methods in this instance
-//    private final PlatformTransactionManager transactionManager;
+    //  single TransactionTemplate shared amongst all methods in this instance
+    private final TransactionTemplate transactionTemplate;
+    // single PlatformTransactionManager shared amongst all methods in this instance
+    private final PlatformTransactionManager transactionManager;
 
 
     @Autowired
@@ -40,8 +45,8 @@ public class DataInitJpaSpringBeans implements ApplicationRunner {
             PlatformTransactionManager transactionManager,
             TransactionTemplate transactionTemplate) {
         this.applicationEventPublisher = applicationEventPublisher;
-//        this.transactionTemplate = transactionTemplate;
-//        this.transactionManager = transactionManager;
+        this.transactionTemplate = transactionTemplate;
+        this.transactionManager = transactionManager;
 
     }
 
@@ -111,7 +116,9 @@ public class DataInitJpaSpringBeans implements ApplicationRunner {
 //                em.persist(contact);
 //                return contact;
 //            } catch (ConstraintViolationException cve) {
-//                transactionManager.rollback(status);
+//                if(!status.isCompleted()) {
+//                    transactionManager.rollback(status);
+//                }
 //                log.error("Error creating contact:", cve);
 //                throw cve;
 //            }

@@ -1,4 +1,4 @@
-package course.hibernate.utils;
+package course.hibernate.entity;
 
 import course.hibernate.entity.Gender;
 

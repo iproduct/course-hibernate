@@ -1,6 +1,6 @@
 package course.hibernate.config;
 
-import course.hibernate.utils.GenderConverter;
+import course.hibernate.entity.GenderConverter;
 import org.hibernate.boot.MetadataBuilder;
 import org.hibernate.boot.model.naming.ImplicitNamingStrategyJpaCompliantImpl;
 import org.hibernate.boot.model.naming.PhysicalNamingStrategy;

@@ -1,6 +1,7 @@
 package course.hibernate.config;
 
 import com.zaxxer.hikari.HikariDataSource;
+import course.hibernate.entity.GenderConverter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
@@ -39,9 +40,10 @@ public class JpaConfig {
     public LocalSessionFactoryBean sessionFactory() {
         LocalSessionFactoryBean sessionFactory = new LocalSessionFactoryBean();
         sessionFactory.setDataSource(dataSource());
-//        sessionFactory.setPhysicalNamingStrategy(new MyOrgPhysicalNamingStrategy());
+        sessionFactory.setPhysicalNamingStrategy(new MyOrgPhysicalNamingStrategy());
         sessionFactory.setHibernateProperties(hibernateProperties());
         sessionFactory.setPackagesToScan("course.hibernate.entity");
+//        sessionFactory.getMetadataSources().getMetadataBuilder().applyAttributeConverter(new GenderConverter());
 
         return sessionFactory;
     }
@@ -63,6 +65,7 @@ public class JpaConfig {
         hibernateProperties.setProperty("hibernate.use_sql_comments", Boolean.TRUE.toString());
         hibernateProperties.setProperty("hibernate.show_sql", Boolean.TRUE.toString());
         hibernateProperties.setProperty("hibernate.generate_statistics", Boolean.TRUE.toString());
+        hibernateProperties.setProperty("hibernate.metadata_builder_contributor", "course.hibernate.config.CustomMetadataBuilderContributor");
 
         return hibernateProperties;
     }
