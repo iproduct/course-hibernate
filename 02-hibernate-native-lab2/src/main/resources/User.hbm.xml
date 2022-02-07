@@ -38,11 +38,13 @@
             </key>
             <one-to-many not-found="ignore" class="generated.entity.Article"/>
         </set>
-        <set name="userRolesById" inverse="true">
-            <key>
-                <column name="user_id"/>
-            </key>
-            <one-to-many not-found="ignore" class="generated.entity.UserRole"/>
+        <set name="roles" sort="unsorted" table="user_roles" lazy="false">
+            <key column="user_id" foreign-key="user_roles_fk"/>
+            <element column="role" type="string">
+                <type name="org.hibernate.type.EnumType">
+                    <param name="enumClass">course.hibernate.entity.Role</param>
+                </type>
+            </element>
         </set>
     </class>
 </hibernate-mapping>

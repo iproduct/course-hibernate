@@ -32,6 +32,7 @@ public class User {
     @Column(name = "lname", length = 40)
     private String lname;
 
+    @Convert(converter = GenderConverter.class)
     private Gender gender = Gender.UNSPECIFIED;
 
     @Enumerated(EnumType.STRING)
@@ -42,7 +43,7 @@ public class User {
     private Set<Role> role;
 
 
-    @OneToMany(mappedBy = "author")
+    @OneToMany(mappedBy = "author", targetEntity = Article.class)
     private List<Article> articles;
 
     @Column(name = "active")

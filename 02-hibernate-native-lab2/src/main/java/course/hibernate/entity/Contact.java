@@ -22,6 +22,7 @@ public class Contact implements Serializable {
     @Embedded
     @Valid
     private Name name;
+    @Convert(converter = GenderConverter.class)
     private Gender gender;
     private String notes;
     private URL website;

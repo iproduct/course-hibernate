@@ -8,40 +8,40 @@ import java.util.Collection;
 import java.util.Set;
 
 //@Entity
-@Table(name = "users", schema = "hibernate_native")
+//@Table(name = "users", schema = "hibernate_native")
 public class User {
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Id
-    @Column(name = "id", nullable = false)
+//    @GeneratedValue(strategy = GenerationType.IDENTITY)
+//    @Id
+//    @Column(name = "id", nullable = false)
     private Long id;
-    @Basic
-    @Column(name = "active", nullable = true)
+//    @Basic
+//    @Column(name = "active", nullable = true)
     private Boolean active;
-    @Basic
-    @Column(name = "created", nullable = true)
+//    @Basic
+//    @Column(name = "created", nullable = true)
     private Timestamp created;
-    @Basic
-    @Column(name = "fname", nullable = true, length = 40)
+//    @Basic
+//    @Column(name = "fname", nullable = true, length = 40)
     private String fname;
-    @Basic
-    @Column(name = "lname", nullable = true, length = 40)
+//    @Basic
+//    @Column(name = "lname", nullable = true, length = 40)
     private String lname;
-    @Basic
-    @Column(name = "password", nullable = true, length = 80)
+//    @Basic
+//    @Column(name = "password", nullable = true, length = 80)
     private String password;
-    @Basic
-    @Column(name = "updated", nullable = true)
+//    @Basic
+//    @Column(name = "updated", nullable = true)
     private Timestamp updated;
-    @Basic
-    @Column(name = "username", nullable = true, length = 40)
+//    @Basic
+//    @Column(name = "username", nullable = true, length = 40)
     private String username;
-    @OneToMany(mappedBy = "author")
+//    @OneToMany(mappedBy = "author")
     private Collection<Article> articles;
-    @Enumerated(EnumType.STRING)
-    @ElementCollection(fetch = FetchType.EAGER)
-    @CollectionTable(name="user_roles",
-            joinColumns = @JoinColumn(name = "user_id", referencedColumnName = "id",
-                    foreignKey = @ForeignKey(name = "user_roles_fk")))
+//    @Enumerated(EnumType.STRING)
+//    @ElementCollection(fetch = FetchType.EAGER)
+//    @CollectionTable(name="user_roles",
+//            joinColumns = @JoinColumn(name = "user_id", referencedColumnName = "id",
+//                    foreignKey = @ForeignKey(name = "user_roles_fk")))
     private Set<Role> roles;
 
     public Long getId() {

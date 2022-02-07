@@ -5,7 +5,7 @@ import course.hibernate.entity.Gender;
 import javax.persistence.AttributeConverter;
 import javax.persistence.Converter;
 
-@Converter(autoApply = true)
+@Converter//(autoApply = true)
 public class GenderConverter implements AttributeConverter<Gender, Character> {
 
     public Character convertToDatabaseColumn( Gender value ) {

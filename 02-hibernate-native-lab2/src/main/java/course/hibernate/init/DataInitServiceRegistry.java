@@ -62,7 +62,7 @@ public class DataInitServiceRegistry implements CommandLineRunner {
             mds.addAnnotatedClass(entity);
         });
 //        mds.addAnnotatedClass(Contact.class);
-//         mds.addResource("");
+         mds.addResource("META-INF/orm.xml");
 
         // Build Metadata
         Metadata metadata = mds.getMetadataBuilder()
