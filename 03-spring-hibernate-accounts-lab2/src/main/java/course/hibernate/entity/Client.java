@@ -4,19 +4,20 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.Id;
-import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
+import java.util.List;
 
 @Entity
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class Account {
+public class Client {
     @Id
-    private Long accountNumber;
-    @ManyToOne
-    private Client client;
-    private String description;
+    private Long id;
+    private String firstName;
+    private String lastName;
+    @OneToMany(mappedBy = "client")
+    private List<Account> accounts;
 }
