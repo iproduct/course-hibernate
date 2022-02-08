@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<entity-mappings xmlns="https://jakarta.ee/xml/ns/persistence/orm"
+                 version="3.0">
+
+    <entity class="generated.entity.Account">
+        <table name="acct" schema="hibernate_native2" />
+        <attributes>
+            <id name="accountNumber">
+                <column name="acct_num" precision="20"/>
+            </id>
+            <basic name="ballance">
+                <column name="ballance" precision="-1"/>
+            </basic>
+            <basic name="firstName">
+                <column name="first_name" nullable="false" length="20"/>
+            </basic>
+            <basic name="lastName">
+                <column name="last_name" nullable="false" length="20"/>
+            </basic>
+            <basic name="middleName">
+                <column name="middle_name" nullable="false"/>
+            </basic>
+        </attributes>
+    </entity>
+    <entity class="generated.entity.Article">
+        <table name="articles" schema="hibernate_native2"/>
+        <attributes>
+            <id name="id">
+                <column name="id" precision="20"/>
+            </id>
+            <basic name="content">
+                <column name="content" nullable="false" length="2048"/>
+            </basic>
+            <basic name="created">
+                <column name="created" nullable="false" precision="6"/>
+            </basic>
+            <basic name="pictureUrl">
+                <column name="picture_url" nullable="false" length="256"/>
+            </basic>
+            <basic name="title">
+                <column name="title" nullable="false" length="80"/>
+            </basic>
+            <basic name="updated">
+                <column name="updated" nullable="false" precision="6"/>
+            </basic>
+            <many-to-one name="author" target-entity="generated.entity.User">
+                <join-column name="author_id" nullable="false" referenced-column-name="id"/>
+            </many-to-one>
+        </attributes>
+    </entity>
+    <entity class="generated.entity.Contact">
+        <table name="contact" schema="hibernate_native2" />
+        <attributes>
+            <id name="id">
+                <column name="id" precision="11"/>
+            </id>
+            <basic name="firstName">
+                <column name="first_name" nullable="false" length="20"/>
+            </basic>
+            <basic name="lastName">
+                <column name="last_name" nullable="false" length="20"/>
+            </basic>
+            <basic name="middleName">
+                <column name="middle_name" nullable="false"/>
+            </basic>
+            <basic name="notes">
+                <column name="notes" nullable="false"/>
+            </basic>
+            <basic name="starred">
+                <column name="starred" precision="1"/>
+            </basic>
+            <basic name="website">
+                <column name="website" nullable="false"/>
+            </basic>
+        </attributes>
+    </entity>
+    <entity class="generated.entity.User">
+        <table name="users" schema="hibernate_native2" />
+        <attributes>
+            <id name="id">
+                <column name="id" precision="20"/>
+            </id>
+            <basic name="active">
+                <column name="active" nullable="false" precision="1"/>
+            </basic>
+            <basic name="created">
+                <column name="created" nullable="false" precision="6"/>
+            </basic>
+            <basic name="fname">
+                <column name="fname" nullable="false" length="40"/>
+            </basic>
+            <basic name="lname">
+                <column name="lname" nullable="false" length="40"/>
+            </basic>
+            <basic name="password">
+                <column name="password" nullable="false" length="80"/>
+            </basic>
+            <basic name="updated">
+                <column name="updated" nullable="false" precision="6"/>
+            </basic>
+            <basic name="username">
+                <column name="username" nullable="false" length="40"/>
+            </basic>
+            <one-to-many name="articles" mapped-by="author"
+                         target-entity="generated.entity.Article"/>
+            <element-collection name="roles" target-class="course.hibernate.entity.Role" fetch="EAGER">
+                <collection-table name="user_roles">
+                    <join-column name="user_id" />
+                    <foreign-key name="user_roles_fk" />
+                </collection-table>
+            </element-collection>
+        </attributes>
+    </entity>
+</entity-mappings>
