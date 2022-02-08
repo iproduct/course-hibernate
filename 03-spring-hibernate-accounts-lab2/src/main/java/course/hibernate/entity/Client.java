@@ -1,23 +1,33 @@
 package course.hibernate.entity;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.OneToMany;
+import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
 @Data
 @NoArgsConstructor
+@RequiredArgsConstructor
 @AllArgsConstructor
 public class Client {
     @Id
+    @NonNull
     private Long id;
+    @NonNull
     private String firstName;
+    @NonNull
     private String lastName;
-    @OneToMany(mappedBy = "client")
-    private List<Account> accounts;
+    @OneToMany(mappedBy = "client", targetEntity = Account.class)
+    private List<Account> accounts = new ArrayList<>();
 }
+
+
+
+
+
+
+
+
+

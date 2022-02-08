@@ -15,7 +15,7 @@ import javax.persistence.ManyToOne;
 @AllArgsConstructor
 public class Account {
     @Id
-    private Long accountNumber;
+    private Long id;
     @ManyToOne
     private Client client;
     private String description;

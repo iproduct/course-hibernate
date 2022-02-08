@@ -24,7 +24,7 @@ public class JpaConfig {
 //        HikariDataSource poolingDataSource = new HikariDataSource(hikariConfig);
         HikariDataSource poolingDataSource = new HikariDataSource();
         poolingDataSource.setDriverClassName("com.mysql.cj.jdbc.Driver");
-        poolingDataSource.setJdbcUrl("jdbc:mysql://localhost/hibernate_native2?createDatabaseIfNotExist=true&useSSL=false");
+        poolingDataSource.setJdbcUrl("jdbc:mysql://localhost/hibernate_accounts2?createDatabaseIfNotExist=true&useSSL=false");
         poolingDataSource.setUsername("root");
         poolingDataSource.setPassword("root");
         int cpuCores = Runtime.getRuntime().availableProcessors();

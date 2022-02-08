@@ -24,8 +24,8 @@ public class MyOrgPhysicalNamingStrategy extends PhysicalNamingStrategyStandardI
 
     static {
         ABBREVIATIONS = new TreeMap<>(String.CASE_INSENSITIVE_ORDER);
-        ABBREVIATIONS.put("account", "acct");
-        ABBREVIATIONS.put("number", "num");
+//        ABBREVIATIONS.put("account", "acct");
+//        ABBREVIATIONS.put("number", "num");
     }
 
     @Override
