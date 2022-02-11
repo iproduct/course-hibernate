@@ -1,4 +1,4 @@
-package course.hibernate.spring.util;
+package course.hibernate.spring.config;
 
 import org.hibernate.boot.MetadataBuilder;
 import org.hibernate.boot.spi.MetadataBuilderContributor;
@@ -7,10 +7,11 @@ import org.hibernate.type.StandardBasicTypes;
 import org.springframework.stereotype.Component;
 
 @Component
-public class SqlFunctionsMetadataBuilderContributor implements MetadataBuilderContributor {
+public class CustomMetadataBuilderContributor implements MetadataBuilderContributor {
 
     @Override
     public void contribute(MetadataBuilder metadataBuilder) {
+//        metadataBuilder.applyPhysicalNamingStrategy(new MyOrgPhysicalNamingStrategy());
         metadataBuilder.applySqlFunction("config_json_extract",
                 new StandardSQLFunction("json_extract", StandardBasicTypes.STRING));
         metadataBuilder.applySqlFunction("JSON_UNQUOTE",
