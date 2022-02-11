@@ -1,8 +1,9 @@
 package course.hibernate.spring.init;
 
+import course.hibernate.spring.dao.BookRepository;
 import course.hibernate.spring.dao.UserRepository;
-import course.hibernate.spring.entity.Role;
-import course.hibernate.spring.entity.User;
+import course.hibernate.spring.entity.*;
+import course.hibernate.spring.service.SubsystemService;
 import course.hibernate.spring.service.UserService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,6 +11,9 @@ import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.stereotype.Component;
 
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -26,10 +30,14 @@ public class DataInitializer implements ApplicationRunner {
     private static final List<User> defaultUsers = List.of();
 
     private UserService userService;
+    private BookRepository bookRepo;
+    private SubsystemService subsystemService;
 
     @Autowired
-    public DataInitializer(UserService userService) {
+    public DataInitializer(UserService userService, BookRepository bookRepo, SubsystemService subsystemService) {
         this.userService = userService;
+        this.bookRepo = bookRepo;
+        this.subsystemService = subsystemService;
     }
 
     @Override
@@ -38,5 +46,18 @@ public class DataInitializer implements ApplicationRunner {
             log.info("Creating users: {}",
                     SAMPLE_USERS.stream().map(userService::create).collect(Collectors.toList()));
         }
+
+        // books demo
+        Book b1 = new Book("Effective Java", List.of(new Author("Joshua", "Bloch",
+                LocalDate.of(1965, 8, 11))));
+        bookRepo.save(b1);
+
+        // subsystem user demo
+        Subsystem ss1 = subsystemService.createSubsystem(
+                new Subsystem("Internal_Projects", "Internal project management subsystem"));
+        log.info("Created Subsystem: {}", ss1);
+        SystemUser su1 = subsystemService.createUser(
+                new SystemUser(ss1, "john", "John Doe"));
+        log.info("Created Subsystem User: {}", su1);
     }
 }

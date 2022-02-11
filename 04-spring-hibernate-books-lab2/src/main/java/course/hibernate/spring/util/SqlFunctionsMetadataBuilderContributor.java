@@ -16,9 +16,7 @@ public class SqlFunctionsMetadataBuilderContributor implements MetadataBuilderCo
         metadataBuilder.applySqlFunction("JSON_UNQUOTE",
                 new StandardSQLFunction("JSON_UNQUOTE", StandardBasicTypes.STRING));
         metadataBuilder.applySqlFunction("group_concat",
-                new StandardSQLFunction("group_concat", StandardBasicTypes.STRING));
-        metadataBuilder.applySqlFunction("group_concat_role_set",
-                new StandardSQLFunction("group_concat", StandardBasicTypes.STRING));
+                new StandardSQLFunction("GROUP_CONCAT", StandardBasicTypes.STRING));
 
     }
 
