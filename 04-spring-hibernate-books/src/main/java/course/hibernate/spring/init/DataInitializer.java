@@ -49,9 +49,9 @@ public class DataInitializer implements ApplicationRunner {
 
         // books demo
         Book b1 = new Book("Effective Java", List.of(new Author("Joshua", "Bloch",
-                LocalDate.of(1965, 8, 11))));
+                LocalDate.of(1965, 8, 11))), "978-0134685991");
         Book b2 = new Book("Thinking in Java", List.of(new Author("Bruce", "Eckel",
-                LocalDate.of(1965, 8, 19))));
+                LocalDate.of(1965, 8, 19))), " 978-0131872486");
         bookRepo.saveAll(List.of(b1, b2));
         for(Book book: bookRepo.findAll()){
             System.out.println(book);

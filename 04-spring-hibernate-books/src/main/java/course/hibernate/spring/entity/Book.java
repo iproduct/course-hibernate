@@ -7,6 +7,8 @@ import org.apache.commons.lang3.builder.HashCodeExclude;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
+
+import org.hibernate.annotations.NaturalId;
 import org.hibernate.annotations.Parameter;
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -21,6 +23,7 @@ public class Book {
     private Long id;
     private String title;
     private List<Author> authors = new ArrayList<>();
+    private String isbn;
     @Access(AccessType.FIELD)
     @Version
     private int version;
@@ -28,9 +31,10 @@ public class Book {
     public Book() {
     }
 
-    public Book(String title, List<Author> authors) {
+    public Book(String title, List<Author> authors, String isbn) {
         this.title = title;
         this.authors = authors;
+        this.isbn = isbn;
     }
     @Id
     @GeneratedValue(
@@ -90,6 +94,17 @@ public class Book {
         this.authors = authors;
     }
 
+    @NaturalId
+    @Basic(optional = false)
+    @Column(nullable = false)
+    public String getIsbn() {
+        return isbn;
+    }
+
+    public void setIsbn(String isbn) {
+        this.isbn = isbn;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -111,6 +126,7 @@ public class Book {
         sb.append("id=").append(id);
         sb.append(", title='").append(title).append('\'');
         sb.append(", authors=").append(authors);
+        sb.append(", isbn='").append(isbn).append('\'');
         sb.append(", version=").append(version);
         sb.append('}');
         return sb.toString();
