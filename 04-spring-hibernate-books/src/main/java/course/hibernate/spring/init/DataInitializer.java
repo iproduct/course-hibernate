@@ -62,10 +62,11 @@ public class DataInitializer implements ApplicationRunner {
         Subsystem ss1 = subsystemService.createSubsystem(
                 new Subsystem("Internal_Projects", "Internal project management subsystem"));
         log.info("Created Subsystem: {}", ss1);
-        SystemUser su1 = subsystemService.createUser(
-                new SystemUser(new PK(ss1, "john"), "John Doe"));
+        SystemUser su1 = subsystemService.createUserWithDetails(
+                new SystemUser(new PK(ss1, "john"), "John Doe"), "Java, Hibernate");
         log.info("Created Subsystem User: {}", su1);
         log.info("Finding User by ID='{}': {}", su1.getId(), subsystemService.findUserById(su1.getId()));
+        log.info("Finding User with Details by ID='{}': {}", su1.getId(), subsystemService.findUserWithDetails(su1.getId()));
         log.info("Finding Susbsystem by ID='{}': {}", ss1.getId(), subsystemService.findSubsystemById(ss1.getId()));
     }
 }

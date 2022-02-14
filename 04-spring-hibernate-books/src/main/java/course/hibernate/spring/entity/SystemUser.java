@@ -3,13 +3,14 @@ package course.hibernate.spring.entity;
 import lombok.*;
 
 import javax.persistence.*;
+import java.io.Serializable;
 
 @Entity(name = "SystemUser")
 @Data
 @NoArgsConstructor
 @RequiredArgsConstructor
 @AllArgsConstructor
-public class SystemUser {
+public class SystemUser implements Serializable {
 
     @EmbeddedId
     @NonNull

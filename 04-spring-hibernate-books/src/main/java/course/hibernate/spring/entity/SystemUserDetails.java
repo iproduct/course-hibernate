@@ -1,13 +1,22 @@
 package course.hibernate.spring.entity;
 
-import javax.persistence.Entity;
-import javax.persistence.MapsId;
-import javax.persistence.OneToOne;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import lombok.NonNull;
 
-//@Entity
-public class SystemUserDetails {
+import javax.persistence.*;
+import java.io.Serializable;
+
+@Entity
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+public class SystemUserDetails  implements Serializable {
+    @Id
     @OneToOne
     @MapsId
     private SystemUser user;
+    @NonNull
     private String qualifications;
 }
