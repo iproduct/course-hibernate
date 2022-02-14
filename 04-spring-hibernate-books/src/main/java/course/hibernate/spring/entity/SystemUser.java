@@ -5,24 +5,19 @@ import lombok.*;
 import javax.persistence.*;
 
 @Entity(name = "SystemUser")
-@IdClass(PK.class)
 @Data
 @NoArgsConstructor
 @RequiredArgsConstructor
+@AllArgsConstructor
 public class SystemUser {
 
-//    @EmbeddedId
-    @Id
-    @ManyToOne(fetch = FetchType.LAZY)
-//    @MapsId("subsystem")
+    @EmbeddedId
     @NonNull
+    private PK id;
+
+    @ManyToOne
+    @MapsId("subsystem")
     private Subsystem subsystem;
-    @Id
-    @NonNull
-    private String username;
-//    @Id
-//    @GeneratedValue
-//    private Integer registrationId;
 
     @NonNull
     private String name;

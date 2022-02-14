@@ -2,15 +2,16 @@ package course.hibernate.spring.entity;
 
 import lombok.*;
 
-import javax.persistence.Embeddable;
-import javax.persistence.FetchType;
-import javax.persistence.ManyToOne;
+import javax.persistence.*;
 import java.io.Serializable;
 
+@Embeddable
 public class PK implements Serializable {
     private static final long serialVersionUID = -195443016063671997L;
+    @ManyToOne(fetch = FetchType.LAZY)
     private Subsystem subsystem;
     private String username;
+//    @GeneratedValue
 //    private Integer registrationId;
     public PK(){
     }
@@ -32,6 +33,10 @@ public class PK implements Serializable {
         this.username = username;
     }
 
+    public void setSubsystem(Subsystem subsystem) {
+        this.subsystem = subsystem;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -48,5 +53,14 @@ public class PK implements Serializable {
         int result = subsystem.hashCode();
         result = 31 * result + username.hashCode();
         return result;
+    }
+
+    @Override
+    public String toString() {
+        final StringBuilder sb = new StringBuilder("PK{");
+        sb.append("subsystem=").append(subsystem);
+        sb.append(", username='").append(username).append('\'');
+        sb.append('}');
+        return sb.toString();
     }
 }

@@ -1,15 +1,24 @@
 package course.hibernate.spring.entity;
 
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.MappedSuperclass;
+import javax.persistence.*;
 import java.time.LocalDateTime;
 
 @MappedSuperclass
 public class BaseMappedSuperclass {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+//    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(
+            strategy = GenerationType.TABLE,
+            generator = "table-generator"
+    )
+    @TableGenerator(
+            name =  "table-generator",
+            table = "generated_values",
+            pkColumnName = "entity_name",
+            valueColumnName = "last_id",
+            initialValue = 0,
+            allocationSize = 5
+    )
     private Long id;
     private LocalDateTime created = LocalDateTime.now();
     private LocalDateTime modified = LocalDateTime.now();

@@ -50,14 +50,22 @@ public class DataInitializer implements ApplicationRunner {
         // books demo
         Book b1 = new Book("Effective Java", List.of(new Author("Joshua", "Bloch",
                 LocalDate.of(1965, 8, 11))));
-        bookRepo.save(b1);
+        Book b2 = new Book("Thinking in Java", List.of(new Author("Bruce", "Eckel",
+                LocalDate.of(1965, 8, 19))));
+        bookRepo.saveAll(List.of(b1, b2));
+        for(Book book: bookRepo.findAll()){
+            System.out.println(book);
+        }
+
 
         // subsystem user demo
         Subsystem ss1 = subsystemService.createSubsystem(
                 new Subsystem("Internal_Projects", "Internal project management subsystem"));
         log.info("Created Subsystem: {}", ss1);
         SystemUser su1 = subsystemService.createUser(
-                new SystemUser(ss1, "john", "John Doe"));
+                new SystemUser(new PK(ss1, "john"), "John Doe"));
         log.info("Created Subsystem User: {}", su1);
+        log.info("Finding User by ID='{}': {}", su1.getId(), subsystemService.findUserById(su1.getId()));
+        log.info("Finding Susbsystem by ID='{}': {}", ss1.getId(), subsystemService.findSubsystemById(ss1.getId()));
     }
 }
