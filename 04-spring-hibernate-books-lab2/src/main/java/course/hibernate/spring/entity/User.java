@@ -41,6 +41,9 @@ public class User extends EntityBase implements UserDetails {
     private Set<Role> roles = Set.of(Role.READER);
     private boolean active = true;
 
+    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    private UserInfo userInfo;
+
     public User() {
     }
 
@@ -154,17 +157,33 @@ public class User extends EntityBase implements UserDetails {
         this.roles = roles;
     }
 
+    public boolean isActive() {
+        return active;
+    }
+
+    public void setActive(boolean active) {
+        this.active = active;
+    }
+
+    public UserInfo getUserInfo() {
+        return userInfo;
+    }
+
+    public void setUserInfo(UserInfo userInfo) {
+        this.userInfo = userInfo;
+    }
+
     @Override
     public String toString() {
-        return "User{" +
-                "id=" + getId() +
-                ", created=" + getCreated() +
-                ", modified=" + getModified() +
-                ", firstName='" + firstName + '\'' +
-                ", lastName='" + lastName + '\'' +
-                ", username='" + username + '\'' +
-                ", password='" + password + '\'' +
-                ", roles=" + roles +
-                "} ";
+        final StringBuilder sb = new StringBuilder("User{");
+        sb.append("firstName='").append(firstName).append('\'');
+        sb.append(", lastName='").append(lastName).append('\'');
+        sb.append(", username='").append(username).append('\'');
+        sb.append(", password='").append(password).append('\'');
+        sb.append(", roles=").append(roles);
+        sb.append(", active=").append(active);
+        sb.append(", userInfo=").append(userInfo);
+        sb.append('}');
+        return sb.toString();
     }
 }

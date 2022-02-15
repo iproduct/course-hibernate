@@ -114,11 +114,10 @@ public class UserServiceImpl implements UserService {
 
     @Transactional
     public List<User> createBatch(List<User> users) {
-        List<User> created = users.stream()
+        List<User> created =  userRepository.saveAll(users).stream()
                 .map(user -> {
-                    User newUser = create(user);
-                    applicationEventPublisher.publishEvent(new UserCreationEvent(newUser));
-                    return newUser;
+                    applicationEventPublisher.publishEvent(new UserCreationEvent(user));
+                    return user;
                 })
                 .collect(Collectors.toList());
         return created;

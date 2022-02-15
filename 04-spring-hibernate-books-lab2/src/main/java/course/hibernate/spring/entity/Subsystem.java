@@ -1,6 +1,9 @@
 package course.hibernate.spring.entity;
 
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Entity
 public class Subsystem {
@@ -9,6 +12,8 @@ public class Subsystem {
     @Access(AccessType.FIELD)
     @Version
     private Integer version;
+
+    private List<SystemUserEmbeddedId> systemUsers = new ArrayList<>();
 
     public Subsystem() {
     }
@@ -35,6 +40,15 @@ public class Subsystem {
         this.description = description;
     }
 
+    @OneToMany(mappedBy = "subsystem", fetch = FetchType.EAGER)
+    public List<SystemUserEmbeddedId> getSystemUsers() {
+        return systemUsers;
+    }
+
+    public void setSystemUsers(List<SystemUserEmbeddedId> systemUsers) {
+        this.systemUsers = systemUsers;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -55,6 +69,9 @@ public class Subsystem {
         final StringBuilder sb = new StringBuilder("Subsystem{");
         sb.append("id='").append(id).append('\'');
         sb.append(", description='").append(description).append('\'');
+        sb.append(", version=").append(version);
+        sb.append(", systemUsers=").append(
+                systemUsers.stream().map(SystemUserEmbeddedId::getName).collect(Collectors.joining(", ")));
         sb.append('}');
         return sb.toString();
     }

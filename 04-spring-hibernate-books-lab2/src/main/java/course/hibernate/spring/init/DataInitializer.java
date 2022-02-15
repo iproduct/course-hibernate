@@ -44,6 +44,11 @@ public class DataInitializer implements ApplicationRunner {
         if (userService.count() == 0) {
             try {
                 List<User> created = userService.createBatch(SAMPLE_USERS);
+                SAMPLE_USERS.forEach(u -> {
+                    u.setUserInfo(new UserInfo(u,"Java, Spring, Hibernate"));
+                    userService.update(u);
+                });
+
                 log.info("Created default users: {}", created);
             } catch (ConstraintViolationException ex) {
                 log.error(">>> Constraint violation inserting users: {} - {}", SAMPLE_USERS, ex.getMessage());
@@ -53,7 +58,7 @@ public class DataInitializer implements ApplicationRunner {
         }
         // books demo
         Book b1 = new Book("Effective Java", List.of(new Author("Joshua", "Bloch",
-                LocalDate.of(1965, 8, 11))));
+                LocalDate.of(1965, 8, 11))), "978-0134685991");
         bookRepo.save(b1);
 
         // Subsystem User demo
@@ -69,8 +74,10 @@ public class DataInitializer implements ApplicationRunner {
         Subsystem ss2 = subsystemRepo.createSubsystem(new Subsystem("Client Projects",
                 "Management of client projects subsystem"));
         log.info("Created Subsytem: {}", ss2);
-        SystemUserEmbeddedId su2 = subsystemRepo.createUserEmbeddedId(new SystemUserEmbeddedId(new EmbeddedPK(ss2, "jane"),
-                "Jane Doe"));
+        SystemUserEmbeddedId su2 = subsystemRepo.createUserEmbeddedId(
+                new SystemUserEmbeddedId(new EmbeddedPK(ss2, "jane"),"Jane Doe"));
+        SystemUserEmbeddedId su3 = subsystemRepo.createUserEmbeddedId(
+                new SystemUserEmbeddedId(new EmbeddedPK(ss2, "ivan"),"Ivan Petrov"));
         SystemUserEmbeddedId found2 = subsystemRepo.findUserEmbeddedId(su2.getId());
         log.info("Created SystemUser: {}", found2);
 

@@ -64,8 +64,8 @@ logging:
           context:
             support: INFO
       hibernate:
-#        type: trace
-#        stat: debug
+        type: trace
+        stat: debug
 blog:
   api:
     prefix: /api/v2

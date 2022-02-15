@@ -1,5 +1,7 @@
 package course.hibernate.spring.entity;
 
+import org.hibernate.annotations.Immutable;
+
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.IdClass;

@@ -23,6 +23,7 @@ public class SubsystemRepository {
         return user;
     }
     public SystemUserEmbeddedId createUserEmbeddedId(SystemUserEmbeddedId user) {
+        user.getId().getSubsystem().getSystemUsers().add(user);
         em.persist(user);
         return user;
     }

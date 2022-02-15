@@ -45,6 +45,10 @@ public class User extends BaseMappedSuperclass implements UserDetails {
     private Set<Role> roles = Set.of(READER);
     private boolean active = true;
 
+    @OneToOne(cascade = CascadeType.ALL, mappedBy = "user")
+    @PrimaryKeyJoinColumn
+    private UserData data;
+
     public User() {
     }
 
@@ -125,6 +129,14 @@ public class User extends BaseMappedSuperclass implements UserDetails {
         this.active = active;
     }
 
+    public UserData getData() {
+        return data;
+    }
+
+    public void setData(UserData data) {
+        this.data = data;
+    }
+
     @Override
     public boolean isAccountNonExpired() {
         return active;
@@ -175,14 +187,18 @@ public class User extends BaseMappedSuperclass implements UserDetails {
     @Override
     public String toString() {
         final StringBuilder sb = new StringBuilder("User{");
-        sb.append("id=").append(getId());
-        sb.append(", created=").append(getCreated());
-        sb.append(", modified=").append(getModified());
-        sb.append(", firstName='").append(firstName).append('\'');
+        sb.append("firstName='").append(firstName).append('\'');
         sb.append(", lastName='").append(lastName).append('\'');
-        sb.append(", userame='").append(username).append('\'');
+        sb.append(", username='").append(username).append('\'');
         sb.append(", password='").append(password).append('\'');
-        sb.append(", role=").append(roles);
+        sb.append(", roles=").append(roles);
+        sb.append(", active=").append(active);
+        sb.append(", data=").append(data);
+        sb.append(", accountNonExpired=").append(isAccountNonExpired());
+        sb.append(", accountNonLocked=").append(isAccountNonLocked());
+        sb.append(", credentialsNonExpired=").append(isCredentialsNonExpired());
+        sb.append(", enabled=").append(isEnabled());
+        sb.append(", authorities=").append(getAuthorities());
         sb.append('}');
         return sb.toString();
     }

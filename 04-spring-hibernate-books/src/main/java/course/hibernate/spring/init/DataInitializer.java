@@ -43,8 +43,9 @@ public class DataInitializer implements ApplicationRunner {
     @Override
     public void run(ApplicationArguments args) throws Exception {
         if (userService.count() == 0) {
-            log.info("Creating users: {}",
-                    SAMPLE_USERS.stream().map(userService::create).collect(Collectors.toList()));
+            List<User> users = SAMPLE_USERS.stream().map(userService::create).collect(Collectors.toList());
+            users.forEach(u -> u.setData(new UserData(u.getId(), "Java, Spring, Hibernate")));
+            log.info("Creating users: {}",users);
         }
 
         // books demo
@@ -62,11 +63,11 @@ public class DataInitializer implements ApplicationRunner {
         Subsystem ss1 = subsystemService.createSubsystem(
                 new Subsystem("Internal_Projects", "Internal project management subsystem"));
         log.info("Created Subsystem: {}", ss1);
-        SystemUser su1 = subsystemService.createUserWithDetails(
-                new SystemUser(new PK(ss1, "john"), "John Doe"), "Java, Hibernate");
+        SystemUser su1 = subsystemService.createUser(
+                new SystemUser(new PK(ss1, "john"), "John Doe"));
         log.info("Created Subsystem User: {}", su1);
         log.info("Finding User by ID='{}': {}", su1.getId(), subsystemService.findUserById(su1.getId()));
-        log.info("Finding User with Details by ID='{}': {}", su1.getId(), subsystemService.findUserWithDetails(su1.getId()));
+//        log.info("Finding User with Details by ID='{}': {}", su1.getId(), subsystemService.findUserWithDetails(su1.getId()));
         log.info("Finding Susbsystem by ID='{}': {}", ss1.getId(), subsystemService.findSubsystemById(ss1.getId()));
     }
 }
