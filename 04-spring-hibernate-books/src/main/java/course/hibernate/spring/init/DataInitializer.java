@@ -18,7 +18,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-@Component
+//@Component
 @Slf4j
 public class DataInitializer implements ApplicationRunner {
     private static final List<User> SAMPLE_USERS = List.of(
@@ -44,7 +44,7 @@ public class DataInitializer implements ApplicationRunner {
     public void run(ApplicationArguments args) throws Exception {
         if (userService.count() == 0) {
             List<User> users = SAMPLE_USERS.stream().map(userService::create).collect(Collectors.toList());
-            users.forEach(u -> u.setData(new UserData(u.getId(), "Java, Spring, Hibernate")));
+//            users.forEach(u -> u.setData(new UserData(u.getId(), "Java, Spring, Hibernate")));
             log.info("Creating users: {}",users);
         }
 

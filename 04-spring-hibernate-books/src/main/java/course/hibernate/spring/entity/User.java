@@ -2,6 +2,7 @@ package course.hibernate.spring.entity;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.*;
+import org.hibernate.annotations.JoinFormula;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -45,9 +46,17 @@ public class User extends BaseMappedSuperclass implements UserDetails {
     private Set<Role> roles = Set.of(READER);
     private boolean active = true;
 
-    @OneToOne(cascade = CascadeType.ALL, mappedBy = "user")
-    @PrimaryKeyJoinColumn
-    private UserData data;
+//    @OneToOne(cascade = CascadeType.ALL, mappedBy = "user")
+//    @PrimaryKeyJoinColumn
+//    private UserData data;
+
+    private String phoneNumber;
+
+    @ManyToOne
+//    @JoinFormula( "LTRIM(SUBSTRING(phone_number, 2, 3))" )
+    @JoinFormula( "CAST(REGEXP_REPLACE(phone_number, '.?(\\d+)-.*', '\\1') AS DECIMAL(3))" )
+    private Country country;
+
 
     public User() {
     }
@@ -83,6 +92,14 @@ public class User extends BaseMappedSuperclass implements UserDetails {
         this.roles = role;
     }
 
+    public User(@NonNull String firstName, @NonNull String lastName, @NonNull String username, @NonNull String password, Set<Role> role, String phoneNumber) {
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.username = username;
+        this.password = password;
+        this.roles = role;
+        this.phoneNumber = phoneNumber;
+    }
     public User(Long id, @NonNull String firstName, @NonNull String lastName, @NonNull String username, @NonNull String password, Set<Role> role) {
         super(id);
         this.firstName = firstName;
@@ -99,6 +116,22 @@ public class User extends BaseMappedSuperclass implements UserDetails {
         this.username = username;
         this.password = password;
         this.roles = role;
+    }
+
+    public String getPhoneNumber() {
+        return phoneNumber;
+    }
+
+    public void setPhoneNumber(String phoneNumber) {
+        this.phoneNumber = phoneNumber;
+    }
+
+    public Country getCountry() {
+        return country;
+    }
+
+    public void setCountry(Country country) {
+        this.country = country;
     }
 
     public String getFirstName() {
@@ -129,13 +162,13 @@ public class User extends BaseMappedSuperclass implements UserDetails {
         this.active = active;
     }
 
-    public UserData getData() {
-        return data;
-    }
-
-    public void setData(UserData data) {
-        this.data = data;
-    }
+//    public UserData getData() {
+//        return data;
+//    }
+//
+//    public void setData(UserData data) {
+//        this.data = data;
+//    }
 
     @Override
     public boolean isAccountNonExpired() {
@@ -193,7 +226,7 @@ public class User extends BaseMappedSuperclass implements UserDetails {
         sb.append(", password='").append(password).append('\'');
         sb.append(", roles=").append(roles);
         sb.append(", active=").append(active);
-        sb.append(", data=").append(data);
+//        sb.append(", data=").append(data);
         sb.append(", accountNonExpired=").append(isAccountNonExpired());
         sb.append(", accountNonLocked=").append(isAccountNonLocked());
         sb.append(", credentialsNonExpired=").append(isCredentialsNonExpired());
