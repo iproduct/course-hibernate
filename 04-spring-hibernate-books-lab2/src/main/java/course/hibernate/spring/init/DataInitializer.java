@@ -17,7 +17,7 @@ import java.util.Set;
 
 import static course.hibernate.spring.entity.Role.*;
 
-@Component
+//@Component
 @Slf4j
 public class DataInitializer implements ApplicationRunner {
     private static final List<User> SAMPLE_USERS = List.of(
