@@ -13,7 +13,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-@Component
+//@Component
 @Slf4j
 public class DataInitializer implements ApplicationRunner {
     private static final List<User> SAMPLE_USERS = List.of(
