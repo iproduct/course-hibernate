@@ -1,4 +1,6 @@
 package course.hibernate.spring.entity;
 
-public interface Property {
+public interface Property<T> {
+    String getName();
+    T getValue();
 }

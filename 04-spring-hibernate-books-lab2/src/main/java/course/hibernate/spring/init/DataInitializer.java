@@ -45,7 +45,7 @@ public class DataInitializer implements ApplicationRunner {
             try {
                 List<User> created = userService.createBatch(SAMPLE_USERS);
                 SAMPLE_USERS.forEach(u -> {
-                    u.setUserInfo(new UserInfo(u,"Java, Spring, Hibernate"));
+//                    u.setUserInfo(new UserInfo(u,"Java, Spring, Hibernate"));
                     userService.update(u);
                 });
 

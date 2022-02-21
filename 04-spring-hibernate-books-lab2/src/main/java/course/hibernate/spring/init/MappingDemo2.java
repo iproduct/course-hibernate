@@ -12,7 +12,7 @@ import org.springframework.transaction.support.TransactionTemplate;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 
-@Component
+//@Component
 @Slf4j
 public class MappingDemo2 implements ApplicationRunner {
     @PersistenceContext

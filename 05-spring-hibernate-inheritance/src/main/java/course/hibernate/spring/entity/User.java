@@ -1,71 +1,64 @@
 package course.hibernate.spring.entity;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import lombok.*;
 import org.hibernate.annotations.JoinFormula;
-import org.hibernate.loader.entity.plan.AbstractLoadPlanBasedEntityLoader;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.persistence.*;
-import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.time.LocalDateTime;
 import java.util.Collection;
-import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import static course.hibernate.spring.entity.Role.READER;
+
 @Entity
-@Table( name = "users",
-        uniqueConstraints = @UniqueConstraint(name = "uc_username", columnNames = {"username"}),
-        indexes = @Index(name="uniqueUsernameIndex", columnList = "username", unique = true))
+@Table(name = "users",
+//        indexes = @Index(name = "uniqueUsernameIndex", columnList = "username", unique = true),
+        uniqueConstraints=@UniqueConstraint(name = "uc_username", columnNames = {"username"}))
 @NamedEntityGraph(name = "User.detail", attributeNodes = @NamedAttributeNode("roles"))
-@Access(AccessType.FIELD)
-public class User extends EntityBase implements UserDetails {
+public class User extends BaseMappedSuperclass implements UserDetails {
     @NotNull
-    @Size(min=2, max =20)
+    @Size(min=2, max=20)
+    @NonNull
     private String firstName;
     @NotNull
-    @Size(min=2, max =20)
+    @Size(min=2, max=20)
+    @NonNull
     private String lastName;
     @NotNull
-    @Size(min=5, max =20)
+    @Size(min=5, max=20)
+    @NonNull
     @Column(updatable = false, nullable = false)
     private String username;
-    @NotBlank
+    @NotNull
+    @Size(min=6, max=128)
+    @NonNull
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private String password;
-    @ElementCollection(fetch = FetchType.EAGER)
+    @ElementCollection //(fetch = FetchType.EAGER)
     @Enumerated(EnumType.STRING)
-    private Set<Role> roles = Set.of(Role.READER);
+    private Set<Role> roles = Set.of(READER);
     private boolean active = true;
 
     private String phoneNumber;
 
-    @ManyToOne
-    @JoinFormula("CAST(REGEXP_REPLACE(phone_number, '.?(\\d+)-.*', '\\1') AS DECIMAL(3))")
-    private Country country;
-
-//    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
-//    private UserInfo userInfo;
-
     public User() {
     }
 
-    public User(Long id) {
-        super(id);
-    }
-
-    public User(String firstName, String lastName, String username, String password) {
+    public User(@NonNull String firstName, @NonNull String lastName, @NonNull String username, @NonNull String password) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.username = username;
         this.password = password;
     }
 
-    public User(Long id, String firstName, String lastName, String username, String password) {
+    public User(Long id, @NonNull String firstName, @NonNull String lastName, @NonNull String username, @NonNull String password) {
         super(id);
         this.firstName = firstName;
         this.lastName = lastName;
@@ -73,7 +66,7 @@ public class User extends EntityBase implements UserDetails {
         this.password = password;
     }
 
-    public User(Long id, LocalDateTime created, LocalDateTime modified, String firstName, String lastName, String username, String password) {
+    public User(Long id, LocalDateTime created, LocalDateTime modified, @NonNull String firstName, @NonNull String lastName, @NonNull String username, @NonNull String password) {
         super(id, created, modified);
         this.firstName = firstName;
         this.lastName = lastName;
@@ -81,30 +74,46 @@ public class User extends EntityBase implements UserDetails {
         this.password = password;
     }
 
-    public User(String firstName, String lastName, String username, String password, Set<Role> roles) {
+    public User(@NonNull String firstName, @NonNull String lastName, @NonNull String username, @NonNull String password, Set<Role> role) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.username = username;
         this.password = password;
-        this.roles = roles;
+        this.roles = role;
     }
 
-    public User(String firstName, String lastName, String username, String password, Set<Role> roles, String phoneNumber) {
+    public User(@NonNull String firstName, @NonNull String lastName, @NonNull String username, @NonNull String password, Set<Role> role, String phoneNumber) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.username = username;
         this.password = password;
-        this.roles = roles;
+        this.roles = role;
         this.phoneNumber = phoneNumber;
     }
+    public User(Long id, @NonNull String firstName, @NonNull String lastName, @NonNull String username, @NonNull String password, Set<Role> role) {
+        super(id);
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.username = username;
+        this.password = password;
+        this.roles = role;
+    }
 
-    public User(Long id, LocalDateTime created, LocalDateTime modified, String firstName, String lastName, String username, String password, Set<Role> roles) {
+    public User(Long id, LocalDateTime created, LocalDateTime modified, @NonNull String firstName, @NonNull String lastName, @NonNull String username, @NonNull String password, Set<Role> role) {
         super(id, created, modified);
         this.firstName = firstName;
         this.lastName = lastName;
         this.username = username;
         this.password = password;
-        this.roles = roles;
+        this.roles = role;
+    }
+
+    public String getPhoneNumber() {
+        return phoneNumber;
+    }
+
+    public void setPhoneNumber(String phoneNumber) {
+        this.phoneNumber = phoneNumber;
     }
 
     public String getFirstName() {
@@ -127,6 +136,22 @@ public class User extends EntityBase implements UserDetails {
         return username;
     }
 
+    public boolean isActive() {
+        return active;
+    }
+
+    public void setActive(boolean active) {
+        this.active = active;
+    }
+
+//    public UserData getData() {
+//        return data;
+//    }
+//
+//    public void setData(UserData data) {
+//        this.data = data;
+//    }
+
     @Override
     public boolean isAccountNonExpired() {
         return active;
@@ -138,6 +163,7 @@ public class User extends EntityBase implements UserDetails {
     }
 
     @Override
+    @Transient
     public boolean isCredentialsNonExpired() {
         return active;
     }
@@ -147,8 +173,8 @@ public class User extends EntityBase implements UserDetails {
         return active;
     }
 
-    public void setUsername(String username) {
-        this.username = username;
+    public void setUsername(String userame) {
+        this.username = userame;
     }
 
     @Override
@@ -169,40 +195,9 @@ public class User extends EntityBase implements UserDetails {
         return roles;
     }
 
-    public void setRoles(Set<Role> roles) {
-        this.roles = roles;
+    public void setRoles(Set<Role> role) {
+        this.roles = role;
     }
-
-    public boolean isActive() {
-        return active;
-    }
-
-    public void setActive(boolean active) {
-        this.active = active;
-    }
-
-    public String getPhoneNumber() {
-        return phoneNumber;
-    }
-
-    public void setPhoneNumber(String phoneNumber) {
-        this.phoneNumber = phoneNumber;
-    }
-
-    public Country getCountry() {
-        return country;
-    }
-
-    public void setCountry(Country country) {
-        this.country = country;
-    }
-//    public UserInfo getUserInfo() {
-//        return userInfo;
-//    }
-//
-//    public void setUserInfo(UserInfo userInfo) {
-//        this.userInfo = userInfo;
-//    }
 
     @Override
     public String toString() {
@@ -213,7 +208,12 @@ public class User extends EntityBase implements UserDetails {
         sb.append(", password='").append(password).append('\'');
         sb.append(", roles=").append(roles);
         sb.append(", active=").append(active);
-//        sb.append(", userInfo=").append(userInfo);
+//        sb.append(", data=").append(data);
+        sb.append(", accountNonExpired=").append(isAccountNonExpired());
+        sb.append(", accountNonLocked=").append(isAccountNonLocked());
+        sb.append(", credentialsNonExpired=").append(isCredentialsNonExpired());
+        sb.append(", enabled=").append(isEnabled());
+        sb.append(", authorities=").append(getAuthorities());
         sb.append('}');
         return sb.toString();
     }
