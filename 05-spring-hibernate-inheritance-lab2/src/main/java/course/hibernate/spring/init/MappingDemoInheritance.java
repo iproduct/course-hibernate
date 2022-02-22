@@ -10,6 +10,7 @@ import org.springframework.transaction.support.TransactionTemplate;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -28,14 +29,20 @@ public class MappingDemoInheritance implements ApplicationRunner {
     @Override
     public void run(ApplicationArguments args) throws Exception {
         template.executeWithoutResult(status -> {
+            DebitAccount debitAccount = new DebitAccount(1L, "John Doe", BigDecimal.valueOf(100),
+                    BigDecimal.valueOf(1.5D), BigDecimal.valueOf(25));
+            CreditAccount creditAccount = new CreditAccount(2L, "John Doe", BigDecimal.valueOf(1000),
+                    BigDecimal.valueOf(1.9D), BigDecimal.valueOf(5000));
+            entityManager.persist(debitAccount);
+            entityManager.persist(creditAccount);
         });
 
-//        template.executeWithoutResult(status -> {
-//            List<User> fetchedUsers = entityManager.createQuery("SELECT u FROM User u")
-//                    .getResultList();
-//            for(User u : fetchedUsers) {
-//                log.info("!!!!! User: {} -> Country: {}", u, u.getCountry());
-//            }
-//        });
+        template.executeWithoutResult(status -> {
+            List<Account> fetchedAccounts = entityManager.createQuery("SELECT a FROM Account a")
+                    .getResultList();
+            for(Account a : fetchedAccounts) {
+                log.info("!!!!! Acount: {} [{}]", a, a.getClass().getSimpleName());
+            }
+        });
     }
 }
