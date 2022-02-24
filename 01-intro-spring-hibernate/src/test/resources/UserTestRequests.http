@@ -54,12 +54,12 @@ Authorization: Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJhZG1pbiIsImV4cCI6MTY0MjY4N
 }
 
 ###
-PUT http://localhost:8080/api/users/3
+PUT http://localhost:8080/api/users/4
 Content-Type: application/json
 Authorization: Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJhZG1pbiIsImV4cCI6MTY0MjY5NDIwNiwiaWF0IjoxNjQyNjkwNjA2fQ.RinFtWPKF5AfOxxdmci4DZhBEnRgME8pVgfF18Yp9XNLDYQFgBZX3ft6UZ-oMXyFstCDamuMpAOIk_CQp-5Gdw
 
 {
-  "id": 3,
+  "id": 4,
   "firstName": "Georgi",
   "lastName": "Hristov Petrov",
   "username": "george",
