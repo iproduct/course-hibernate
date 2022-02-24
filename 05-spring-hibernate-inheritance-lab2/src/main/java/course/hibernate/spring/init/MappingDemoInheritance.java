@@ -29,12 +29,15 @@ public class MappingDemoInheritance implements ApplicationRunner {
     @Override
     public void run(ApplicationArguments args) throws Exception {
         template.executeWithoutResult(status -> {
-            DebitAccount debitAccount = new DebitAccount(1L, "John Doe", BigDecimal.valueOf(100),
+            DebitAccount debitAccount = new DebitAccount(1001L, "John Doe", BigDecimal.valueOf(100),
                     BigDecimal.valueOf(1.5D), BigDecimal.valueOf(25));
-            CreditAccount creditAccount = new CreditAccount(2L, "John Doe", BigDecimal.valueOf(1000),
+            CreditAccount creditAccount = new CreditAccount(2001L, "John Doe", BigDecimal.valueOf(1000),
                     BigDecimal.valueOf(1.9D), BigDecimal.valueOf(5000));
+            Account otherAccount = new Account(4920L, "John Doe", BigDecimal.valueOf(1000),
+                    BigDecimal.valueOf(1.9D));
             entityManager.persist(debitAccount);
             entityManager.persist(creditAccount);
+            entityManager.persist(otherAccount);
         });
 
         template.executeWithoutResult(status -> {

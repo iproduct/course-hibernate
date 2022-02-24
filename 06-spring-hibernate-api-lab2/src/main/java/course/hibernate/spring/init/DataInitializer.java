@@ -1,12 +1,12 @@
 package course.hibernate.spring.init;
 
-import course.hibernate.spring.entity.User;
+import course.hibernate.spring.dao.BookRepository;
+import course.hibernate.spring.entity.*;
 import course.hibernate.spring.service.UserService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
-import org.springframework.stereotype.Component;
 
 import javax.validation.ConstraintViolationException;
 import java.util.List;
@@ -49,5 +49,7 @@ public class DataInitializer implements ApplicationRunner {
             long countAfter = userService.count();
             log.info("Users count: {}", countAfter);
         }
+
+
     }
 }

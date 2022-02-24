@@ -1,9 +1,14 @@
 package course.hibernate.spring.entity;
 
+import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
+import javax.persistence.ForeignKey;
+import javax.persistence.PrimaryKeyJoinColumn;
 import java.math.BigDecimal;
 
 @Entity
+//@DiscriminatorValue("D")
+//@PrimaryKeyJoinColumn(name = "debit_acc_id", foreignKey = @ForeignKey(name="fk_debit_acc_id"))
 public class DebitAccount extends Account{
     private BigDecimal overdraftFee;
 
