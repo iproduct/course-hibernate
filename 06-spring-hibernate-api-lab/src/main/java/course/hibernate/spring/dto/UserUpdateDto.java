@@ -1,6 +1,10 @@
 package course.hibernate.spring.dto;
 
 import course.hibernate.spring.entity.Role;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import lombok.RequiredArgsConstructor;
 
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
@@ -21,8 +25,8 @@ public class UserUpdateDto {
     private String username;
     @NotNull
     @Size(min=8, max =30)
-    @Pattern(regexp = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)[a-zA-Z\\d]{8,}$")
-    private String password;
+//    @Pattern(regexp = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)[a-zA-Z\\d]{8,}$")
+//    private String password;
     private Set<Role> roles = Set.of(Role.READER);
 
     public UserUpdateDto() {
@@ -32,15 +36,23 @@ public class UserUpdateDto {
         this.firstName = firstName;
         this.lastName = lastName;
         this.username = username;
-        this.password = password;
+//        this.password = password;
     }
 
     public UserUpdateDto(String firstName, String lastName, String username, String password, Set<Role> roles) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.username = username;
-        this.password = password;
+//        this.password = password;
         this.roles = roles;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public String getFirstName() {
@@ -67,13 +79,13 @@ public class UserUpdateDto {
         this.username = username;
     }
 
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
-    }
+//    public String getPassword() {
+//        return password;
+//    }
+//
+//    public void setPassword(String password) {
+//        this.password = password;
+//    }
 
     public Set<Role> getRoles() {
         return roles;
@@ -89,7 +101,7 @@ public class UserUpdateDto {
                 ", firstName='" + firstName + '\'' +
                 ", lastName='" + lastName + '\'' +
                 ", username='" + username + '\'' +
-                ", password='" + password + '\'' +
+//                ", password='" + password + '\'' +
                 ", roles=" + roles +
                 "}";
     }

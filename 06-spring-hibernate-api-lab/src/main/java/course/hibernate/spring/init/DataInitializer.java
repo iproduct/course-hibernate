@@ -7,6 +7,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
+import org.springframework.stereotype.Component;
 
 import javax.validation.ConstraintViolationException;
 import java.util.List;
@@ -14,7 +15,7 @@ import java.util.Set;
 
 import static course.hibernate.spring.entity.Role.*;
 
-//@Component
+@Component
 @Slf4j
 public class DataInitializer implements ApplicationRunner {
     private static final List<User> SAMPLE_USERS = List.of(
@@ -37,10 +38,10 @@ public class DataInitializer implements ApplicationRunner {
         if (userService.count() == 0) {
             try {
                 List<User> created = userService.createBatch(SAMPLE_USERS);
-                SAMPLE_USERS.forEach(u -> {
-//                    u.setUserInfo(new UserInfo(u,"Java, Spring, Hibernate"));
-                    userService.update(u);
-                });
+//                SAMPLE_USERS.forEach(u -> {
+////                    u.setUserInfo(new UserInfo(u,"Java, Spring, Hibernate"));
+//                    userService.update(u);
+//                });
 
                 log.info("Created default users: {}", created);
             } catch (ConstraintViolationException ex) {

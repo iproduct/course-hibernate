@@ -1,7 +1,10 @@
 package course.hibernate.spring.exception;
 
+import lombok.Data;
+
 import java.util.List;
 
+@Data
 public class InvalidClientDataException extends RuntimeException{
     private List<String> violations = List.of();
     public InvalidClientDataException() {
