@@ -53,10 +53,11 @@ public class HibernateDemoBytecodeEnhancement implements ApplicationRunner {
             entityManager.persist(effectiveJava);
         });
 
-        template.executeWithoutResult(status -> {
-            List<Book> book = entityManager.createQuery("select b from Book b")
-                    .getResultList();
-            log.info("!!! Books: {}", book);
+        Book book = template.execute(status -> {
+            Book book2 =  entityManager.getReference(Book.class, 1L);
+            String title = book2.getTitle();
+            return book2;
         });
+        log.info("!!! Books: {}", book.getTitle());
     }
 }
