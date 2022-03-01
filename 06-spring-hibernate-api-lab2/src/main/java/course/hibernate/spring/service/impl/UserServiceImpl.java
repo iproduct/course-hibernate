@@ -1,7 +1,6 @@
 package course.hibernate.spring.service.impl;
 
-import course.hibernate.spring.dao.UserRepositoryDTO_JPQL;
-import course.hibernate.spring.dto.UserDetailDto;
+import course.hibernate.spring.dao.UserRepository;
 import course.hibernate.spring.entity.User;
 import course.hibernate.spring.events.UserCreationEvent;
 import course.hibernate.spring.exception.EntityNotFoundException;
@@ -30,7 +29,7 @@ import java.util.stream.Collectors;
 @Transactional(propagation = Propagation.REQUIRED)
 @Slf4j
 public class UserServiceImpl implements UserService {
-    private final UserRepositoryDTO_JPQL userRepository;
+    private final UserRepository userRepository;
     private final ApplicationEventPublisher applicationEventPublisher;
     // single TransactionTemplate shared amongst all methods in this instance
     private final PlatformTransactionManager transactionManager;
@@ -39,7 +38,7 @@ public class UserServiceImpl implements UserService {
 
     @Autowired
     public UserServiceImpl(
-            UserRepositoryDTO_JPQL userRepository,
+            UserRepository userRepository,
             ApplicationEventPublisher applicationEventPublisher,
             PlatformTransactionManager transactionManager,
             TransactionTemplate transactionTemplate) {
@@ -51,15 +50,15 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional(readOnly = true)
-    public List<UserDetailDto> findAll() {
-        return userRepository.findAllUserDtos();
+    public List<User> findAll() {
+        return userRepository.findAll();
     }
 
     @Override
     @Transactional(readOnly = true)
     public User findById(Long id) {
         return userRepository.findById(id).orElseThrow(() ->
-                new EntityNotFoundException(String.format("User with ID=%s not found.")));
+                new EntityNotFoundException(String.format("User with ID=%s not found.", id)));
     }
 
     @Override
@@ -85,10 +84,12 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User update(User user) {
-        User old = findById(user.getId());
-        if(!old.getUsername().equals(user.getUsername())) {
-            throw new InvalidClientDataException("Username can not be changed");
-        }
+//        User old = findById(user.getId());
+//        if(!old.getUsername().equals(user.getUsername())) {
+//            throw new InvalidClientDataException("Username can not be changed");
+//        }
+//        user.setCreated(old.getCreated());
+//        user.setPassword(old.getPassword());
         user.setModified(LocalDateTime.now());
         try {
             return userRepository.save(user);

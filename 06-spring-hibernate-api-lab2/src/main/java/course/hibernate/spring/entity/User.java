@@ -2,6 +2,7 @@ package course.hibernate.spring.entity;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import org.hibernate.annotations.JoinFormula;
+import org.hibernate.annotations.SelectBeforeUpdate;
 import org.hibernate.loader.entity.plan.AbstractLoadPlanBasedEntityLoader;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -23,6 +24,7 @@ import java.util.stream.Collectors;
         indexes = @Index(name="uniqueUsernameIndex", columnList = "username", unique = true))
 @NamedEntityGraph(name = "User.detail", attributeNodes = @NamedAttributeNode("roles"))
 @Access(AccessType.FIELD)
+//@SelectBeforeUpdate
 public class User extends EntityBase implements UserDetails {
     @NotNull
     @Size(min=2, max =20)
@@ -34,7 +36,7 @@ public class User extends EntityBase implements UserDetails {
     @Size(min=5, max =20)
     @Column(updatable = false, nullable = false)
     private String username;
-    @NotBlank
+//    @NotBlank
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private String password;
     @ElementCollection(fetch = FetchType.EAGER)
@@ -44,9 +46,9 @@ public class User extends EntityBase implements UserDetails {
 
     private String phoneNumber;
 
-    @ManyToOne
-    @JoinFormula("CAST(REGEXP_REPLACE(phone_number, '.?(\\d+)-.*', '\\1') AS DECIMAL(3))")
-    private Country country;
+//    @ManyToOne
+//    @JoinFormula("CAST(REGEXP_REPLACE(phone_number, '.?(\\d+)-.*', '\\1') AS DECIMAL(3))")
+//    private Country country;
 
 //    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
 //    private UserInfo userInfo;
@@ -189,13 +191,13 @@ public class User extends EntityBase implements UserDetails {
         this.phoneNumber = phoneNumber;
     }
 
-    public Country getCountry() {
-        return country;
-    }
-
-    public void setCountry(Country country) {
-        this.country = country;
-    }
+//    public Country getCountry() {
+//        return country;
+//    }
+//
+//    public void setCountry(Country country) {
+//        this.country = country;
+//    }
 //    public UserInfo getUserInfo() {
 //        return userInfo;
 //    }
@@ -207,6 +209,7 @@ public class User extends EntityBase implements UserDetails {
     @Override
     public String toString() {
         final StringBuilder sb = new StringBuilder("User{");
+        sb.append("ID='").append(getId()).append('\'');
         sb.append("firstName='").append(firstName).append('\'');
         sb.append(", lastName='").append(lastName).append('\'');
         sb.append(", username='").append(username).append('\'');

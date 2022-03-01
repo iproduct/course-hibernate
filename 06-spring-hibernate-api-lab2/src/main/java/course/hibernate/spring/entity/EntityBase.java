@@ -11,19 +11,19 @@ import java.time.LocalDateTime;
 public class EntityBase {
     @Id
     @GeneratedValue(
-            strategy = GenerationType.SEQUENCE,
+            strategy = GenerationType.IDENTITY,
             generator = "custom-id"
     )
-    @GenericGenerator(
-            name="custom-id",
-            strategy = "org.hibernate.id.enhanced.SequenceStyleGenerator",
-            parameters = {
-                    @org.hibernate.annotations.Parameter(name="sequence_name", value="user_sequence"),
-                    @org.hibernate.annotations.Parameter(name="initial_value", value="1"),
-                    @org.hibernate.annotations.Parameter(name="increment_size", value="5"),
-                    @Parameter(name="optimizer", value="pooled")
-            }
-    )
+//    @GenericGenerator(
+//            name="custom-id",
+//            strategy = "org.hibernate.id.enhanced.SequenceStyleGenerator",
+//            parameters = {
+//                    @org.hibernate.annotations.Parameter(name="sequence_name", value="user_sequence"),
+//                    @org.hibernate.annotations.Parameter(name="initial_value", value="1"),
+//                    @org.hibernate.annotations.Parameter(name="increment_size", value="5"),
+//                    @Parameter(name="optimizer", value="pooled")
+//            }
+//    )
 //    @GeneratedValue(strategy = GenerationType.IDENTITY)
 //    @GeneratedValue(strategy = GenerationType.TABLE, generator = "base_table_generator")
 //    @TableGenerator(

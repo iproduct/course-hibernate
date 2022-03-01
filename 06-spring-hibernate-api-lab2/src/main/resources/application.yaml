@@ -18,6 +18,14 @@ spring:
         format_sql: true
         generate_statistics: true
         metadata_builder_contributor: course.hibernate.spring.config.CustomMetadataBuilderContributor
+#        bytecode:
+#          allow_enhancement_as_proxy: true
+#          use_reflection_optimizer: true
+#          provider: org.hibernate.bytecode.internal.javassist.BytecodeProviderImpl
+#        enhancer:
+#          enableDirtyTracking: true
+#          enableLazyInitialization: true
+#          enableAssociationManagement: true
 
     hibernate:
       ddl-auto: create

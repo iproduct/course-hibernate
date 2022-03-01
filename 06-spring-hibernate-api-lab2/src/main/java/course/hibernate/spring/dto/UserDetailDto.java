@@ -1,16 +1,9 @@
 package course.hibernate.spring.dto;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-import course.hibernate.spring.entity.EntityBase;
 import course.hibernate.spring.entity.Role;
-import lombok.Data;
 
-import javax.persistence.*;
 import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
-import java.time.LocalDateTime;
-import java.util.List;
 import java.util.Set;
 
 
@@ -26,7 +19,7 @@ public class UserDetailDto {
     @NotNull
     @Size(min=5, max =20)
     private String username;
-    private String roles;
+    private Set<Role> roles = Set.of();
 
     public UserDetailDto() {
     }
@@ -38,7 +31,7 @@ public class UserDetailDto {
         this.username = username;
     }
 
-    public UserDetailDto(Long id, String firstName, String lastName, String username, String roles) {
+    public UserDetailDto(Long id, String firstName, String lastName, String username, Set<Role> roles) {
         this.id = id;
         this.firstName = firstName;
         this.lastName = lastName;
@@ -78,11 +71,11 @@ public class UserDetailDto {
         this.username = username;
     }
 
-    public String getRoles() {
+    public Set<Role> getRoles() {
         return roles;
     }
 
-    public void setRoles(String roles) {
+    public void setRoles(Set<Role> roles) {
         this.roles = roles;
     }
 
