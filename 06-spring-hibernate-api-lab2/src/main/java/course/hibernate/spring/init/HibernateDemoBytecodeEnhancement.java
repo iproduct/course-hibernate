@@ -3,6 +3,7 @@ package course.hibernate.spring.init;
 import course.hibernate.spring.entity.Book;
 import course.hibernate.spring.entity.Person;
 import lombok.extern.slf4j.Slf4j;
+import org.hibernate.Session;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
@@ -60,9 +61,14 @@ public class HibernateDemoBytecodeEnhancement implements ApplicationRunner {
             }
         });
 
-        List<Book> results = template.execute(status -> {
+        List<Book> books = template.execute(status -> {
 //            Book book2 = entityManager.unwrap(Session.class).load(Book.class, 1L);
-            Book book1 = entityManager.find(Book.class, 1L);
+//            Book book1 = entityManager.unwrap(Session.class).byId(Book.class)
+//                    .with(CacheMode.PUT)
+//                    .load(1L);
+            Book book1 = entityManager.unwrap(Session.class).bySimpleNaturalId(Book.class)
+                    .load("0134685997");
+
             Book book2 = entityManager.find(Book.class, 2L);
 //            List<Book> results = entityManager.createQuery("select b from Book b", Book.class)
 //                    .getResultList();
@@ -73,10 +79,18 @@ public class HibernateDemoBytecodeEnhancement implements ApplicationRunner {
 //            } catch (Exception expected) {
 //                log.info("!!!! Author is not set");
 //            }
-            var books  = List.of(book1, book2);
-            books.forEach(book -> log.info("!!! Book: {}", book));
-            return books;
+            return List.of(book1, book2);
         });
-//        log.info("!!! Books: {}", book3.getTitle());
+        books.forEach(book -> log.info("!!! Book: {}", book));
+
+        // Find again same entities
+        List<Book> books2 = template.execute(status -> {
+            Book book1 = entityManager.unwrap(Session.class).byNaturalId(Book.class)
+                    .using("isbn", "0134685997")
+                    .load();
+            Book book2 = entityManager.find(Book.class, 2L);
+            return List.of(book1, book2);
+        });
+        books2.forEach(book -> log.info("!!! Book: {}", book));
     }
 }

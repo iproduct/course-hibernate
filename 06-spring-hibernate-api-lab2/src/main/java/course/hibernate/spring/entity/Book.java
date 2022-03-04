@@ -31,9 +31,13 @@ public class Book {
     @Id
     private Long id;
     private String title;
+
     @ManyToOne
     private Person author;
+
     @NaturalId
+    @org.hibernate.annotations.Cache(usage = CacheConcurrencyStrategy.READ_WRITE,
+            region="course.hibernate.spring.entity.Book", include = "all")
     private String isbn;
 
     @Basic(fetch=LAZY)
