@@ -20,6 +20,7 @@ spring:
         metadata_builder_contributor: course.hibernate.spring.config.CustomMetadataBuilderContributor
         cache:
           use_second_level_cache: true
+          default_cache_concurrency_strategy: read-write
           region:
             factory_class: jcache
         javax:

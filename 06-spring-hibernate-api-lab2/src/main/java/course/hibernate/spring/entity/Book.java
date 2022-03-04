@@ -2,12 +2,12 @@ package course.hibernate.spring.entity;
 
 import lombok.*;
 import org.aspectj.lang.annotation.RequiredTypes;
-import org.hibernate.annotations.GenericGenerator;
+import org.hibernate.annotations.*;
 
 import javax.persistence.*;
+import javax.persistence.Entity;
+import javax.persistence.Table;
 
-import org.hibernate.annotations.LazyGroup;
-import org.hibernate.annotations.NaturalId;
 import org.hibernate.annotations.Parameter;
 import org.springframework.web.bind.annotation.RequestBody;
 
@@ -24,6 +24,9 @@ import static org.hibernate.id.UUIDGenerator.UUID_GEN_STRATEGY_CLASS;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
+@Cacheable
+@org.hibernate.annotations.Cache(usage = CacheConcurrencyStrategy.READ_WRITE,
+        region="course.hibernate.spring.entity.Book", include = "all")
 public class Book {
     @Id
     private Long id;
@@ -39,7 +42,7 @@ public class Book {
     @Lob
     @Basic(fetch=LAZY)
     @LazyGroup("lobs")
-    private Blob image;
+    private byte[] image;
 
     @Lob
     @Basic(fetch=LAZY)

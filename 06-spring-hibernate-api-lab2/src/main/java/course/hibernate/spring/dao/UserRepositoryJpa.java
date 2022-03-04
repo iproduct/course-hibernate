@@ -53,7 +53,7 @@ public class UserRepositoryJpa extends SimpleJpaRepository<User, Long> implement
                 .enableOrderedReturn(true)
                 .enableSessionCheck(false)
                 .enableReturnOfDeletedEntities(true)
-                .with(CacheMode.GET)
+                .with(CacheMode.NORMAL)
         .multiLoad(ids);
     }
 
