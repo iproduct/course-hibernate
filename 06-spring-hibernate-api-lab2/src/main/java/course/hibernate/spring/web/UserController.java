@@ -12,6 +12,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -34,10 +35,20 @@ public class UserController {
                 .collect(Collectors.toList());
     }
 
-    @GetMapping("/{id}")
+    @GetMapping("/{id:^\\d+$}")
     UserDetailDto getUserById(@PathVariable("id") Long id) {
         return modelMapper.map(userService.findById(id), UserDetailDto.class);
     }
+
+    @GetMapping("/{ids}")
+    List<UserDetailDto> getUsersByIds(@PathVariable("ids") String ids) {
+        var users = userService.findByIds(
+            Arrays.stream(ids.split("_")).map(idStr -> Long.parseLong(idStr)).collect(Collectors.toList())
+        );
+        return users.stream().map(user -> modelMapper.map(user, UserDetailDto.class))
+                .collect(Collectors.toList());
+    }
+
     @PostMapping
     public ResponseEntity<UserDetailDto> create(@RequestBody UserCreateDto userDto) {
         User user = modelMapper.map(userDto, User.class);

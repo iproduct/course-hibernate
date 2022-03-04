@@ -36,7 +36,7 @@ public class User extends EntityBase implements UserDetails {
     @Size(min=5, max =20)
     @Column(updatable = false, nullable = false)
     private String username;
-//    @NotBlank
+    @NotBlank
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private String password;
     @ElementCollection(fetch = FetchType.EAGER)

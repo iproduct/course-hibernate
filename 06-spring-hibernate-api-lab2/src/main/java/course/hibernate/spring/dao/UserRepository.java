@@ -14,6 +14,7 @@ public interface UserRepository extends JpaRepository<User, Long> {
 //    @Query("SELECT DISTINCT u FROM User u LEFT JOIN FETCH u.roles")
 //    @EntityGraph(value = "User.detail", type = EntityGraph.EntityGraphType.LOAD)
 //    List<User> findAll();
+    List<User> findByIds(List<Long> ids);
     Optional<User> findByUsername(String username);
     User create(User user);
     User update(User user);

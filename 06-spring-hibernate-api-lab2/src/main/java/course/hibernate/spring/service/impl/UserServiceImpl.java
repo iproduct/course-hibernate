@@ -62,6 +62,11 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public List<User> findByIds(List<Long> ids) {
+        return userRepository.findByIds(ids);
+    }
+
+    @Override
     @Transactional(readOnly = true)
     public User findByUsername(String username) {
         return userRepository.findByUsername(username).orElseThrow(() ->
@@ -84,12 +89,12 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User update(User user) {
-//        User old = findById(user.getId());
-//        if(!old.getUsername().equals(user.getUsername())) {
-//            throw new InvalidClientDataException("Username can not be changed");
-//        }
-//        user.setCreated(old.getCreated());
-//        user.setPassword(old.getPassword());
+        User old = findById(user.getId());
+        if(!old.getUsername().equals(user.getUsername())) {
+            throw new InvalidClientDataException("Username can not be changed");
+        }
+        user.setCreated(old.getCreated());
+        user.setPassword(old.getPassword());
         user.setModified(LocalDateTime.now());
         try {
             return userRepository.save(user);

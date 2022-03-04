@@ -64,6 +64,12 @@ dependencies {
     implementation 'org.springframework:spring-instrument:5.3.14'
     implementation 'de.invesdwin:invesdwin-instrument:1.0.14'
 
+    //second level cache
+    implementation 'org.springframework.boot:spring-boot-starter-cache'
+    implementation 'org.hibernate:hibernate-jcache'
+    implementation 'javax.cache:cache-api'
+    implementation 'org.ehcache:ehcache:3.9.4'
+
 //    implementation 'org.modelmapper:modelmapper:3.0.0'
     implementation 'com.github.jmnarloch:modelmapper-spring-boot-starter:1.1.0'
     compileOnly 'org.projectlombok:lombok'

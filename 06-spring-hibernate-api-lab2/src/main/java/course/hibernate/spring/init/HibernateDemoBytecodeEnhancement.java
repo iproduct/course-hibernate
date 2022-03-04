@@ -22,14 +22,6 @@ import static course.hibernate.spring.entity.Role.*;
 @Component
 @Slf4j
 public class HibernateDemoBytecodeEnhancement implements ApplicationRunner {
-    private static final List<User> SAMPLE_USERS = List.of(
-            new User("Default", "Admin", "admin", "Admin123&",
-                    Set.of(READER, AUTHOR, ADMIN), "+1-234-5678"),
-            new User("Default", "Author", "author", "Author123&",
-                    Set.of(READER, AUTHOR), "+40-123-4567"),
-            new User("Default", "Reader", "reader", "Reader123&",
-                    Set.of(READER), "+359-123-4567")
-    );
     @PersistenceContext
     private EntityManager entityManager;
 

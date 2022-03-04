@@ -2,10 +2,12 @@ package course.hibernate.spring.dao;
 
 import course.hibernate.spring.entity.User;
 import lombok.extern.slf4j.Slf4j;
+import org.hibernate.CacheMode;
 import org.hibernate.Session;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.jpa.repository.support.SimpleJpaRepository;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityNotFoundException;
@@ -14,6 +16,7 @@ import java.util.Optional;
 
 @Repository
 @Slf4j
+@Transactional
 public class UserRepositoryJpa extends SimpleJpaRepository<User, Long> implements UserRepository {
     private EntityManager entityManager;
 
@@ -24,19 +27,42 @@ public class UserRepositoryJpa extends SimpleJpaRepository<User, Long> implement
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<User> findAll() {
         return entityManager.createQuery("select u from User u", User.class)
                 .getResultList();
     }
 
     @Override
+    @Transactional(readOnly = true)
     public Optional<User> findById(Long id) {
-        return Optional.ofNullable(entityManager.find(User.class, id));
+//        return Optional.ofNullable(entityManager.find(User.class, id));
+        return entityManager.unwrap(Session.class).byId(User.class).loadOptional(id);
     }
 
     @Override
+//    @Transactional(readOnly = true)
+    public List<User> findByIds(List<Long> ids) {
+//        return Optional.ofNullable(entityManager.find(User.class, id));
+        try {
+            deleteById(1L);
+        }catch (Exception ex){
+            log.info("Entity already deleted.");
+        }
+        return entityManager.unwrap(Session.class).byMultipleIds(User.class)
+                .enableOrderedReturn(true)
+                .enableSessionCheck(false)
+                .enableReturnOfDeletedEntities(true)
+                .with(CacheMode.GET)
+        .multiLoad(ids);
+    }
+
+
+
+    @Override
+    @Transactional(readOnly = true)
     public Optional<User> findByUsername(String username) {
-        return entityManager.createQuery("select u from User u where u.username = :username", User.class)
+        return entityManager.createQuery("select u from User u join fetch u.roles where u.username = :username", User.class)
                 .setParameter("username", username)
                 .getResultStream().findFirst();
     }
@@ -73,13 +99,14 @@ public class UserRepositoryJpa extends SimpleJpaRepository<User, Long> implement
 //        old.setRoles(user.getRoles());
 //        old.setModified(user.getModified());
 
+        var result = entityManager.merge(user);
 //        try {
-        var result = (User) entityManager.unwrap(Session.class).merge(user);
+//            entityManager.unwrap(Session.class).clear();
 //        } catch (Exception ex){
 //            log.error("!!!Error during update", ex);
 //            throw ex;
 //        }
-//        log.info("!!! Updated user: {} -> {}", System.identityHashCode(result), result);
+        log.info("!!! Updated user: {} -> {}", System.identityHashCode(result), result);
         return result;
     }
 
@@ -93,6 +120,7 @@ public class UserRepositoryJpa extends SimpleJpaRepository<User, Long> implement
     }
 
     @Override
+    @Transactional(readOnly = true)
     public long count() {
         return entityManager.createQuery("select count(u) from User u", Long.class)
                 .getSingleResult();
