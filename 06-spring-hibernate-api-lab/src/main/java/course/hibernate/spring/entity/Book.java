@@ -1,25 +1,19 @@
 package course.hibernate.spring.entity;
 
-import lombok.*;
-import org.aspectj.lang.annotation.RequiredTypes;
-import org.hibernate.annotations.GenericGenerator;
-
-import javax.persistence.*;
-
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.hibernate.annotations.LazyGroup;
 import org.hibernate.annotations.NaturalId;
-import org.hibernate.annotations.Parameter;
-import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.cache.annotation.Cacheable;
 
-import java.sql.Blob;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
+import javax.persistence.*;
+import javax.persistence.Basic;
+import javax.persistence.Lob;
+import javax.persistence.ManyToOne;
 
 import static javax.persistence.FetchType.LAZY;
-import static org.hibernate.annotations.CacheConcurrencyStrategy.NONSTRICT_READ_WRITE;
 import static org.hibernate.annotations.CacheConcurrencyStrategy.READ_WRITE;
-import static org.hibernate.id.UUIDGenerator.UUID_GEN_STRATEGY_CLASS;
 
 @Entity
 @Table(name = "books")
