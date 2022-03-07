@@ -66,9 +66,10 @@ public class HibernateDemoBytecodeEnhancement implements ApplicationRunner {
 //            Book book1 = entityManager.unwrap(Session.class).byId(Book.class)
 //                    .with(CacheMode.PUT)
 //                    .load(1L);
-            Book book1 = entityManager.unwrap(Session.class).bySimpleNaturalId(Book.class)
-                    .load("0134685997");
+//            Book book1 = entityManager.unwrap(Session.class).bySimpleNaturalId(Book.class)
+//                    .load("0134685997");
 
+            Book book1 = entityManager.find(Book.class, 1L);
             Book book2 = entityManager.find(Book.class, 2L);
 //            List<Book> results = entityManager.createQuery("select b from Book b", Book.class)
 //                    .getResultList();
@@ -83,14 +84,14 @@ public class HibernateDemoBytecodeEnhancement implements ApplicationRunner {
         });
         books.forEach(book -> log.info("!!! Book: {}", book));
 
-        // Find again same entities
-        List<Book> books2 = template.execute(status -> {
-            Book book1 = entityManager.unwrap(Session.class).byNaturalId(Book.class)
-                    .using("isbn", "0134685997")
-                    .load();
-            Book book2 = entityManager.find(Book.class, 2L);
-            return List.of(book1, book2);
-        });
-        books2.forEach(book -> log.info("!!! Book: {}", book));
+//        // Find again same entities
+//        List<Book> books2 = template.execute(status -> {
+//            Book book1 = entityManager.unwrap(Session.class).byNaturalId(Book.class)
+//                    .using("isbn", "0134685997")
+//                    .load();
+//            Book book2 = entityManager.find(Book.class, 2L);
+//            return List.of(book1, book2);
+//        });
+//        books2.forEach(book -> log.info("!!! Book: {}", book));
     }
 }

@@ -16,7 +16,7 @@
     <!-- Default cache template -->
     <cache-template name="default">
         <expiry>
-            <ttl unit="seconds">30</ttl>
+            <ttl unit="seconds">60</ttl>
         </expiry>
         <listeners>
             <listener>
@@ -31,7 +31,7 @@
             </listener>
         </listeners>
         <resources>
-            <heap>1000</heap>
+            <heap unit="entries">1000</heap>
             <offheap unit="MB">10</offheap>
             <disk persistent="true" unit="MB">20</disk>
         </resources>

@@ -4,14 +4,21 @@ import course.hibernate.spring.entity.Book;
 import course.hibernate.spring.entity.Person;
 import course.hibernate.spring.entity.User;
 import lombok.extern.slf4j.Slf4j;
+import org.ehcache.Cache;
+import org.hibernate.CacheMode;
+import org.hibernate.Session;
+import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.support.TransactionTemplate;
 
+import javax.cache.CacheManager;
+import javax.cache.Caching;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.persistence.PersistenceUnit;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Set;
@@ -21,14 +28,9 @@ import static course.hibernate.spring.entity.Role.*;
 @Component
 @Slf4j
 public class HibernateDemoBytecodeEnhancement implements ApplicationRunner {
-    private static final List<User> SAMPLE_USERS = List.of(
-            new User("Default", "Admin", "admin", "Admin123&",
-                    Set.of(READER, AUTHOR, ADMIN), "+1-234-5678"),
-            new User("Default", "Author", "author", "Author123&",
-                    Set.of(READER, AUTHOR), "+40-123-4567"),
-            new User("Default", "Reader", "reader", "Reader123&",
-                    Set.of(READER), "+359-123-4567")
-    );
+    @PersistenceUnit
+    private SessionFactory sessionFactory;
+
     @PersistenceContext
     private EntityManager entityManager;
 
@@ -37,8 +39,6 @@ public class HibernateDemoBytecodeEnhancement implements ApplicationRunner {
 
     @Override
     public void run(ApplicationArguments args) throws Exception {
-//        Book b1 = new Book("Effective Java", List.of(new Person("Joshua", "Bloch",
-//                LocalDate.of(1965, 8, 11))));
         template.executeWithoutResult(status -> {
             Person josh = new Person(1L, "Joshua", "Bloch",
                     LocalDate.of(1965, 8, 11));
@@ -49,14 +49,95 @@ public class HibernateDemoBytecodeEnhancement implements ApplicationRunner {
                             "As in previous editions, each chapter of Effective Java, Third Edition, consists of several “items,” each presented in the form of a short, stand-alone essay that provides specific advice, insight into Java platform subtleties, and updated code examples. The comprehensive descriptions and explanations for each item illuminate what to do, what not to do, and why.\n" +
                             "The third edition covers language and library features added in Java 7, 8, and 9, including the functional programming constructs that were added to its object-oriented roots. Many new items have been added, including a chapter devoted to lambdas and streams."
             );
+            Person martin = new Person(2L, "Martin", "Fowler",
+                    LocalDate.of(1939, 4, 15));
+            Book umlDistilled = new Book(2L, "Uml Distilled", martin, "9780321193681",
+                    "More than 300,000 developers have benefited from past editions of UML Distilled . This third edition is the best resource for quick, no-nonsense insights into understanding and using UML 2.0 and prior versions of the UML",
+                    null,
+                    "Some readers will want to quickly get up to speed with the UML 2.0 and learn the essentials of the UML. Others will use this book as a handy, quick reference to the most common parts of the UML. The author delivers on both of these promises in a short, concise, and focused presentation." +
+                            "This book describes all the major UML diagram types, what they're used for, and the basic notation involved in creating and deciphering them. These diagrams include class, sequence, object, package, deployment, use case, state machine, activity, communication, composite structure, component, interaction overview, and timing diagrams. The examples are clear and the explanations cut to the fundamental design logic. Includes a quick reference to the most useful parts of the UML notation and a useful summary of diagram types that were added to the UML 2.0." +
+                            "If you are like most developers, you don't have time to keep up with all the new innovations in software engineering. This new edition of Fowler's classic work gets you acquainted with some of the best thinking about efficient object-oriented software design using the UML--in a convenient format that will be essential to anyone who designs software professionally."
+            );
+
             entityManager.persist(josh);
+            entityManager.persist(martin);
+            josh.getBooks().add(effectiveJava);
             entityManager.persist(effectiveJava);
+            martin.getBooks().add(umlDistilled);
+            entityManager.persist(umlDistilled);
+        });
+
+        List<Book> books = template.execute(status -> {
+//            Book book1 = entityManager.unwrap(Session.class).get(Book.class, 1L);
+            Book book1 = entityManager.unwrap(Session.class).byId(Book.class)
+                    .with(CacheMode.GET)
+                    .load(1L);
+//            Book book1 = entityManager.unwrap(Session.class).bySimpleNaturalId(Book.class)
+//                    .load("0134685997");
+
+            Book book2 = entityManager.find(Book.class, 2L);
+//            List<Book> results = entityManager.createQuery("select b from Book b", Book.class)
+//                    .getResultList();
+
+//            try {
+//                log.info("!!!!!! BOOK author: {}:", book2.getAuthor().getFirstName());
+//                log.info("!!!!!! BOOK sample content: {}:", book2.getSampleContent());
+//            } catch (Exception expected) {
+//                log.info("!!!! Author is not set");
+//            }
+            return List.of(book1, book2);
+        });
+        books.forEach(book -> log.info("!!! Book: {}", book));
+
+        template.executeWithoutResult(status -> {
+            var author1 = entityManager.unwrap(Session.class).byId(Person.class)
+                    .with(CacheMode.NORMAL)
+                    .load(1L);
+
+            var author2 = entityManager.find(Person.class, 2L);
+            var authors = List.of(author1, author2);
+            authors.forEach( a -> log.info("!!! Authors: {} -> {}", a, a.getBooks()));
         });
 
         template.executeWithoutResult(status -> {
-            List<Book> book = entityManager.createQuery("select b from Book b")
-                    .getResultList();
-            log.info("!!! Books: {}", book);
+            var author1 = entityManager.unwrap(Session.class).byId(Person.class)
+                    .with(CacheMode.NORMAL)
+                    .load(1L);
+
+            var author2 = entityManager.find(Person.class, 2L);
+            var authors = List.of(author1, author2);
+            authors.forEach( a -> log.info("!!! Authors: {} -> {}", a, a.getBooks()));
         });
+
+//        log.info(">>>>> {}", entityManager.unwrap(Session.class).getSessionFactory().getCache(EnabledCaching));
+        var cachingProvider = Caching.getCachingProvider();
+        CacheManager manager = cachingProvider.getCacheManager();
+        var bookCache = manager.getCache("course.hibernate.spring.entity.Book",
+                Object.class, Object.class);
+        log.info(">>>>> {}", bookCache);
+
+        // Cache statistics
+        sessionFactory.getStatistics().logSummary();
+        System.out.println("Second level caches:");
+        List<String> secondLevelCaches = List.of(sessionFactory.getStatistics().getSecondLevelCacheRegionNames());
+        System.out.println(secondLevelCaches);
+        secondLevelCaches.forEach(name -> {
+            System.out.printf("%s -> %s%n", name,
+                    sessionFactory.getStatistics().getSecondLevelCacheStatistics(name));
+//            try {
+//                System.out.println("Cached entities:" +
+//                        ((JCacheDomainDataRegionImpl)sessionFactory.getCache().unwrap(EnabledCaching.class).toString());
+//            } catch(Exception e){}
+        });
+//        System.out.println(Caching.getCachingProvider().getCacheManager().getURI()); //getCache("products"));
+        // Find again same entities
+//        List<Book> books2 = template.execute(status -> {
+//            Book book1 = entityManager.unwrap(Session.class).byNaturalId(Book.class)
+//                    .using("isbn", "0134685997")
+//                    .load();
+//            Book book2 = entityManager.find(Book.class, 2L);
+//            return List.of(book1, book2);
+//        });
+//        books2.forEach(book -> log.info("!!! Book: {}", book));
     }
 }

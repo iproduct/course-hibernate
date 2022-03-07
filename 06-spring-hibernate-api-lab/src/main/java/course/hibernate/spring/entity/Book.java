@@ -17,6 +17,8 @@ import java.util.List;
 import java.util.UUID;
 
 import static javax.persistence.FetchType.LAZY;
+import static org.hibernate.annotations.CacheConcurrencyStrategy.NONSTRICT_READ_WRITE;
+import static org.hibernate.annotations.CacheConcurrencyStrategy.READ_WRITE;
 import static org.hibernate.id.UUIDGenerator.UUID_GEN_STRATEGY_CLASS;
 
 @Entity
@@ -24,12 +26,16 @@ import static org.hibernate.id.UUIDGenerator.UUID_GEN_STRATEGY_CLASS;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
+@Cacheable
+@org.hibernate.annotations.Cache(usage = READ_WRITE, region = "course.hibernate.spring.entity.Book",
+include="all")
 public class Book {
     @Id
     private Long id;
     private String title;
     @ManyToOne
     private Person author;
+
     @NaturalId
     private String isbn;
 
@@ -39,7 +45,7 @@ public class Book {
     @Lob
     @Basic(fetch=LAZY)
     @LazyGroup("lobs")
-    private Blob image;
+    private byte[] image;
 
     @Lob
     @Basic(fetch=LAZY)

@@ -1,6 +1,7 @@
 package course.hibernate.spring.entity;
 
 import lombok.*;
+import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.NotFound;
 import org.hibernate.annotations.NotFoundAction;
 
@@ -12,12 +13,17 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
+import static org.hibernate.annotations.CacheConcurrencyStrategy.NONSTRICT_READ_WRITE;
+import static org.hibernate.annotations.CacheConcurrencyStrategy.READ_WRITE;
+
 @Entity
 @Table(name = "persons")
 @Data
 @NoArgsConstructor
 @RequiredArgsConstructor
 @AllArgsConstructor
+@Cacheable
+@org.hibernate.annotations.Cache(usage = READ_WRITE)
 public class Person {
     @Id
     @NonNull
@@ -36,6 +42,7 @@ public class Person {
 
     @OneToMany(mappedBy = "author")
     @ToString.Exclude
+    @org.hibernate.annotations.Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
     private List<Book> books = new ArrayList<>();
 }
 
