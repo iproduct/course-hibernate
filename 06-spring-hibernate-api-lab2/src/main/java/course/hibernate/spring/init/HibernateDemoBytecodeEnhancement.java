@@ -3,7 +3,9 @@ package course.hibernate.spring.init;
 import course.hibernate.spring.entity.Book;
 import course.hibernate.spring.entity.Person;
 import lombok.extern.slf4j.Slf4j;
+import org.hibernate.CacheMode;
 import org.hibernate.Session;
+import org.hibernate.cache.internal.EnabledCaching;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
@@ -13,7 +15,9 @@ import org.springframework.transaction.support.TransactionTemplate;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import java.time.LocalDate;
+import java.util.Arrays;
 import java.util.List;
+
 
 @Component
 @Slf4j
@@ -47,51 +51,131 @@ public class HibernateDemoBytecodeEnhancement implements ApplicationRunner {
                             "This book describes all the major UML diagram types, what they're used for, and the basic notation involved in creating and deciphering them. These diagrams include class, sequence, object, package, deployment, use case, state machine, activity, communication, composite structure, component, interaction overview, and timing diagrams. The examples are clear and the explanations cut to the fundamental design logic. Includes a quick reference to the most useful parts of the UML notation and a useful summary of diagram types that were added to the UML 2.0." +
                             "If you are like most developers, you don't have time to keep up with all the new innovations in software engineering. This new edition of Fowler's classic work gets you acquainted with some of the best thinking about efficient object-oriented software design using the UML--in a convenient format that will be essential to anyone who designs software professionally."
             );
+            Person john = new Person(3L, "John", "Doe",
+                    LocalDate.of(1978, 8, 11));
+            Person jane = new Person(4L, "Jane", "Doe",
+                    LocalDate.of(1981, 8, 11));
 
             entityManager.persist(josh);
             entityManager.persist(martin);
+            entityManager.persist(john);
+            entityManager.persist(jane);
             josh.getBooks().add(effectiveJava);
             entityManager.persist(effectiveJava);
             martin.getBooks().add(umlDistilled);
             entityManager.persist(umlDistilled);
+//            try {
+//                log.info("!!!!!! AUTHOR Books: {}:", effectiveJava.getAuthor().getBooks().get(0));
+//            } catch (Exception expected) {
+//                log.info("!!!! AUTHOR Books is not set");
+//            }
+        });
+
+//        List<Book> books = template.execute(status -> {
+////            Book book2 = entityManager.unwrap(Session.class).load(Book.class, 1L);
+//            Book book1 = entityManager.unwrap(Session.class).byId(Book.class)
+//                    .with(CacheMode.NORMAL)
+//                    .load(1L);
+////            Book book1 = entityManager.unwrap(Session.class).bySimpleNaturalId(Book.class)
+////                    .load("0134685997");
+//
+////            Book book1 = entityManager.find(Book.class, 1L);
+//            Map<String, Object> props = new HashMap<>();
+//            props.put("javax.persistence.cache.storeMode", CacheStoreMode.USE);
+//            props.put("javax.persistence.cache.retrieveMode", CacheRetrieveMode.USE);
+//            Book book2 = entityManager.find(Book.class, 2L, LockModeType.NONE, props);
+////            List<Book> results = entityManager.createQuery("select b from Book b", Book.class)
+////                    .getResultList();
+//
+////            try {
+////                log.info("!!!!!! BOOK author: {}:", book2.getAuthor().getFirstName());
+////                log.info("!!!!!! BOOK sample content: {}:", book2.getSampleContent());
+////            } catch (Exception expected) {
+////                log.info("!!!! Author is not set");
+////            }
+//            return List.of(book1, book2);
+//        });
+//        books.forEach(book -> log.info("!!! Book: {}", book));
+
+        // Find author entities
+        template.executeWithoutResult(status -> {
+            var author1 = entityManager.unwrap(Session.class).byId(Person.class)
+                    .with(CacheMode.NORMAL)
+                    .load(1L);
+
+            var author2 = entityManager.find(Person.class, 2L);
+            var authors = List.of(author1, author2);
+            authors.forEach(a -> log.info("!!! Authors: {} -> {}", a, a.getBooks()));
+        });
+//        showCaches();
+
+        // Find again same entities
+        template.executeWithoutResult(status -> {
+            var author1 = entityManager.unwrap(Session.class).byId(Person.class)
+                    .with(CacheMode.NORMAL)
+                    .load(1L);
+
+            var author2 = entityManager.find(Person.class, 2L);
+            var authors = List.of(author1, author2);
+            authors.forEach(a -> log.info("!!! Authors: {} -> {}", a, a.getBooks()));
+        });
+
+        // Print second cache statistics
+        log.info(">>>> CACHE Person ID=1L: {}", entityManager.getEntityManagerFactory().getCache()
+                .unwrap(EnabledCaching.class).getRegion("course.hibernate.spring.entity.Person"));
+        log.info(">>>> CACHE Person ID=2L: {}", entityManager.getEntityManagerFactory().getCache().contains(Person.class, 2L));
+//        showCaches();
+
+        // Use query cache
+        List<Person> persons1 = entityManager.createQuery(
+                        "select p from Person p where p.lastName = :lastName", Person.class)
+                .setParameter("lastName", "Doe")
+                .setHint("org.hibernate.cacheable", "true")
+                .getResultList();
+        log.info(">>> First Query Results: {}", persons1);
+        // Hibernate API
+        List<Person> persons2 = entityManager.unwrap(Session.class)
+                .createQuery("select p from Person p where p.lastName = :lastName")
+                .setParameter("lastName", "Doe")
+                .setCacheable(true)
+                .list();
+        log.info(">>> Second Query Results: {}", persons2);
+        showCaches();
+
+        // Update query cache
+        template.executeWithoutResult(status -> {
+            var results = entityManager.createQuery(
+                    "update Person p set p.firstName='Updated' where p.lastName = :lastName")
+                    .setParameter("lastName", "Doe")
+                    .setHint("org.hibernate.cacheable", "true")
+                    .executeUpdate();
+            log.info(">>> Updated: {}", results);
+        });
+
+        List<Person> persons3 = entityManager.unwrap(Session.class)
+                .createQuery("select p from Person p where p.lastName = :lastName")
+                .setParameter("lastName", "Doe")
+                .setCacheable(true)
+                .list();
+        log.info(">>> Second Query Results: {}", persons3);
+
+    }
+
+
+    private void showCaches() {
+        var sessionFactory = entityManager.unwrap(Session.class).getSessionFactory();
+        sessionFactory.getStatistics().logSummary();
+        System.out.println("-----------------------------------------------------------------------");
+        String[] secondLevelRegions = sessionFactory.getStatistics().getSecondLevelCacheRegionNames();
+        log.info(">>>> SECOND LEVEL CACHES: {}", secondLevelRegions);
+
+        Arrays.stream(secondLevelRegions).forEach(region -> {
             try {
-                log.info("!!!!!! AUTHOR Books: {}:", effectiveJava.getAuthor().getBooks().get(0));
-            } catch (Exception expected) {
-                log.info("!!!! AUTHOR Books is not set");
+                log.info("Region [{}]: {}", region, sessionFactory.getStatistics().getDomainDataRegionStatistics(region));
+            } catch (Exception ex) {
+                log.warn("Error getting region statistics", ex);
             }
         });
 
-        List<Book> books = template.execute(status -> {
-//            Book book2 = entityManager.unwrap(Session.class).load(Book.class, 1L);
-//            Book book1 = entityManager.unwrap(Session.class).byId(Book.class)
-//                    .with(CacheMode.PUT)
-//                    .load(1L);
-//            Book book1 = entityManager.unwrap(Session.class).bySimpleNaturalId(Book.class)
-//                    .load("0134685997");
-
-            Book book1 = entityManager.find(Book.class, 1L);
-            Book book2 = entityManager.find(Book.class, 2L);
-//            List<Book> results = entityManager.createQuery("select b from Book b", Book.class)
-//                    .getResultList();
-
-//            try {
-//                log.info("!!!!!! BOOK author: {}:", book2.getAuthor().getFirstName());
-//                log.info("!!!!!! BOOK sample content: {}:", book2.getSampleContent());
-//            } catch (Exception expected) {
-//                log.info("!!!! Author is not set");
-//            }
-            return List.of(book1, book2);
-        });
-        books.forEach(book -> log.info("!!! Book: {}", book));
-
-//        // Find again same entities
-//        List<Book> books2 = template.execute(status -> {
-//            Book book1 = entityManager.unwrap(Session.class).byNaturalId(Book.class)
-//                    .using("isbn", "0134685997")
-//                    .load();
-//            Book book2 = entityManager.find(Book.class, 2L);
-//            return List.of(book1, book2);
-//        });
-//        books2.forEach(book -> log.info("!!! Book: {}", book));
     }
 }

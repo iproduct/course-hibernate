@@ -7,7 +7,9 @@ import org.hibernate.annotations.*;
 import javax.persistence.*;
 import javax.persistence.Entity;
 import javax.persistence.Table;
+//import org.springframework.cache.annotation.Cacheable;
 
+import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.Parameter;
 import org.springframework.web.bind.annotation.RequestBody;
 

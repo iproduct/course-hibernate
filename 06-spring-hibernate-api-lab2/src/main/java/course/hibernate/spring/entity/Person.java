@@ -19,8 +19,8 @@ import java.util.List;
 @NoArgsConstructor
 @RequiredArgsConstructor
 @AllArgsConstructor
-//@Cacheable
-//@org.hibernate.annotations.Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
+@Cacheable
+@org.hibernate.annotations.Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 public class Person {
     @Id
     @NonNull
@@ -39,6 +39,7 @@ public class Person {
 
     @OneToMany(mappedBy = "author")
     @ToString.Exclude
+    @org.hibernate.annotations.Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
     private List<Book> books = new ArrayList<>();
 }
 
