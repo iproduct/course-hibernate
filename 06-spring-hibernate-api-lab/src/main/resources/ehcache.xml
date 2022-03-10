@@ -64,5 +64,25 @@
     <cache alias="course.hibernate.spring.entity.Book" uses-template="hibernateEntityTemplate" />
     <cache alias="course.hibernate.spring.entity.Person" uses-template="hibernateEntityTemplate" />
     <cache alias="course.hibernate.spring.entity.Person.books" uses-template="hibernateEntityTemplate" />
+    <cache alias="org.hibernate.cache.internal.StandardQueryCache" uses-template="hibernateEntityTemplate" />
+<!--    <cache alias="org.hibernate.cache.spi.TimestampsCache" uses-template="hibernateEntityTemplate" />-->
+
 
 </config>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

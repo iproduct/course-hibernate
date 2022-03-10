@@ -1,11 +1,11 @@
 package course.hibernate.spring.entity;
 
 import lombok.*;
-import org.hibernate.annotations.CacheConcurrencyStrategy;
-import org.hibernate.annotations.NotFound;
-import org.hibernate.annotations.NotFoundAction;
+import org.hibernate.annotations.*;
 
 import javax.persistence.*;
+import javax.persistence.Entity;
+import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Past;
 import javax.validation.constraints.Size;
@@ -18,12 +18,15 @@ import static org.hibernate.annotations.CacheConcurrencyStrategy.READ_WRITE;
 
 @Entity
 @Table(name = "persons")
+@SecondaryTable(name="books")
 @Data
 @NoArgsConstructor
 @RequiredArgsConstructor
 @AllArgsConstructor
-@Cacheable
-@org.hibernate.annotations.Cache(usage = READ_WRITE)
+//@Cacheable
+//@org.hibernate.annotations.Cache(usage = READ_WRITE)
+@FilterDef(name = "youngAuthors")
+@FilterDef(name = "recentBooks", parameters = {})
 public class Person {
     @Id
     @NonNull
@@ -40,9 +43,31 @@ public class Person {
     @Past
     LocalDate dateOfBirth;
 
-    @OneToMany(mappedBy = "author")
+    @ManyToMany
     @ToString.Exclude
-    @org.hibernate.annotations.Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
+//    @org.hibernate.annotations.Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
+    @FilterJoinTable(name="youngAuthors", condition = "date_of_birth > 1973-01-01")
+    @Filter(name="recentBooks", condition = "{bk}.year > 2015",
+            aliases = {@SqlFragmentAlias(alias = "bk", table = "books")})
     private List<Book> books = new ArrayList<>();
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 

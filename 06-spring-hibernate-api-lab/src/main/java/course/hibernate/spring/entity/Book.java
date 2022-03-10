@@ -3,15 +3,19 @@ package course.hibernate.spring.entity;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.hibernate.annotations.LazyGroup;
-import org.hibernate.annotations.NaturalId;
+import org.hibernate.annotations.*;
 //import org.springframework.cache.annotation.Cacheable;
 
 import javax.persistence.*;
 import javax.persistence.Basic;
+import javax.persistence.Entity;
 import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
+import javax.persistence.Table;
 
+import java.util.List;
+
+import static javax.persistence.FetchType.EAGER;
 import static javax.persistence.FetchType.LAZY;
 import static org.hibernate.annotations.CacheConcurrencyStrategy.READ_WRITE;
 
@@ -20,18 +24,23 @@ import static org.hibernate.annotations.CacheConcurrencyStrategy.READ_WRITE;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@Cacheable
-@org.hibernate.annotations.Cache(usage = READ_WRITE, region = "course.hibernate.spring.entity.Book",
-include="all")
+//@Cacheable
+//@org.hibernate.annotations.Cache(usage = READ_WRITE, region = "course.hibernate.spring.entity.Book",
+//include="all")
+//@FilterDef(name = "recentBooks")
+//@Filter(name="recentBooks", condition = "year > 2015")
 public class Book {
     @Id
     private Long id;
     private String title;
-    @ManyToOne
-    private Person author;
+
+    @ManyToMany(mappedBy = "books", fetch = EAGER)
+    private List<Person> author;
 
     @NaturalId
     private String isbn;
+
+    private int year;
 
     @Basic(fetch=LAZY)
     private String summary;
