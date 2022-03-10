@@ -2,19 +2,22 @@ package course.hibernate.spring.init;
 
 import course.hibernate.spring.entity.Book;
 import course.hibernate.spring.entity.Person;
+import course.hibernate.spring.util.CacheUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.hibernate.CacheMode;
 import org.hibernate.Session;
+import org.hibernate.cache.internal.EnabledCaching;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.support.TransactionTemplate;
 
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
+import javax.persistence.*;
 import java.time.LocalDate;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Component
 @Slf4j
@@ -25,6 +28,9 @@ public class HibernateDemoBytecodeEnhancement implements ApplicationRunner {
 
     @Autowired
     private TransactionTemplate template;
+
+    @Autowired
+    CacheUtil cacheUtil;
 
     @Override
     public void run(ApplicationArguments args) throws Exception {
@@ -47,9 +53,15 @@ public class HibernateDemoBytecodeEnhancement implements ApplicationRunner {
                             "This book describes all the major UML diagram types, what they're used for, and the basic notation involved in creating and deciphering them. These diagrams include class, sequence, object, package, deployment, use case, state machine, activity, communication, composite structure, component, interaction overview, and timing diagrams. The examples are clear and the explanations cut to the fundamental design logic. Includes a quick reference to the most useful parts of the UML notation and a useful summary of diagram types that were added to the UML 2.0." +
                             "If you are like most developers, you don't have time to keep up with all the new innovations in software engineering. This new edition of Fowler's classic work gets you acquainted with some of the best thinking about efficient object-oriented software design using the UML--in a convenient format that will be essential to anyone who designs software professionally."
             );
+            Person john = new Person(3L, "John", "Doe",
+                    LocalDate.of(1978, 8, 11));
+            Person jane = new Person(4L, "Jane", "Doe",
+                    LocalDate.of(1981, 8, 11));
 
             entityManager.persist(josh);
             entityManager.persist(martin);
+            entityManager.persist(john);
+            entityManager.persist(jane);
             josh.getBooks().add(effectiveJava);
             entityManager.persist(effectiveJava);
             martin.getBooks().add(umlDistilled);
@@ -83,31 +95,91 @@ public class HibernateDemoBytecodeEnhancement implements ApplicationRunner {
                     .with(CacheMode.NORMAL)
                     .load(1L);
 
-            var author2 = entityManager.find(Person.class, 2L);
+            Map<String, Object> props = new HashMap<>();
+            props.put("javax.persistence.cache.storeMode", CacheStoreMode.USE);
+            props.put("javax.persistence.cache.retrieveMode", CacheRetrieveMode.USE);
+            var author2 = entityManager.find(Person.class, 2L, props);
+
             var authors = List.of(author1, author2);
             authors.forEach( a -> log.info("!!! Authors: {} -> {}", a, a.getBooks()));
         });
+        cacheUtil.logCacheStatistics();
 
         template.executeWithoutResult(status -> {
             var author1 = entityManager.unwrap(Session.class).byId(Person.class)
                     .with(CacheMode.NORMAL)
                     .load(1L);
 
-            var author2 = entityManager.find(Person.class, 2L);
+            Map<String, Object> props = new HashMap<>();
+            props.put("javax.persistence.cache.storeMode", CacheStoreMode.USE);
+            props.put("javax.persistence.cache.retrieveMode", CacheRetrieveMode.USE);
+            var author2 = entityManager.find(Person.class, 2L, props);
+
             var authors = List.of(author1, author2);
             authors.forEach( a -> log.info("!!! Authors: {} -> {}", a, a.getBooks()));
         });
 
         // Cache statistics
-        var session = entityManager.unwrap(Session.class);
-        var sessionFactory = session.getSessionFactory();
-        sessionFactory.getStatistics().logSummary();
-        System.out.println("Second level caches:");
-        List<String> secondLevelCaches = List.of(sessionFactory.getStatistics().getSecondLevelCacheRegionNames());
-        System.out.println(secondLevelCaches);
-        secondLevelCaches.forEach(name -> {
-            System.out.printf("%s -> %s%n", name,
-                    sessionFactory.getStatistics().getDomainDataRegionStatistics(name));
+        cacheUtil.logCacheStatistics();
+        // Print second cache statistics
+//        log.info(">>>> CACHE Person ID=1L: {}", entityManager.getEntityManagerFactory().getCache()
+//                .unwrap(EnabledCaching.class).getRegion("course.hibernate.spring.entity.Person"));
+//        log.info(">>>> CACHE Person ID=2L: {}", entityManager.getEntityManagerFactory().getCache()
+//                .contains(Person.class, 2L));
+
+        // Use query cache
+        List<Person> persons1 = entityManager
+                .createQuery("select p from Person p where p.lastName = :lastName", Person.class)
+                .setParameter("lastName", "Doe")
+                .setHint("org.hibernate.cacheable", "true")
+                .getResultList();
+        log.info(">>> First Query Results: {}", persons1);
+
+        // Hibernate API
+        List<Person> persons2 = entityManager.unwrap(Session.class)
+                .createQuery("select p from Person p where p.lastName = :lastName")
+                .setParameter("lastName", "Doe")
+                .setCacheable(true)
+                .list();
+        log.info(">>> Second Query Results: {}", persons2);
+        cacheUtil.logCacheStatistics();
+
+        // Update query cache
+//        template.executeWithoutResult(status -> {
+//            var results = entityManager.createQuery(
+//                            "update Person p set p.firstName='Updated' where p.lastName = :lastName")
+//                    .setParameter("lastName", "Doe")
+//                    .setHint("org.hibernate.cacheable", "true")
+//                    .executeUpdate();
+//            log.info(">>> Updated: {}", results);
+//        });
+
+        template.executeWithoutResult(status -> {
+            var results = entityManager.unwrap(Session.class).createNativeQuery(
+                            "update persons set f_name='Updated' where l_name = :lastName")
+                    .setParameter("lastName", "Doe")
+                    .addSynchronizedEntityClass(Person.class)
+                    .executeUpdate();
+            log.info(">>> Updated: {}", results);
         });
+
+        List<Person> persons3 = entityManager.unwrap(Session.class)
+                .createQuery("select p from Person p ")
+//                .setParameter("lastName", "Doe")
+                .setCacheable(true)
+                .list();
+        log.info(">>> Second Query Results: {}", persons3);
+        cacheUtil.logCacheStatistics();
+
+        // Hibernate API
+        List<Person> persons4 = entityManager.unwrap(Session.class)
+                .createQuery("select p from Person p where p.lastName = :lastName")
+                .setParameter("lastName", "Doe")
+                .setCacheable(true)
+                .list();
+        log.info(">>> Second Query Results: {}", persons4);
+        cacheUtil.logCacheStatistics();
     }
+
+
 }

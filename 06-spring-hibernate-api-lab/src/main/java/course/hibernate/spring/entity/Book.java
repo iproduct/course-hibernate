@@ -5,7 +5,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.LazyGroup;
 import org.hibernate.annotations.NaturalId;
-import org.springframework.cache.annotation.Cacheable;
+//import org.springframework.cache.annotation.Cacheable;
 
 import javax.persistence.*;
 import javax.persistence.Basic;

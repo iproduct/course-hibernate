@@ -63,5 +63,6 @@
 
     <cache alias="course.hibernate.spring.entity.Book" uses-template="hibernateEntityTemplate" />
     <cache alias="course.hibernate.spring.entity.Person" uses-template="hibernateEntityTemplate" />
+    <cache alias="course.hibernate.spring.entity.Person.books" uses-template="hibernateEntityTemplate" />
 
 </config>

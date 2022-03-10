@@ -21,7 +21,7 @@ spring:
         cache:
           use_second_level_cache: true
           default_cache_concurrency_strategy: read-write
-          #          use_query_cache: true
+          use_query_cache: true
           region:
             factory_class: jcache
         javax:
