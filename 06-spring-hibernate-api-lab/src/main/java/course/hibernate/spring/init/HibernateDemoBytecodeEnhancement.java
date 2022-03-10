@@ -2,34 +2,19 @@ package course.hibernate.spring.init;
 
 import course.hibernate.spring.entity.Book;
 import course.hibernate.spring.entity.Person;
-import course.hibernate.spring.entity.User;
 import lombok.extern.slf4j.Slf4j;
-import org.ehcache.Cache;
-import org.ehcache.core.Ehcache;
 import org.hibernate.CacheMode;
 import org.hibernate.Session;
-import org.hibernate.SessionFactory;
-import org.hibernate.cache.internal.EnabledCaching;
-import org.hibernate.cache.jcache.internal.JCacheDomainDataRegionImpl;
-import org.hibernate.engine.spi.SharedSessionContractImplementor;
-import org.hibernate.metamodel.model.domain.NavigableRole;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.support.TransactionTemplate;
 
-import javax.cache.CacheManager;
-import javax.cache.Caching;
-import javax.cache.annotation.CacheKey;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
-import javax.persistence.PersistenceUnit;
 import java.time.LocalDate;
 import java.util.List;
-import java.util.Set;
-
-import static course.hibernate.spring.entity.Role.*;
 
 @Component
 @Slf4j
@@ -113,12 +98,6 @@ public class HibernateDemoBytecodeEnhancement implements ApplicationRunner {
             authors.forEach( a -> log.info("!!! Authors: {} -> {}", a, a.getBooks()));
         });
 
-//        log.info(">>>>> {}", entityManager.unwrap(Session.class).getSessionFactory().getCache(EnabledCaching));
-        var cachingProvider = Caching.getCachingProvider();
-        CacheManager manager = cachingProvider.getCacheManager();
-        var cacheNames = manager.getCacheNames();
-        log.info(">>>>> {}", cacheNames);
-
         // Cache statistics
         var session = entityManager.unwrap(Session.class);
         var sessionFactory = session.getSessionFactory();
@@ -129,36 +108,6 @@ public class HibernateDemoBytecodeEnhancement implements ApplicationRunner {
         secondLevelCaches.forEach(name -> {
             System.out.printf("%s -> %s%n", name,
                     sessionFactory.getStatistics().getDomainDataRegionStatistics(name));
-            try {
-                var ehcache = (JCacheDomainDataRegionImpl)sessionFactory.getCache().unwrap(EnabledCaching.class).getRegion(name);
-//                var iter = ehcache.getEntityDataAccess(new NavigableRole(name)).iterator();
-//                iter.forEachRemaining(System.out::println);
-            }catch(Exception e){
-                e.printStackTrace();
-            }
         });
-//
-//                }
-//                boolean exists = list.stream().map(cacheKey -> (Long)cacheKey.getKey()).anyMatch(key-> key.equals(employeeId));
-//                System.out.println("Cached entities:" + i
-//
-//                List<CacheKey> list = ehcache.getKeys();
-//
-//                        ((JCacheDomainDataRegionImpl)sessionFactory.getCache().unwrap(EnabledCaching.class).getRegion(name))
-//                                .getEntityDataAccess(new NavigableRole(name)).get( 1L));
-//            } catch(Exception e){
-//                e.printStackTrace();
-//            }
-//        });
-//        System.out.println(Caching.getCachingProvider().getCacheManager().getURI()); //getCache("products"));
-        // Find again same entities
-//        List<Book> books2 = template.execute(status -> {
-//            Book book1 = entityManager.unwrap(Session.class).byNaturalId(Book.class)
-//                    .using("isbn", "0134685997")
-//                    .load();
-//            Book book2 = entityManager.find(Book.class, 2L);
-//            return List.of(book1, book2);
-//        });
-//        books2.forEach(book -> log.info("!!! Book: {}", book));
     }
 }
