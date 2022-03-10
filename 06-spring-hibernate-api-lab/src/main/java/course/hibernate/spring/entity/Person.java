@@ -47,8 +47,8 @@ public class Person {
     @ToString.Exclude
 //    @org.hibernate.annotations.Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
     @FilterJoinTable(name="youngAuthors", condition = "date_of_birth > 1973-01-01")
-    @Filter(name="recentBooks", condition = "{bk}.year > 2015",
-            aliases = {@SqlFragmentAlias(alias = "bk", table = "books")})
+    @Filter(name="recentBooks", condition = "year > 2015")
+//            aliases = {@SqlFragmentAlias(alias = "bk", table = "books")})
     private List<Book> books = new ArrayList<>();
 }
 
