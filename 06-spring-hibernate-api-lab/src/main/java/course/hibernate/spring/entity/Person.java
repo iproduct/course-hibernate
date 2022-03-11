@@ -23,8 +23,8 @@ import static org.hibernate.annotations.CacheConcurrencyStrategy.READ_WRITE;
 @NoArgsConstructor
 @RequiredArgsConstructor
 @AllArgsConstructor
-//@Cacheable
-//@org.hibernate.annotations.Cache(usage = READ_WRITE)
+@Cacheable
+@org.hibernate.annotations.Cache(usage = READ_WRITE)
 @FilterDef(name = "youngAuthors")
 @FilterDef(name = "recentBooks", parameters = {})
 public class Person {
@@ -45,7 +45,7 @@ public class Person {
 
     @ManyToMany
     @ToString.Exclude
-//    @org.hibernate.annotations.Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
+    @org.hibernate.annotations.Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
     @FilterJoinTable(name="youngAuthors", condition = "date_of_birth > 1973-01-01")
     @Filter(name="recentBooks", condition = "year > 2015")
 //            aliases = {@SqlFragmentAlias(alias = "bk", table = "books")})

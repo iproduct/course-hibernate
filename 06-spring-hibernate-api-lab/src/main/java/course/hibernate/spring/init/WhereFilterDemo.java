@@ -4,19 +4,23 @@ import course.hibernate.spring.entity.Book;
 import course.hibernate.spring.entity.Person;
 import course.hibernate.spring.util.CacheUtil;
 import lombok.extern.slf4j.Slf4j;
+import org.hibernate.CacheMode;
+import org.hibernate.ScrollableResults;
 import org.hibernate.Session;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
-import org.springframework.stereotype.Component;
 import org.springframework.transaction.support.TransactionTemplate;
 
 import javax.persistence.EntityManager;
+import javax.persistence.FlushModeType;
 import javax.persistence.PersistenceContext;
+import javax.persistence.Query;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.stream.Stream;
 
-@Component
+//@Component
 @Slf4j
 public class WhereFilterDemo implements ApplicationRunner {
 
@@ -84,51 +88,41 @@ public class WhereFilterDemo implements ApplicationRunner {
 
         });
 
+        Query query = entityManager.createQuery(
+                        "select p " +
+                                "from Person p " +
+                                "where p.lastName like :lname")
+                // timeout - in milliseconds
+                .setHint("javax.persistence.query.timeout", 2000)
+                // flush only at commit time
+                .setFlushMode(FlushModeType.COMMIT);
 
-//        // Hibernate API
-//        List<Person> persons2 = entityManager.unwrap(Session.class)
-//                .createQuery("select p from Person p where p.lastName = :lastName")
-//                .setParameter("lastName", "Doe")
-//                .setCacheable(true)
-//                .list();
-//        log.info(">>> Second Query Results: {}", persons2);
-//        cacheUtil.logCacheStatistics();
+//        try ( ScrollableResults scrollableResults = session.createQuery(
+//                        "select p " +
+//                                "from Person p " +
+//                                "where p.name like :name" )
+//                .setParameter( "name", "J%" )
+//                .scroll()
+//        ) {
+//            while(scrollableResults.next()) {
+//                Person person = (Person) scrollableResults.get()[0];
+//                process(person);
+//            }
+//        }
 
-        // Update query cache
-//        template.executeWithoutResult(status -> {
-//            var results = entityManager.createQuery(
-//                            "update Person p set p.firstName='Updated' where p.lastName = :lastName")
-//                    .setParameter("lastName", "Doe")
-//                    .setHint("org.hibernate.cacheable", "true")
-//                    .executeUpdate();
-//            log.info(">>> Updated: {}", results);
-//        });
-
-//        template.executeWithoutResult(status -> {
-//            var results = entityManager.unwrap(Session.class).createNativeQuery(
-//                            "update persons set f_name='Updated' where l_name = :lastName")
-//                    .setParameter("lastName", "Doe")
-//                    .addSynchronizedEntityClass(Person.class)
-//                    .executeUpdate();
-//            log.info(">>> Updated: {}", results);
-//        });
+//        try ( Stream<Object[]> persons = session.createQuery(
+//                        "select p.name, p.nickName " +
+//                                "from Person p " +
+//                                "where p.name like :name" )
+//                .setParameter( "name", "J%" )
+//                .stream() ) {
 //
-//        List<Person> persons3 = entityManager.unwrap(Session.class)
-//                .createQuery("select p from Person p ")
-////                .setParameter("lastName", "Doe")
-//                .setCacheable(true)
-//                .list();
-//        log.info(">>> Second Query Results: {}", persons3);
-//        cacheUtil.logCacheStatistics();
-//
-//        // Hibernate API
-//        List<Person> persons4 = entityManager.unwrap(Session.class)
-//                .createQuery("select p from Person p where p.lastName = :lastName")
-//                .setParameter("lastName", "Doe")
-//                .setCacheable(true)
-//                .list();
-//        log.info(">>> Second Query Results: {}", persons4);
-//        cacheUtil.logCacheStatistics();
+//            persons
+//                    .map( row -> new PersonNames(
+//                            (String) row[0],
+//                            (String) row[1] ) )
+//                    .forEach( this::process );
+//        }
     }
 
 
