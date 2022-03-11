@@ -19,7 +19,7 @@ import java.util.Arrays;
 import java.util.List;
 
 
-@Component
+//@Component
 @Slf4j
 public class HibernateDemoBytecodeEnhancement implements ApplicationRunner {
     @PersistenceContext
@@ -35,7 +35,7 @@ public class HibernateDemoBytecodeEnhancement implements ApplicationRunner {
         template.executeWithoutResult(status -> {
             Person josh = new Person(1L, "Joshua", "Bloch",
                     LocalDate.of(1965, 8, 11));
-            Book effectiveJava = new Book(1L, "Effective Java", josh, "0134685997",
+            Book effectiveJava = new Book(1L, "Effective Java", josh, "0134685997", 2002,
                     "The third edition covers language and library features added in Java 7, 8, and 9, including the functional programming ",
                     null,
                     "Java has changed dramatically since the previous edition of Effective Java was published shortly after the release of Java 6. This Jolt award-winning classic has now been thoroughly updated to take full advantage of the latest language and library features. The support in modern Java for multiple paradigms increases the need for specific best-practices advice, and this book delivers.\n" +
@@ -44,7 +44,7 @@ public class HibernateDemoBytecodeEnhancement implements ApplicationRunner {
             );
             Person martin = new Person(2L, "Martin", "Fowler",
                     LocalDate.of(1939, 4, 15));
-            Book umlDistilled = new Book(2L, "Uml Distilled", martin, "9780321193681",
+            Book umlDistilled = new Book(2L, "Uml Distilled", martin, "9780321193681", 2009,
                     "More than 300,000 developers have benefited from past editions of UML Distilled . This third edition is the best resource for quick, no-nonsense insights into understanding and using UML 2.0 and prior versions of the UML",
                     null,
                     "Some readers will want to quickly get up to speed with the UML 2.0 and learn the essentials of the UML. Others will use this book as a handy, quick reference to the most common parts of the UML. The author delivers on both of these promises in a short, concise, and focused presentation." +

@@ -19,7 +19,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-@Component
+//@Component
 @Slf4j
 public class HibernateDemoBytecodeEnhancement implements ApplicationRunner {
 

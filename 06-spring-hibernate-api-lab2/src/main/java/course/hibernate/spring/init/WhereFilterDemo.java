@@ -2,10 +2,7 @@ package course.hibernate.spring.init;
 
 import course.hibernate.spring.entity.Book;
 import course.hibernate.spring.entity.Person;
-import course.hibernate.spring.util.CacheUtil;
 import lombok.extern.slf4j.Slf4j;
-import org.hibernate.CacheMode;
-import org.hibernate.ScrollableResults;
 import org.hibernate.Session;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.ApplicationArguments;
@@ -19,7 +16,6 @@ import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 import java.time.LocalDate;
 import java.util.List;
-import java.util.stream.Stream;
 
 @Component
 @Slf4j
@@ -31,20 +27,17 @@ public class WhereFilterDemo implements ApplicationRunner {
     @Autowired
     private TransactionTemplate template;
 
-    @Autowired
-    CacheUtil cacheUtil;
-
     @Override
     public void run(ApplicationArguments args) throws Exception {
         template.executeWithoutResult(status -> {
             Person josh = new Person(1L, "Joshua", "Bloch",
                     LocalDate.of(1965, 8, 11));
-            Book effectiveJava2ed = new Book(1L, "Effective Java", List.of(josh), "0134685997", 2002,
+            Book effectiveJava2ed = new Book(1L, "Effective Java", josh, "0134685997", 2002,
                     "The second edition covers language and library features added in Java 7, 8, and 9, including the functional programming ",
                     null,
                     "As in previous editions, each chapter of Effective Java, Second Edition, consists of several “items,” each presented in the form of a short, stand-alone essay that provides specific advice, insight into Java platform subtleties, and updated code examples. The comprehensive descriptions and explanations for each item illuminate what to do, what not to do, and why.\n"
             );
-            Book effectiveJava3ed = new Book(2L, "Effective Java 3-nd ed.", List.of(josh), "01346852334", 2020,
+            Book effectiveJava3ed = new Book(2L, "Effective Java 3-nd ed.", josh, "01346852334", 2020,
                     "The third edition covers language and library features added in Java 7, 8, and 9, including the functional programming ",
                     null,
                     "Java has changed dramatically since the previous edition of Effective Java was published shortly after the release of Java 6. This Jolt award-winning classic has now been thoroughly updated to take full advantage of the latest language and library features. The support in modern Java for multiple paradigms increases the need for specific best-practices advice, and this book delivers.\n" +
@@ -53,7 +46,7 @@ public class WhereFilterDemo implements ApplicationRunner {
             );
             Person martin = new Person(2L, "Martin", "Fowler",
                     LocalDate.of(1939, 4, 15));
-            Book umlDistilled = new Book(3L, "Uml Distilled", List.of(martin), "9780321193681", 2009,
+            Book umlDistilled = new Book(3L, "Uml Distilled",martin, "9780321193681", 2009,
                     "More than 300,000 developers have benefited from past editions of UML Distilled . This third edition is the best resource for quick, no-nonsense insights into understanding and using UML 2.0 and prior versions of the UML",
                     null,
                     "Some readers will want to quickly get up to speed with the UML 2.0 and learn the essentials of the UML. Others will use this book as a handy, quick reference to the most common parts of the UML. The author delivers on both of these promises in a short, concise, and focused presentation." +
@@ -78,9 +71,8 @@ public class WhereFilterDemo implements ApplicationRunner {
         });
 
         template.executeWithoutResult(status -> {
-            entityManager.unwrap(Session.class)
-                    .enableFilter("recentBooks")
-                    .setParameter("afterYear", 2015);
+//            entityManager.unwrap(Session.class)
+//                    .enableFilter("recentBooks");
             List<Person> persons = entityManager.unwrap(Session.class)
                     .createQuery("select distinct p from Person p where p.lastName = :lastName", Person.class)
                     .setParameter("lastName", "Bloch")

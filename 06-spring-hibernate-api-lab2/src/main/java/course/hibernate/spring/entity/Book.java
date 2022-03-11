@@ -40,6 +40,8 @@ public class Book {
     @NaturalId
     private String isbn;
 
+    private int year;
+
     @Basic(fetch=LAZY)
     private String summary;
 

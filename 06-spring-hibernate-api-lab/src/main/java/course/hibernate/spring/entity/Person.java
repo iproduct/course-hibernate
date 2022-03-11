@@ -18,15 +18,15 @@ import static org.hibernate.annotations.CacheConcurrencyStrategy.READ_WRITE;
 
 @Entity
 @Table(name = "persons")
-@SecondaryTable(name="books")
 @Data
 @NoArgsConstructor
 @RequiredArgsConstructor
 @AllArgsConstructor
 @Cacheable
 @org.hibernate.annotations.Cache(usage = READ_WRITE)
-@FilterDef(name = "youngAuthors")
-@FilterDef(name = "recentBooks", parameters = {})
+//@FilterDef(name = "youngAuthors")
+@FilterDef(name = "recentBooks", parameters = @ParamDef(name = "afterYear", type = "int"))
+//@FilterJoinTable(name="youngAuthors", condition = "date_of_birth > 1973-01-01")
 public class Person {
     @Id
     @NonNull
@@ -46,8 +46,8 @@ public class Person {
     @ManyToMany
     @ToString.Exclude
     @org.hibernate.annotations.Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
-    @FilterJoinTable(name="youngAuthors", condition = "date_of_birth > 1973-01-01")
-    @Filter(name="recentBooks", condition = "year > 2015")
+//    @Where(clause = "year > 2015")
+    @Filter(name="recentBooks", condition = "year > :afterYear")
 //            aliases = {@SqlFragmentAlias(alias = "bk", table = "books")})
     private List<Book> books = new ArrayList<>();
 }
