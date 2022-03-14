@@ -22,6 +22,9 @@ import java.util.List;
 @AllArgsConstructor
 @Cacheable
 @org.hibernate.annotations.Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
+@NamedEntityGraph(name = "Person.withBooks",
+        attributeNodes = {@NamedAttributeNode(value = "books", subgraph = "booksData")},
+        subgraphs = @NamedSubgraph(name = "booksData", attributeNodes = {@NamedAttributeNode("title")}))
 public class Person {
     @Id
     @NonNull
@@ -38,10 +41,10 @@ public class Person {
     @Past
     LocalDate dateOfBirth;
 
-    @OneToMany(mappedBy = "author")
+    @OneToMany(mappedBy = "author", fetch = FetchType.EAGER)
     @ToString.Exclude
     @org.hibernate.annotations.Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
-    @Where(clause = "year > 2015")
+//    @Where(clause = "year > 2015")
     private List<Book> books = new ArrayList<>();
 }
 

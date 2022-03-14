@@ -18,6 +18,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
+import static javax.persistence.FetchType.EAGER;
 import static javax.persistence.FetchType.LAZY;
 import static org.hibernate.id.UUIDGenerator.UUID_GEN_STRATEGY_CLASS;
 
@@ -34,7 +35,7 @@ public class Book {
     private Long id;
     private String title;
 
-    @ManyToOne
+    @ManyToOne(fetch = LAZY)
     private Person author;
 
     @NaturalId

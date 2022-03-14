@@ -73,7 +73,10 @@ public class HibernateDemoBytecodeEnhancement implements ApplicationRunner {
             Book book1 = entityManager.unwrap(Session.class).byId(Book.class)
                     .with(CacheMode.GET)
                     .load(1L);
-//            Book book1 = entityManager.unwrap(Session.class).bySimpleNaturalId(Book.class)
+//            Book book1 = entityManager.unwrap(Session.class).byNaturalId(Book.class)
+//                    .using("isbn", "0134685997")
+//                    .load();
+//            Book book5 = entityManager.unwrap(Session.class).bySimpleNaturalId(Book.class)
 //                    .load("0134685997");
 
             Book book2 = entityManager.find(Book.class, 2L);

@@ -23,13 +23,13 @@ public class CacheUtil {
         System.out.println(secondLevelCaches);
         secondLevelCaches.forEach(name -> {
             try {
-//                log.info("{} -> {}", name, statistics.getDomainDataRegionStatistics(name));
-                CacheRegionStatistics secondLevelCacheStatistics =
-                        statistics.getDomainDataRegionStatistics(name);
-                long hitCount = secondLevelCacheStatistics.getHitCount();
-                long missCount = secondLevelCacheStatistics.getMissCount();
-                double hitRatio = (double) hitCount / (hitCount + missCount);
-                log.info("Region name: {} -> hitCount: {}, missCount: {}, ratio: {}", name, hitCount, missCount, hitRatio);
+                log.info("{} -> {}", name, statistics.getDomainDataRegionStatistics(name));
+//                CacheRegionStatistics secondLevelCacheStatistics =
+//                        statistics.getDomainDataRegionStatistics(name);
+//                long hitCount = secondLevelCacheStatistics.getHitCount();
+//                long missCount = secondLevelCacheStatistics.getMissCount();
+//                double hitRatio = (double) hitCount / (hitCount + missCount);
+//                log.info("Region name: {} -> hitCount: {}, missCount: {}, ratio: {}", name, hitCount, missCount, hitRatio);
             } catch (Exception ex) {
                 log.warn("No statistics for region '{}':", name);
             }

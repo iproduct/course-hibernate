@@ -1,11 +1,10 @@
 package course.hibernate.spring.init;
 
+import course.hibernate.spring.dto.PersonNames;
 import course.hibernate.spring.entity.Book;
 import course.hibernate.spring.entity.Person;
 import course.hibernate.spring.util.CacheUtil;
 import lombok.extern.slf4j.Slf4j;
-import org.hibernate.CacheMode;
-import org.hibernate.ScrollableResults;
 import org.hibernate.Session;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.ApplicationArguments;
@@ -18,6 +17,7 @@ import javax.persistence.FlushModeType;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 import java.time.LocalDate;
+import java.util.Iterator;
 import java.util.List;
 import java.util.stream.Stream;
 
@@ -77,53 +77,71 @@ public class WhereFilterDemo implements ApplicationRunner {
             entityManager.persist(umlDistilled);
         });
 
-        template.executeWithoutResult(status -> {
-            entityManager.unwrap(Session.class)
-                    .enableFilter("recentBooks")
-                    .setParameter("afterYear", 2015);
-            List<Person> persons = entityManager.unwrap(Session.class)
-                    .createQuery("select distinct p from Person p where p.lastName = :lastName", Person.class)
-                    .setParameter("lastName", "Bloch")
-                    .setHint("org.hibernate.cacheable", "true")
-                    .getResultList();
-            persons.forEach(p -> log.info(">>> {}, Books: {}", p, p.getBooks()));
-        });
+//        template.executeWithoutResult(status -> {
+//            entityManager.unwrap(Session.class)
+//                    .enableFilter("recentBooks")
+//                    .setParameter("afterYear", 2015);
+//            List<Person> persons = entityManager.unwrap(Session.class)
+//                    .createQuery("select distinct p from Person p where p.lastName = :lastName", Person.class)
+//                    .setParameter("lastName", "Bloch")
+//                    .setHint("org.hibernate.cacheable", "true")
+//                    .getResultList();
+//            persons.forEach(p -> log.info(">>> {}, Books: {}", p, p.getBooks()));
+//        });
 
-//        Query query = entityManager.createQuery(
-//                        "select p " +
-//                                "from Person p " +
+        Query query = entityManager.createQuery(
+                        "select p " +
+                                "from Person p ")
 //                                "where p.lastName like :lname")
-//                // timeout - in milliseconds
-//                .setHint("javax.persistence.query.timeout", 2000)
-//                // flush only at commit time
-//                .setFlushMode(FlushModeType.COMMIT);
+                // timeout - in milliseconds
+                .setHint("javax.persistence.query.timeout", 2000)
+                // flush only at commit time
+                .setFlushMode(FlushModeType.COMMIT);
+        query.getResultList();
+        cacheUtil.logCacheStatistics();
 
-//        try ( ScrollableResults scrollableResults = session.createQuery(
+//        try ( ScrollableResults scrollableResults = entityManager.unwrap(Session.class).createQuery(
 //                        "select p " +
 //                                "from Person p " +
-//                                "where p.name like :name" )
-//                .setParameter( "name", "J%" )
-//                .scroll()
+//                                "where p.firstName like :fname" )
+//                .setParameter( "fname", "J%" )
+//                .setFetchSize(10)
+//                .setFlushMode(FlushModeType.COMMIT)
+//                .scroll(SCROLL_SENSITIVE)
 //        ) {
-//            while(scrollableResults.next()) {
+//            scrollableResults.afterLast();
+//            while(scrollableResults.previous()) {
 //                Person person = (Person) scrollableResults.get()[0];
-//                process(person);
+//                log.info(">>>>>> Query Results: {}", person);
 //            }
 //        }
 
-//        try ( Stream<Object[]> persons = session.createQuery(
-//                        "select p.name, p.nickName " +
+//        Iterator it = entityManager.unwrap(Session.class).createQuery(
+//                        "select p " +
 //                                "from Person p " +
-//                                "where p.name like :name" )
-//                .setParameter( "name", "J%" )
-//                .stream() ) {
-//
-//            persons
-//                    .map( row -> new PersonNames(
-//                            (String) row[0],
-//                            (String) row[1] ) )
-//                    .forEach( this::process );
+//                                "where p.firstName like :fname")
+//                .setParameter("fname", "J%")
+//                .setFetchSize(10)
+//                .iterate();
+//        while (it.hasNext()) {
+//            Person person = (Person) it.next();
+//            log.info(">>> First Query Results: {}", person);
 //        }
+//        cacheUtil.logCacheStatistics();
+
+        try (Stream<Object[]> persons = entityManager.unwrap(Session.class).createQuery(
+                        "select p.firstName, p.lastName " +
+                                "from Person p " +
+                                "where p.firstName like :name")
+                .setParameter("name", "J%")
+                .stream()) {
+
+            persons
+                    .map(row -> new PersonNames(
+                            (String) row[0],
+                            (String) row[1]))
+                    .forEach(pn -> log.info("Person: {}", pn));
+        }
     }
 
 

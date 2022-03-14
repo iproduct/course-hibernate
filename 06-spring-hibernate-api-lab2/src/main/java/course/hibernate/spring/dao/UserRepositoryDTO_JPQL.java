@@ -12,10 +12,10 @@ import java.util.Optional;
 
 @NoRepositoryBean
 public interface UserRepositoryDTO_JPQL extends JpaRepository<User, Long> {
-//    @Query("SELECT " +
-//            "NEW course.hibernate.spring.dto.UserDetailDto(u.id, u.firstName, u.lastName, u.username, GROUP_CONCAT(r)) " +
-//            "FROM User u LEFT JOIN u.roles r GROUP BY u.id")
-//    List<UserDetailDto> findAllUserDtos();
+    @Query("SELECT " +
+            "NEW course.hibernate.spring.dto.UserDetailDto(u.id, u.firstName, u.lastName, u.username, GROUP_CONCAT(r)) " +
+            "FROM User u LEFT JOIN u.roles r GROUP BY u.id")
+    List<UserDetailDto> findAllUserDtos();
     Optional<User> findByUsername(String username);
 }
 

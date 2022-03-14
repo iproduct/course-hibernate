@@ -22,7 +22,7 @@ import java.util.stream.Collectors;
 @Table( name = "users",
         uniqueConstraints = @UniqueConstraint(name = "uc_username", columnNames = {"username"}),
         indexes = @Index(name="uniqueUsernameIndex", columnList = "username", unique = true))
-@NamedEntityGraph(name = "User.detail", attributeNodes = @NamedAttributeNode("roles"))
+@NamedEntityGraph(name = "User.detail", attributeNodes = {@NamedAttributeNode("roles")})
 @Access(AccessType.FIELD)
 //@SelectBeforeUpdate
 public class User extends EntityBase implements UserDetails {
