@@ -4,6 +4,8 @@ import course.hibernate.spring.entity.Book;
 import course.hibernate.spring.entity.Person;
 import course.hibernate.spring.util.CacheUtil;
 import lombok.extern.slf4j.Slf4j;
+import org.hibernate.LockMode;
+import org.hibernate.LockOptions;
 import org.hibernate.Session;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.ApplicationArguments;
@@ -15,7 +17,10 @@ import javax.persistence.EntityManager;
 import javax.persistence.LockModeType;
 import javax.persistence.PersistenceContext;
 import java.time.LocalDate;
+import java.util.Collections;
 import java.util.List;
+
+import static javax.persistence.PessimisticLockScope.EXTENDED;
 
 @Component
 @Slf4j
@@ -75,23 +80,27 @@ public class LockingDemo implements ApplicationRunner {
             entityManager.persist(umlDistilled);
         });
 
-//        template.executeWithoutResult(status -> {
-//            var josh = entityManager.find(Person.class, 1L);/**/
-//            log.info(">>>Joshua - version before lock: {}", josh.getVersion());
-//            entityManager.lock(josh, LockModeType.PESSIMISTIC_WRITE);
-//            var results = entityManager.unwrap(Session.class).createQuery(
-//                            "select p from Person p where p.lastName = :lastName")
-//                    .setParameter("lastName", "Bloch")
-//                    .setHint("org.hibernate.cacheable", "true")
+        template.executeWithoutResult(status -> {
+            var josh = entityManager.find(Person.class, 1L);/**/
+            log.info(">>>Joshua - version in first transaction before lock: {}", josh.getVersion());
+            entityManager.lock(josh, LockModeType.PESSIMISTIC_WRITE);
+            var results = entityManager.unwrap(Session.class).createQuery(
+                            "select p from Person p where p.lastName = :lastName")
+                    .setParameter("lastName", "Bloch")
+                    .setHint("org.hibernate.cacheable", "true")
 //                    .setLockMode(LockModeType.PESSIMISTIC_FORCE_INCREMENT)
-//                    .getResultList();
-//            log.info(">>> Updated: {}", results);
-//            log.info(">>>Joshua - in second transaction: {}", josh.getVersion());
-//        });
+                    .setLockOptions(new LockOptions(LockMode.PESSIMISTIC_FORCE_INCREMENT)
+                            .setFollowOnLocking(false)
+                            .setTimeOut(2000)
+                            .setScope(true))
+                    .getResultList();
+            log.info(">>> Updated: {}", results);
+            log.info(">>>Joshua - in first transaction: {}", josh.getVersion());
+        });
 
         template.executeWithoutResult(status -> {
             var josh = entityManager.find(Person.class, 1L);
-            log.info(">>>Joshua - version in third transaction before update: {}", josh.getVersion());
+            log.info(">>>Joshua - version in second transaction before update: {}", josh.getVersion());
             var results = entityManager.unwrap(Session.class).createQuery(
                             "update versioned Person p set p.firstName='Updated' where p.lastName = :lastName")
                     .setParameter("lastName", "Bloch")

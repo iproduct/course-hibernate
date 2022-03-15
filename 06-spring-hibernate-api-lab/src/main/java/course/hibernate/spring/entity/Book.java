@@ -3,6 +3,7 @@ package course.hibernate.spring.entity;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import org.hibernate.annotations.*;
 //import org.springframework.cache.annotation.Cacheable;
 
@@ -23,7 +24,6 @@ import static org.hibernate.annotations.CacheConcurrencyStrategy.READ_WRITE;
 @Table(name = "books")
 @Data
 @NoArgsConstructor
-@AllArgsConstructor
 //@Cacheable
 //@org.hibernate.annotations.Cache(usage = READ_WRITE, region = "course.hibernate.spring.entity.Book",
 //include="all")
@@ -54,6 +54,20 @@ public class Book {
     @Basic(fetch=LAZY)
     @LazyGroup("lobs")
     private String sampleContent;
+
+    @Version
+    private Long version;
+
+    public Book(Long id, String title, List<Person> author, String isbn, int year, String summary, byte[] image, String sampleContent) {
+        this.id = id;
+        this.title = title;
+        this.author = author;
+        this.isbn = isbn;
+        this.year = year;
+        this.summary = summary;
+        this.image = image;
+        this.sampleContent = sampleContent;
+    }
 
     @Override
     public boolean equals(Object o) {
