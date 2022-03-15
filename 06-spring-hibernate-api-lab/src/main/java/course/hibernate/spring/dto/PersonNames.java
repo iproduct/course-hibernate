@@ -8,4 +8,5 @@ import lombok.Data;
 public class PersonNames {
     private String firstName;
     private String lastName;
+    private String bookTitle;
 }

@@ -24,9 +24,9 @@ import static org.hibernate.annotations.CacheConcurrencyStrategy.READ_WRITE;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@Cacheable
-@org.hibernate.annotations.Cache(usage = READ_WRITE, region = "course.hibernate.spring.entity.Book",
-include="all")
+//@Cacheable
+//@org.hibernate.annotations.Cache(usage = READ_WRITE, region = "course.hibernate.spring.entity.Book",
+//include="all")
 //@FilterDef(name = "recentBooks")
 //@Filter(name="recentBooks", condition = "year > 2015")
 public class Book {

@@ -22,8 +22,8 @@ import static org.hibernate.annotations.CacheConcurrencyStrategy.READ_WRITE;
 @NoArgsConstructor
 @RequiredArgsConstructor
 @AllArgsConstructor
-@Cacheable
-@org.hibernate.annotations.Cache(usage = READ_WRITE)
+//@Cacheable
+//@org.hibernate.annotations.Cache(usage = READ_WRITE)
 //@FilterDef(name = "youngAuthors")
 @FilterDef(name = "recentBooks", parameters = @ParamDef(name = "afterYear", type = "int"))
 //@FilterJoinTable(name="youngAuthors", condition = "date_of_birth > 1973-01-01")
@@ -42,6 +42,9 @@ public class Person {
     @NonNull
     @Past
     LocalDate dateOfBirth;
+
+    @Version
+    private Long version;
 
     @ManyToMany
     @ToString.Exclude

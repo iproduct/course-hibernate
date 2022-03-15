@@ -1,6 +1,5 @@
 package course.hibernate.spring.init;
 
-import course.hibernate.spring.dto.PersonNames;
 import course.hibernate.spring.entity.Book;
 import course.hibernate.spring.entity.Person;
 import course.hibernate.spring.util.CacheUtil;
@@ -13,17 +12,14 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.support.TransactionTemplate;
 
 import javax.persistence.EntityManager;
-import javax.persistence.FlushModeType;
+import javax.persistence.LockModeType;
 import javax.persistence.PersistenceContext;
-import javax.persistence.Query;
 import java.time.LocalDate;
-import java.util.Iterator;
 import java.util.List;
-import java.util.stream.Stream;
 
-//@Component
+@Component
 @Slf4j
-public class WhereFilterDemo implements ApplicationRunner {
+public class LockingDemo implements ApplicationRunner {
 
     @PersistenceContext
     private EntityManager entityManager;
@@ -65,7 +61,9 @@ public class WhereFilterDemo implements ApplicationRunner {
             Person jane = new Person(4L, "Jane", "Doe",
                     LocalDate.of(1981, 8, 11));
 
+            log.info(">>>Joshua - version before persist: {}", josh.getVersion());
             entityManager.persist(josh);
+            log.info(">>>Joshua - version after persist: {}", josh.getVersion());
             entityManager.persist(martin);
             entityManager.persist(john);
             entityManager.persist(jane);
@@ -78,70 +76,40 @@ public class WhereFilterDemo implements ApplicationRunner {
         });
 
 //        template.executeWithoutResult(status -> {
-//            entityManager.unwrap(Session.class)
-//                    .enableFilter("recentBooks")
-//                    .setParameter("afterYear", 2015);
-//            List<Person> persons = entityManager.unwrap(Session.class)
-//                    .createQuery("select distinct p from Person p where p.lastName = :lastName", Person.class)
+//            var josh = entityManager.find(Person.class, 1L);/**/
+//            log.info(">>>Joshua - version before lock: {}", josh.getVersion());
+//            entityManager.lock(josh, LockModeType.PESSIMISTIC_WRITE);
+//            var results = entityManager.unwrap(Session.class).createQuery(
+//                            "select p from Person p where p.lastName = :lastName")
 //                    .setParameter("lastName", "Bloch")
 //                    .setHint("org.hibernate.cacheable", "true")
+//                    .setLockMode(LockModeType.PESSIMISTIC_FORCE_INCREMENT)
 //                    .getResultList();
-//            persons.forEach(p -> log.info(">>> {}, Books: {}", p, p.getBooks()));
+//            log.info(">>> Updated: {}", results);
+//            log.info(">>>Joshua - in second transaction: {}", josh.getVersion());
 //        });
 
-//        Query query = entityManager.createQuery(
-//                        "select p " +
-//                                "from Person p ")
-////                                "where p.lastName like :lname")
-//                // timeout - in milliseconds
-//                .setHint("javax.persistence.query.timeout", 2000)
-//                // flush only at commit time
-//                .setFlushMode(FlushModeType.COMMIT);
-//        query.getResultList();
-//        cacheUtil.logCacheStatistics();
+        template.executeWithoutResult(status -> {
+            var josh = entityManager.find(Person.class, 1L);
+            log.info(">>>Joshua - version in third transaction before update: {}", josh.getVersion());
+            var results = entityManager.unwrap(Session.class).createQuery(
+                            "update versioned Person p set p.firstName='Updated' where p.lastName = :lastName")
+                    .setParameter("lastName", "Bloch")
+                    .setHint("org.hibernate.cacheable", "true")
+                    .executeUpdate();
+            log.info("Updated: {} records", results);
+            entityManager.refresh(josh);
+            log.info(">>>Joshua - version in second transactio after update: {}", josh.getVersion());
+        });
 
-//        try ( ScrollableResults scrollableResults = entityManager.unwrap(Session.class).createQuery(
-//                        "select p " +
-//                                "from Person p " +
-//                                "where p.firstName like :fname" )
-//                .setParameter( "fname", "J%" )
-//                .setFetchSize(10)
-//                .setFlushMode(FlushModeType.COMMIT)
-//                .scroll(SCROLL_SENSITIVE)
-//        ) {
-//            scrollableResults.afterLast();
-//            while(scrollableResults.previous()) {
-//                Person person = (Person) scrollableResults.get()[0];
-//                log.info(">>>>>> Query Results: {}", person);
-//            }
-//        }
-
-//        Iterator it = entityManager.unwrap(Session.class).createQuery(
-//                        "select p " +
-//                                "from Person p " +
-//                                "where p.firstName like :fname")
-//                .setParameter("fname", "J%")
-//                .setFetchSize(10)
-//                .iterate();
-//        while (it.hasNext()) {
-//            Person person = (Person) it.next();
-//            log.info(">>> First Query Results: {}", person);
-//        }
-//        cacheUtil.logCacheStatistics();
-
-        try (Stream<Object[]> persons = entityManager.unwrap(Session.class).createQuery(
-                        "select p.firstName, p.lastName, b.title from Person p, in(p.books) b " +
-                                "where p.firstName like :name")
-                .setParameter("name", "J%")
-                .stream()) {
-
-            persons
-                    .map(row -> new PersonNames(
-                            (String) row[0],
-                            (String) row[1],
-                            (String) row[2]
-                    )).forEach(pn -> log.info(">>> Person: {}", pn));
-        }
+        template.executeWithoutResult(status -> {
+            var josh = entityManager.find(Person.class, 1L, LockModeType.OPTIMISTIC_FORCE_INCREMENT);
+            log.info(">>>Joshua - version in third transaction: {}", josh.getVersion());
+        });
+        template.executeWithoutResult(status -> {
+            var josh = entityManager.find(Person.class, 1L, LockModeType.OPTIMISTIC_FORCE_INCREMENT);
+            log.info(">>>Joshua - version in forth transaction: {}", josh.getVersion());
+        });
     }
 
 
