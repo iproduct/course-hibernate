@@ -1,25 +1,31 @@
 package course.hibernate.spring.dao.impl;
 
 import course.hibernate.spring.dao.UserRepository;
+import course.hibernate.spring.dao.UserRepositoryCRUD;
 import course.hibernate.spring.entity.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.jpa.repository.support.JpaEntityInformation;
+import org.springframework.data.jpa.repository.support.JpaEntityInformationSupport;
+import org.springframework.data.jpa.repository.support.JpaMetamodelEntityInformation;
 import org.springframework.data.jpa.repository.support.SimpleJpaRepository;
+import org.springframework.data.repository.NoRepositoryBean;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
-@Repository("userRepo")
+//@Repository("userRepo")
+@NoRepositoryBean
 @Transactional
-public class UserRepositoryImpl extends SimpleJpaRepository<User, Long> implements UserRepository {
+public class UserRepositoryImpl extends NaturalIdRepositoryImpl<User, Long, String> implements UserRepositoryCRUD {
     private EntityManager entityManager;
 
     @Autowired
     public UserRepositoryImpl(EntityManager entityManager) {
-        super(User.class, entityManager);
+        super(new JpaMetamodelEntityInformation(User.class, entityManager.getMetamodel()), entityManager);
         this.entityManager = entityManager;
     }
 
@@ -75,5 +81,4 @@ public class UserRepositoryImpl extends SimpleJpaRepository<User, Long> implemen
         return entityManager.createQuery("select count(u) from User u", Long.class)
                 .getSingleResult();
     }
-
 }

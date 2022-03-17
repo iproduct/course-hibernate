@@ -2,6 +2,8 @@ package course.hibernate.spring.entity;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import org.hibernate.annotations.JoinFormula;
+import org.hibernate.annotations.NaturalId;
+import org.hibernate.annotations.NaturalIdCache;
 import org.hibernate.loader.entity.plan.AbstractLoadPlanBasedEntityLoader;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -17,12 +19,17 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import static org.hibernate.annotations.CacheConcurrencyStrategy.READ_WRITE;
+
 @Entity
 @Table( name = "users",
         uniqueConstraints = @UniqueConstraint(name = "uc_username", columnNames = {"username"}),
         indexes = @Index(name="uniqueUsernameIndex", columnList = "username", unique = true))
 @NamedEntityGraph(name = "User.detail", attributeNodes = @NamedAttributeNode("roles"))
 @Access(AccessType.FIELD)
+@Cacheable
+@org.hibernate.annotations.Cache(usage = READ_WRITE, region = "course.hibernate.spring.entity.User")
+@NaturalIdCache(region="course.hibernate.spring.entity.User.username")
 public class User extends EntityBase implements UserDetails {
     @NotNull
     @Size(min=2, max =20)
@@ -30,6 +37,7 @@ public class User extends EntityBase implements UserDetails {
     @NotNull
     @Size(min=2, max =20)
     private String lastName;
+    @NaturalId
     @NotNull
     @Size(min=5, max =20)
     @Column(updatable = false, nullable = false)

@@ -22,7 +22,7 @@ import java.util.List;
 
 import static javax.persistence.PessimisticLockScope.EXTENDED;
 
-@Component
+//@Component
 @Slf4j
 public class LockingDemo implements ApplicationRunner {
 

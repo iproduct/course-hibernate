@@ -7,6 +7,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
+import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 
 import javax.validation.ConstraintViolationException;
@@ -17,6 +18,7 @@ import static course.hibernate.spring.entity.Role.*;
 
 @Component
 @Slf4j
+@Order(1)
 public class DataInitializer implements ApplicationRunner {
     private static final List<User> SAMPLE_USERS = List.of(
             new User("Default", "Admin", "admin", "Admin123&",
@@ -50,7 +52,5 @@ public class DataInitializer implements ApplicationRunner {
             long countAfter = userService.count();
             log.info("Users count: {}", countAfter);
         }
-
-
     }
 }
