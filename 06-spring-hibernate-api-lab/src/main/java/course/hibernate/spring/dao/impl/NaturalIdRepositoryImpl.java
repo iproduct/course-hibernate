@@ -1,6 +1,8 @@
 package course.hibernate.spring.dao.impl;
 
 import course.hibernate.spring.dao.NaturalRepository;
+import org.hibernate.LockMode;
+import org.hibernate.LockOptions;
 import org.hibernate.Session;
 import org.springframework.data.jpa.repository.support.JpaEntityInformation;
 import org.springframework.data.jpa.repository.support.SimpleJpaRepository;
@@ -22,10 +24,16 @@ public class NaturalIdRepositoryImpl<T, ID extends Serializable, NID extends Ser
     }
 
     @Override
-    public Optional<T> findBySimpleNaturalId(NID naturalId) {
+    public Optional<T> findBySimpleNaturalId(NID naturalId, LockOptions options) {
         return entityManager.unwrap(Session.class)
                 .bySimpleNaturalId(this.getDomainClass())
                 .loadOptional(naturalId);
+    }
+
+    @Override
+    public Optional<T> findBySimpleNaturalId(NID naturalId) {
+        var options = new LockOptions(LockMode.OPTIMISTIC);
+        return findBySimpleNaturalId(naturalId, options);
     }
 
     @Override
