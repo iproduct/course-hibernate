@@ -22,7 +22,7 @@ import java.util.List;
 
 import static javax.persistence.PessimisticLockScope.EXTENDED;
 
-//@Component
+@Component
 @Slf4j
 public class LockingDemo implements ApplicationRunner {
 
@@ -83,7 +83,7 @@ public class LockingDemo implements ApplicationRunner {
         template.executeWithoutResult(status -> {
             var josh = entityManager.find(Person.class, 1L);/**/
             log.info(">>>Joshua - version in first transaction before lock: {}", josh.getVersion());
-            entityManager.lock(josh, LockModeType.PESSIMISTIC_WRITE);
+            entityManager.lock(josh, LockModeType.PESSIMISTIC_FORCE_INCREMENT);
             var results = entityManager.unwrap(Session.class).createQuery(
                             "select p from Person p where p.lastName = :lastName")
                     .setParameter("lastName", "Bloch")
