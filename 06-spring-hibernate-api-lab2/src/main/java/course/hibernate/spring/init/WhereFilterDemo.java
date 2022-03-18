@@ -80,17 +80,17 @@ public class WhereFilterDemo implements ApplicationRunner {
         template.executeWithoutResult(status -> {
 //            entityManager.unwrap(Session.class)
 //                    .enableFilter("recentBooks");
-//            EntityGraph<?> eg = entityManager.getEntityGraph("Person.withBooks");
-//            List<Person> persons = entityManager.unwrap(Session.class)
-//                    .createQuery("select distinct p from Person p", Person.class)
-////                    .setParameter("lastName", "Bloch")
-//                    .setHint("org.hibernate.cacheable", "true")
-//                    .setHint("javax.persistence.fetchgraph", eg)
-//                    .setHint("org.hibernate.readOnly", true)
-//                    .setReadOnly(true)
-//                    .getResultList();
-//            persons.forEach(p -> log.info(">>> {}, Books: {}", p, p.getBooks()));
-//        });
+            EntityGraph<?> eg = entityManager.getEntityGraph("Person.withBooks");
+            List<Person> persons = entityManager.unwrap(Session.class)
+                    .createQuery("select distinct p from Person p", Person.class)
+//                    .setParameter("lastName", "Bloch")
+                    .setHint("org.hibernate.cacheable", "true")
+                    .setHint("javax.persistence.fetchgraph", eg)
+                    .setHint("org.hibernate.readOnly", true)
+                    .setReadOnly(true)
+                    .getResultList();
+            persons.forEach(p -> log.info(">>> {}, Books: {}", p, p.getBooks()));
+        });
 //        template.executeWithoutResult(status -> {
 //            List<Person> persons = entityManager.unwrap(Session.class)
 //                    .createQuery(
@@ -113,7 +113,7 @@ public class WhereFilterDemo implements ApplicationRunner {
 //                    .setParameter("startYear", 2009)
 //                    .getResultList();
 //            persons.forEach(p -> log.info(">>> {}", p));
-        });
+//        });
 
 //        Query query = entityManager.createQuery(
 //                        "select p " +
@@ -124,18 +124,18 @@ public class WhereFilterDemo implements ApplicationRunner {
 //                // flush only at commit time
 //                .setFlushMode(FlushModeType.COMMIT);
 
-        try ( ScrollableResults scrollableResults = session.createQuery(
-                        "select p " +
-                                "from Person p " +
-                                "where p.name like :name" )
-                .setParameter( "name", "J%" )
-                .scroll()
-        ) {
-            while(scrollableResults.next()) {
-                Person person = (Person) scrollableResults.get()[0];
-                process(person);
-            }
-        }
+//        try ( ScrollableResults scrollableResults = session.createQuery(
+//                        "select p " +
+//                                "from Person p " +
+//                                "where p.name like :name" )
+//                .setParameter( "name", "J%" )
+//                .scroll()
+//        ) {
+//            while(scrollableResults.next()) {
+//                Person person = (Person) scrollableResults.get()[0];
+//                process(person);
+//            }
+//        }
 
 //        try ( Stream<Object[]> persons = session.createQuery(
 //                        "select p.name, p.nickName " +
