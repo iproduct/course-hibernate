@@ -21,7 +21,9 @@ import javax.persistence.*;
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.JoinType;
+import javax.persistence.criteria.Root;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -57,6 +59,5 @@ public class FetcingByNaturalId implements ApplicationRunner {
             log.info(">>> User fetched in SECOND transaction by NATURAL ID: {}", admin);
             cacheUtil.logCacheStatistics();
         });
-
     }
 }
